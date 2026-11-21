@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>INSECT ARENA 0.5A — De Levende Vechters</title>
+<title>INSECT ARENA 0.5C — De Levende Vechters</title>
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:radial-gradient(circle at top,#20442f 0%,#12291f 48%,#08140e 100%);color:#f4ebc9;font:16px system-ui;text-align:center}
@@ -32,7 +32,7 @@ canvas{width:100%;max-width:900px;aspect-ratio:16/10;display:block;margin:auto;t
 <body>
 <header>
   <div class="wrap">
-    <h1>INSECT ARENA · 0.5A</h1>
+    <h1>INSECT ARENA · 0.5C</h1>
     <div class="controls">
       <label for="fighter">Vechter</label>
       <select id="fighter"></select>
@@ -72,15 +72,28 @@ const types=[
 const fighterSel=document.getElementById('fighter');
 types.forEach((t,i)=>fighterSel.add(new Option(`${t.name} · ${t.move}`,i)));
 let player=null,enemy=null,playing=false,paused=false;
-let particles=[];
+let particles=[];const floaters=[];
 let wins=Number((()=>{try{return localStorage.getItem('iaWins')}catch(e){return 0}})()||0);
 const arenaCache=document.createElement('canvas'); arenaCache.width=c.width; arenaCache.height=c.height;
 const ag=arenaCache.getContext('2d');
 function rand(a,b){return a+Math.random()*(b-a)}
 function unit(id,x,y){const t=types[id];return{...t,id,x,y,hp:t.hp,maxHp:t.hp,cool:0,special:0,flash:0,face:1,walk:0}}
-function reset(){player=unit(+fighterSel.value,210,330);enemy=unit((player.id+1+Math.floor(Math.random()*3))%4,700,320);playing=true;paused=false;particles=[];statusEl.textContent='Overwin de tegenstander! · Overwinningen: '+wins}
+function reset(){player=unit(+fighterSel.value,210,330);enemy=unit((player.id+1+Math.floor(Math.random()*3))%4,700,320);playing=true;paused=false;particles=[];floaters.length=0;statusEl.textContent='Overwin de tegenstander! · Overwinningen: '+wins}
 function burst(x,y,color,count=10,spread=3.5){for(let i=0;i<count;i++)particles.push({x,y,vx:rand(-spread,spread),vy:rand(-spread,spread)-1.2,life:rand(18,34),color,size:rand(3,7)})}
-function attack(a,t,special=false){if(!a||!t||a.cool>0)return;const dx=t.x-a.x,dy=t.y-a.y,d=Math.hypot(dx,dy);if(d>a.range)return;a.cool=special?42:(a===enemy?45:20);a.attackAnim=special?32:24;a.attackMax=a.attackAnim;if(special&&a.special>0)return;if(special)a.special=240;const dmg=a.damage*(special?2.2:1);t.hp-=dmg;t.flash=7;t.hitAnim=17;burst(t.x,t.y,special?'#ffd95a':'#ffe7a3',special?22:10,special?5:3.5);if(special){t.x+=Math.sign(dx||1)*20;t.y+=Math.sign(dy||1)*12}if(t.hp<=0){t.hp=0;playing=false;if(t===enemy){wins++;try{localStorage.setItem('iaWins',wins)}catch(e){}statusEl.textContent='GEWONNEN! Totaal: '+wins+' · Start opnieuw.'}else{statusEl.textContent='VERLOREN! Probeer opnieuw.'}}}
+function attack(a,t,special=false){
+ if(!a||!t||a.cool>0||(special&&a.special>0))return;
+ const dx=t.x-a.x,dy=t.y-a.y,d=Math.hypot(dx,dy);
+ if(d>a.range)return;
+ a.face=dx>=0?1:-1;a.cool=special?48:(a===enemy?45:20);
+ a.attackAnim=special?38:26;a.attackMax=a.attackAnim;a.attackSpecial=!!special;
+ if(special)a.special=240;
+ const dmg=a.damage*(special?2.2:1);
+ t.hp=Math.max(0,t.hp-dmg);t.flash=10;t.hitAnim=20;
+ burst(t.x,t.y,special?(a.id===3?'#aaf75b':'#ffd66c'):'#ffe3b1',special?33:15,special?6:4);
+ floaters.push({x:t.x,y:t.y-65,value:Math.round(dmg),life:46,color:special?'#ffe66c':'#ffffff'});
+ if(special){t.x+=Math.sign(dx||1)*23;t.y+=Math.sign(dy||1)*10;}
+ if(t.hp<=0){playing=false;if(t===enemy){wins++;try{localStorage.setItem('iaWins',wins)}catch(e){}statusEl.textContent='GEWONNEN! Totaal: '+wins+' · Start opnieuw.';}else statusEl.textContent='VERLOREN! Probeer opnieuw.';}
+}
 function controlPlayer(dt){if(!player)return;let mx=(keys.right?1:0)-(keys.left?1:0),my=(keys.down?1:0)-(keys.up?1:0);if(mx||my){const len=Math.hypot(mx,my)||1;player.x+=mx/len*player.speed*3.2*dt;player.y+=my/len*player.speed*3.2*dt;player.face=mx>=0?1:-1;player.walk+=0.17*dt}else{player.walk*=0.82}if(keys.hit){attack(player,enemy,false);keys.hit=false}if(keys.special){attack(player,enemy,true);keys.special=false}}
 function controlEnemy(dt){if(!enemy||!player)return;const dx=player.x-enemy.x,dy=player.y-enemy.y,d=Math.hypot(dx,dy)||1;if(d>enemy.range*.85){enemy.x+=dx/d*enemy.speed*.48*dt;enemy.y+=dy/d*enemy.speed*.48*dt;enemy.walk+=0.12*dt}else{enemy.walk*=0.85}enemy.face=dx>=0?1:-1;if(d<enemy.range*.85&&Math.random()<0.08)attack(enemy,player,false)}
 function confine(a){a.x=Math.max(85,Math.min(c.width-85,a.x));a.y=Math.max(165,Math.min(c.height-78,a.y));a.cool=Math.max(0,a.cool-1);a.special=Math.max(0,a.special-1);a.flash=Math.max(0,a.flash-1)}
@@ -690,14 +703,40 @@ function drawInsect(u){
     g.stroke();
     g.restore();
   }
+  // 0.5C: four distinct animated attack signatures over the photographic body.
+  if(attacking){
+   const power=Math.sin(Math.PI*attackProgress),special=!!u.attackSpecial;
+   const fx=w*.27,fy=-h*.38+20;
+   g.save();g.globalAlpha=Math.min(.9,power*(special?1.35:1));g.lineCap='round';
+   if(u.id===0){ // ant: two mandibular strikes
+    g.strokeStyle='#ffe7b2';g.shadowColor='#ffd47e';g.shadowBlur=14;g.lineWidth=special?7:4;
+    for(const dir of [-1,1]){g.beginPath();g.moveTo(fx-14,dir*10);g.quadraticCurveTo(fx+16,dir*22,fx+38+20*power,dir*7);g.stroke();}
+   }else if(u.id===1){ // mantis: double scythe sweep
+    g.strokeStyle=special?'#aaff63':'#94f7a5';g.shadowColor='#76e86a';g.shadowBlur=18;g.lineWidth=special?10:7;
+    g.beginPath();g.arc(fx,fy,36+26*power,-1.7,.67);g.stroke();
+    g.beginPath();g.arc(fx+8,fy+9,29+19*power,-.65,1.23);g.stroke();
+   }else if(u.id===2){ // beetle: horn charge and shock streaks
+    g.strokeStyle='#ffd183';g.shadowColor='#ffb55f';g.shadowBlur=15;g.lineWidth=special?12:8;
+    g.beginPath();g.moveTo(fx-22,fy+15);g.quadraticCurveTo(fx+14,fy-36,fx+62+18*power,fy-13);g.stroke();
+    g.strokeStyle='#f9e1ae';g.lineWidth=3;
+    for(let n=0;n<3;n++){g.beginPath();g.moveTo(-w*.35-12*n,17+n*9);g.lineTo(-w*.35-30-12*n,18+n*9);g.stroke();}
+   }else{ // scorpion: articulated venom arc
+    g.strokeStyle='#bd935b';g.shadowColor=special?'#aaff53':'#ffd188';g.shadowBlur=special?24:11;g.lineWidth=10;
+    g.beginPath();g.moveTo(-w*.22,3);g.bezierCurveTo(-w*.27,-53,-14,-92,fx+25*power,-37);g.stroke();
+    g.strokeStyle=special?'#a8ff61':'#ffe6a7';g.lineWidth=5;
+    g.beginPath();g.moveTo(fx+20*power,-40);g.lineTo(fx+36+26*power,-15);g.stroke();
+    if(special){g.fillStyle='#b7ff6b';for(let k=0;k<3;k++){g.beginPath();g.arc(fx+44+k*14,-15+(k%2?10:-8),4+k,0,Math.PI*2);g.fill();}}
+   }
+   g.restore();
+  }
   g.restore();
   // Animation is frame-based like the original fighter counters; no change to combat timing.
-  u.attackAnim=Math.max(0,(u.attackAnim||0)-1);
-  u.hitAnim=Math.max(0,(u.hitAnim||0)-1);
+  if(playing&&!paused){u.attackAnim=Math.max(0,(u.attackAnim||0)-1);u.hitAnim=Math.max(0,(u.hitAnim||0)-1);}
 }
 function drawParticles(){for(const p of particles){p.x+=p.vx;p.y+=p.vy;p.life-=1;g.fillStyle=p.color;g.fillRect(p.x,p.y,p.size,p.size)}particles=particles.filter(p=>p.life>0)}
+function drawDamageNumbers(){for(let i=floaters.length-1;i>=0;i--){const p=floaters[i];p.y-=1.2;p.life--;g.save();g.globalAlpha=Math.min(1,p.life/15);g.textAlign='center';g.font='bold 26px system-ui';g.lineWidth=5;g.strokeStyle='#1d200f';g.strokeText('-'+p.value,p.x,p.y);g.fillStyle=p.color;g.fillText('-'+p.value,p.x,p.y);g.restore();if(p.life<=0)floaters.splice(i,1);}}
 let last=0;
-function frame(ts){const dt=Math.min(2.2,(ts-last)/16.67||1);last=ts;drawArena(ts);if(player&&enemy){if(playing&&!paused){controlPlayer(dt);controlEnemy(dt);confine(player);confine(enemy)}drawInsect(player);drawInsect(enemy);drawParticles();drawHUD();g.fillStyle='#f5edcb';g.font='18px system-ui';g.textAlign='left';g.fillText('Special: '+(player.special?Math.ceil(player.special/60)+'s':'KLAAR'),18,93);if(paused){g.fillStyle='rgba(0,0,0,.35)';g.fillRect(0,0,c.width,c.height);g.fillStyle='#fff3ce';g.font='bold 62px system-ui';g.textAlign='center';g.fillText('PAUZE',c.width/2,c.height/2)}}requestAnimationFrame(frame)}
+function frame(ts){const dt=Math.min(2.2,(ts-last)/16.67||1);last=ts;drawArena(ts);if(player&&enemy){if(playing&&!paused){controlPlayer(dt);controlEnemy(dt);confine(player);confine(enemy)}drawInsect(player);drawInsect(enemy);drawParticles();drawDamageNumbers();drawHUD();g.fillStyle='#f5edcb';g.font='18px system-ui';g.textAlign='left';g.fillText('Special: '+(player.special?Math.ceil(player.special/60)+'s':'KLAAR'),18,93);if(paused){g.fillStyle='rgba(0,0,0,.35)';g.fillRect(0,0,c.width,c.height);g.fillStyle='#fff3ce';g.font='bold 62px system-ui';g.textAlign='center';g.fillText('PAUZE',c.width/2,c.height/2)}}requestAnimationFrame(frame)}
 document.getElementById('start').addEventListener('click',()=>{try{reset()}catch(e){statusEl.textContent='Fout bij starten: '+e.message;console.error(e)}});
 document.getElementById('pause').addEventListener('click',()=>{if(player){paused=!paused;statusEl.textContent=paused?'Gepauzeerd':'Gevecht hervat'}});
 for(const b of document.querySelectorAll('[data-key]')){const k=b.dataset.key;const off=()=>keys[k]=false;b.addEventListener('pointerdown',e=>{e.preventDefault();keys[k]=true; if(b.setPointerCapture)try{b.setPointerCapture(e.pointerId)}catch(_){}});b.addEventListener('pointerup',off);b.addEventListener('pointercancel',off);b.addEventListener('pointerleave',off)}
