@@ -50,6 +50,8 @@
  let spores=[],worldFrame=0;
  reset=function(){
    coreReset();
+   // All eight creatures may appear as AI opponents, never the selected player.
+   if(player)enemy=unit((player.id+1+Math.floor(Math.random()*(types.length-1)))%types.length,700,320);
    spores=[];worldFrame=0;
    statusEl.textContent=worldNames[world]+' · Overwin de tegenstander! · Overwinningen: '+wins;
    window.iaBattleReady?.(world);
