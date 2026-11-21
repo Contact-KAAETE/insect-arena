@@ -671,9 +671,9 @@ function drawInsect(u){
   g.drawImage(photo,-w*.5,27-h,w,h);
   g.shadowBlur=0;g.shadowOffsetY=0;
   if(hit){
-    g.globalCompositeOperation='source-atop';
-    g.globalAlpha=Math.min(.32,u.hitAnim/30);
-    g.fillStyle='#fff7d6';g.fillRect(-w*.5,27-h,w,h);
+    g.globalCompositeOperation='screen';
+    g.globalAlpha=Math.min(.55,u.hitAnim/30);
+    g.drawImage(photo,-w*.5,27-h,w,h);
     g.globalAlpha=1;g.globalCompositeOperation='source-over';
   }
   if(attacking&&attackProgress>.16&&attackProgress<.85){
