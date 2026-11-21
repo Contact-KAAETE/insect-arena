@@ -1,0 +1,39 @@
+
+/* INSECT ARENA 0.7A — Eight-fighter roster and fungal biome */
+.fighterCard{min-height:143px;position:relative;isolation:isolate}
+.fighterCard img{height:116px;filter:drop-shadow(0 9px 8px #000a)}
+.fighterCard.isNew{background:linear-gradient(125deg,#3e294d,#253d33 58%,#11271d)}
+.fighterCard.isNew.selected{background:linear-gradient(125deg,#5b3b6b,#254933);border-color:#f2d3a1}
+.fighterCard.isNew:after{content:"NIEUW";position:absolute;right:8px;top:6px;font-size:9px;letter-spacing:.13em;font-weight:1000;color:#fff1cf;background:#694b7cbb;padding:3px 6px;border-radius:5px;box-shadow:0 0 9px #bb8cd94a}
+.fighterCard.isNew .fighterName{padding-top:7px}
+.fighterCard .fighterName{line-height:1.15}
+.fighterCard .fighterSkill{font-size:11px}
+.fighterCard .statLabel{margin-top:4px}
+.worldTile{min-height:165px;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;gap:6px;padding:15px;border:2px solid #e2bc764d;background-size:cover!important;background-position:center!important;box-shadow:0 13px 27px #000a}
+.worldTile strong,.worldTile p,.worldTile button{position:relative;z-index:1;text-shadow:0 2px 8px #000}
+.worldTile strong{font-size:22px;color:#fff0ba;letter-spacing:.065em}
+.worldTile p{font-size:13px;color:#f9efd3;margin:0 0 7px}
+.worldTile button{margin-top:3px;max-width:350px}
+.worldTile.activeWorld{border-color:#f2dc8e;box-shadow:0 0 20px #e3d27546,0 10px 20px #0009}
+.worldTile.activeWorld:after{content:"GEKOZEN";position:absolute;right:12px;top:11px;color:#fcf2c8;letter-spacing:.16em;background:#1a3c2ba8;border:1px solid #cbb674;padding:6px 9px;font-size:10px;font-weight:900;border-radius:7px}
+#world-card-forest{background-image:linear-gradient(90deg,#0d2717d7,#143e2b72 70%,#0e2919a8),radial-gradient(ellipse at 50% 22%,#579b5a,#193c22 68%,#102419)}
+#world-card-fungus{background-image:linear-gradient(90deg,#140d28b9,#29134c59 70%,#160f25ad),url("assets/worlds/schimmelvallei.webp")}
+.worldPicker{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.worldChoice{font-size:13px;font-weight:900;letter-spacing:.035em;color:#f5e5bd;background:#152a25;border:1px solid #c2ac6a73;border-radius:12px;padding:12px 5px}
+.worldChoice.activeWorld{background:linear-gradient(120deg,#43683e,#54416e);border:2px solid #f2d18a;box-shadow:inset 0 0 14px #ffe4ac18,0 0 12px #c8b9a74d}
+#current-world{font-size:12px;letter-spacing:.09em;color:#f1d888;font-weight:1000;margin-top:4px;text-align:center}
+.specialBtn{position:relative;overflow:hidden}
+.specialBtn:after{content:"";position:absolute;inset:0;border-radius:50%;pointer-events:none;box-shadow:inset 0 0 14px #7bea7470}
+#spore-label{display:inline-block;font-size:12px;color:#e6baff;background:#422b5eaa;border:1px solid #b68fe76b;border-radius:9px;padding:4px 8px}
+@media(max-width:600px){
+ .fighterCard{min-height:124px}
+ .fighterCard img{height:96px;width:45%}
+ .fighterCard .fighterName{font-size:13px}
+ .fighterCard .fighterSkill{font-size:10px}
+ .fighterCard .statLabel{font-size:8px}
+ .fighterCard.isNew:after{font-size:8px;padding:2px 4px}
+ .worldTile{min-height:165px}
+ .worldTile strong{font-size:19px}
+ .worldTile p{font-size:12px}
+ .worldChoice{font-size:12px}
+}
