@@ -76,9 +76,18 @@ el('menu-fighters').addEventListener('click',()=>switchPage('select'));
 el('menu-worlds').addEventListener('click',()=>switchPage('world'));
 el('menu-settings').addEventListener('click',()=>switchPage('settings'));
 function chooseWorld(id){window.iaSetWorld(id);refreshWorldCards();switchPage('select');refreshRoster();}
-function refreshWorldCards(){document.querySelectorAll('[data-world]').forEach(card=>card.classList.toggle('activeWorld',card.dataset.world===window.iaWorldSelected()));}
+function refreshWorldCards(){
+ const selected=window.iaWorldSelected();
+ document.querySelectorAll('[data-world]').forEach(card=>card.classList.toggle('activeWorld',card.dataset.world===selected));
+ document.querySelectorAll('[data-choose-world]').forEach(btn=>{const active=btn.dataset.chooseWorld===selected;btn.classList.toggle('activeWorld',active);btn.setAttribute('aria-pressed',String(active))});
+ const current=el('current-world');if(current)current.textContent='GEKOZEN WERELD · '+window.iaWorldName().toUpperCase();
+ const forest=el('world-card-forest');
+ if(forest&&forestPhoto.complete&&forestPhoto.naturalWidth){forest.style.backgroundImage="linear-gradient(90deg,rgba(4,22,9,.75),rgba(4,22,9,.22)),url("+forestPhoto.src+")";forest.style.backgroundSize='cover';forest.style.backgroundPosition='center';}
+}
 el('world-play').addEventListener('click',()=>chooseWorld('forest'));
 el('world-spores').addEventListener('click',()=>chooseWorld('fungus'));
+document.querySelectorAll('[data-choose-world]').forEach(btn=>btn.addEventListener('click',()=>{window.iaSetWorld(btn.dataset.chooseWorld);refreshWorldCards();refreshRoster()}));
+forestPhoto.addEventListener('load',refreshWorldCards);
 refreshWorldCards();
 el('launch-battle').addEventListener('click',beginBattle);
 el('battle-menu').addEventListener('click',goMenu);
