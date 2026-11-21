@@ -3,62 +3,81 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>INSECT ARENA 0.5C — De Levende Vechters</title>
-<style>
-*{box-sizing:border-box}
-body{margin:0;background:radial-gradient(circle at top,#20442f 0%,#12291f 48%,#08140e 100%);color:#f4ebc9;font:16px system-ui;text-align:center}
-header{padding:18px 12px 8px;background:linear-gradient(180deg,rgba(11,40,24,.96),rgba(11,40,24,.78));box-shadow:0 6px 30px rgba(0,0,0,.25)}
-h1{font-size:clamp(26px,6vw,48px);margin:4px 0 14px;letter-spacing:1px}
-.wrap{max-width:980px;margin:auto;padding:0 12px 20px}
-.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center}
-label{font-size:20px}
-button,select{font:inherit;padding:14px 18px;border:0;border-radius:18px;background:#d9bf69;color:#182319;box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 8px 18px rgba(0,0,0,.18)}
-button{font-weight:700}
-button:active,[data-key]:active{transform:translateY(1px)}
-select{min-width:280px;max-width:100%}
-#status{font-size:clamp(24px,4vw,44px);min-height:1.3em;margin:14px 0 18px}
-.canvasBox{position:relative;background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(0,0,0,.14));border:3px solid #bfa764;border-radius:8px;overflow:hidden;box-shadow:0 12px 28px rgba(0,0,0,.28)}
-canvas{width:100%;max-width:900px;aspect-ratio:16/10;display:block;margin:auto;touch-action:none;background:#1d3625}
-.pad{display:grid;grid-template-columns:repeat(4,minmax(72px,120px));gap:16px;justify-content:center;align-items:center;padding:18px 0 6px}
-.dpad{grid-column:1 / span 2;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:14px}
-.dpad .up{grid-column:2}.dpad .left{grid-column:1;grid-row:1 / span 2}.dpad .down{grid-column:2;grid-row:2}.dpad .right{grid-column:3;grid-row:1 / span 2}
-[data-key]{min-height:74px;font-size:22px}
-.big{min-height:88px;font-size:22px}
-.help{font-size:clamp(16px,3vw,24px);opacity:.9;padding:8px 0 6px}
-.small{font-size:14px;opacity:.75}
-@media (max-width:640px){.pad{grid-template-columns:1fr 1fr}.dpad{grid-column:1}.actions{grid-column:2;display:grid;gap:16px}}
-@media(max-width:640px){body{font-size:14px}header{padding:5px 0 2px}header .wrap{padding:0 8px}h1{font-size:22px;margin:0 0 4px}.controls{display:grid;grid-template-columns:1fr auto auto;gap:5px}.controls label{display:none}.controls select{grid-column:1/4;width:100%;min-width:0;padding:8px 10px;border-radius:10px;font-size:15px}.controls button{min-width:0;padding:7px 12px;border-radius:10px;font-size:15px}#start{grid-column:2}#pause{grid-column:3}#status{font-size:14px;margin:5px 0;min-height:18px}.canvasBox{border-width:2px}.wrap{padding:0 7px 8px}.pad{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0 0}.dpad{flex:1;max-width:220px;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:6px}.dpad [data-key]{min-height:44px;font-size:19px;padding:5px}.actions{width:34%;max-width:118px;display:flex;flex-direction:column;gap:8px}.actions .big{min-height:44px;font-size:13px;padding:5px}.help,.small{display:none}}@media(max-width:390px){h1{font-size:20px}.dpad [data-key]{min-height:42px}.actions .big{min-height:42px}}</style>
+<title>INSECT ARENA 0.6A — De Jungle Ontwaakt</title>
+<link rel="stylesheet" href="ui-06.css?v=0.6A">
 </head>
 <body>
-<header>
-  <div class="wrap">
-    <h1>INSECT ARENA · 0.5C</h1>
-    <div class="controls">
-      <label for="fighter">Vechter</label>
-      <select id="fighter"></select>
-      <button id="start">Start gevecht</button>
-      <button id="pause">Pauze</button>
-    </div>
-    <div id="status">Kies je vechter en start.</div>
+<main id="app">
+<section id="menu-view" class="view menuView">
+ <div class="menuFog"></div>
+ <header class="menuTop">
+  <div class="eyebrow">HET LEVENDE ROOFDIERENRIJK</div>
+  <h1 class="gameLogo"><span>INSECT</span><span>ARENA</span></h1>
+  <p class="tagline">OVERLEEF · VECHT · HEERS</p>
+ </header>
+ <img id="menu-hero-unit" class="heroFighter" alt="Fotorealistische bidsprinkhaan">
+ <div class="menuActions">
+  <button id="menu-play" class="menuPrimary">▶ SPELEN</button>
+  <div class="menuTwocol">
+   <button id="menu-fighters" class="menuSecondary">VECHTERS</button>
+   <button id="menu-worlds" class="menuSecondary">WERELDEN</button>
   </div>
-</header>
-<div class="wrap">
-  <div class="canvasBox"><canvas id="arena" width="900" height="560"></canvas></div>
-  <div class="pad">
-    <div class="dpad">
-      <button class="left" data-key="left">◀</button>
-      <button class="up" data-key="up">▲</button>
-      <button class="down" data-key="down">▼</button>
-      <button class="right" data-key="right">▶</button>
-    </div>
-    <div class="actions">
-      <button class="big" data-key="hit">AANVAL</button>
-      <button class="big" data-key="special">SPECIAL</button>
-    </div>
+  <button id="menu-settings" class="menuSecondary">⚙ INSTELLINGEN</button>
+ </div>
+ <footer class="menuFooter"><span id="menu-wins">0 OVERWINNINGEN</span><span>0.6A · PRIVÉ-VOORTGANG</span></footer>
+</section>
+<section id="select-view" class="view" hidden>
+ <div class="sceneTop"><button class="iconBtn" data-back="menu">‹ TERUG</button><span class="smallBrand">INSECT ARENA</span><span class="eyebrow">0.6A</span></div>
+ <div class="panel">
+  <h2 class="sceneTitle">KIES JE VECHTER</h2><p class="sceneSub">Vier unieke roofdieren, vier verschillende vechtstijlen.</p>
+  <div id="fighter-roster" class="roster"></div>
+  <div class="selectFoot"><div class="selectedInfo" id="selected-summary"></div><button id="launch-battle" class="goldButton">⚔ START GEVECHT</button></div>
+ </div>
+</section>
+<section id="world-view" class="view" hidden>
+ <div class="sceneTop"><button class="iconBtn" data-back="menu">‹ TERUG</button><span class="smallBrand">WERELDEN</span><span></span></div>
+ <div class="panel"><h2 class="sceneTitle">HET OERWOUD</h2><p class="sceneSub">Eén speelbare bosbodem. De overige gebieden zijn gepland, nog niet gebouwd.</p>
+  <div class="worldCard"><strong>01 · GROENE BOSBODEM</strong><p>Beschikbaar · fotorealistische junglearena</p><button id="world-play" class="goldButton">SPEEL DEZE WERELD</button></div>
+  <div class="worldCard locked"><strong>02 · WORTELDOOLHOF</strong><p>Nog niet beschikbaar</p></div>
+  <div class="worldCard locked"><strong>03 · SCHIMMELVALLEI</strong><p>Nog niet beschikbaar</p></div>
+  <div class="worldCard locked"><strong>04 · DAUWMOERAS</strong><p>Nog niet beschikbaar</p></div>
+  <div class="worldCard locked"><strong>05 · ROTSHOLTE</strong><p>Nog niet beschikbaar</p></div>
+  <div class="worldCard locked"><strong>06 · RODE BREUKGROND</strong><p>Nog niet beschikbaar</p></div>
+ </div>
+</section>
+<section id="settings-view" class="view" hidden>
+ <div class="sceneTop"><button class="iconBtn" data-back="menu">‹ TERUG</button><span class="smallBrand">INSTELLINGEN</span><span></span></div>
+ <div class="panel"><h2 class="sceneTitle">INSTELLINGEN</h2>
+ <div class="settingsRow"><label for="joy-sens">Joystickgevoeligheid</label><input id="joy-sens" type="range" min="65" max="135" step="5" value="100"><output id="joy-sens-label">100%</output></div>
+ <div class="settingsRow"><label for="less-motion">Minder omgevingseffecten</label><input id="less-motion" type="checkbox"></div>
+ <p style="color:#e3d8b2;font-size:13px">Je overwinningen blijven op dit apparaat opgeslagen.</p>
+ <button id="settings-done" class="goldButton">OPSLAAN EN TERUG</button></div>
+</section>
+<section id="arena-view" class="view" hidden>
+ <div class="battleHeader">
+  <button id="battle-menu" class="iconBtn">☰ MENU</button>
+  <span id="status" class="battleStatus">Kies je vechter en start.</span>
+  <button id="pause" class="iconBtn">Ⅱ PAUZE</button>
+ </div>
+ <div class="canvasBox"><canvas id="arena" width="900" height="560"></canvas>
+  <div id="battle-overlay" class="floatOverlay" hidden>
+   <strong id="overlay-title" class="resultTitle">GEWONNEN!</strong>
+   <div id="overlay-desc" class="resultSub"></div>
+   <div id="overlay-buttons" class="resultBtns"></div>
   </div>
-  <div class="help">Toetsen: WASD/pijlen bewegen · spatie aanval · Shift special.</div>
-  <div class="small">DE LEVENDE OERWERELD · voortgang wordt lokaal bewaard.</div>
-</div>
+ </div>
+ <div class="touchPanel">
+  <div id="joystick" class="joystick" role="group" aria-label="Virtuele joystick"><div id="joystick-nub" class="joystickNub"></div><span class="joystickText">BEWEGEN</span></div>
+  <div class="touchActions">
+   <button data-key="special" class="actionBtn specialBtn"><strong>✦ SPECIAL</strong><small>KRACHT</small></button>
+   <button data-key="hit" class="actionBtn attackBtn"><strong>⚔ AANVAL</strong><small>SLAG</small></button>
+  </div>
+ </div>
+ <p style="text-align:center;color:#c8b98b;font-size:11px;margin:12px 0">iPhone: joystick + aanval · computer: WASD + spatie + Shift</p>
+</section>
+</main>
+<select id="fighter" hidden aria-hidden="true"></select>
+<button id="start" hidden></button>
 <script>
 const c=document.getElementById('arena'),g=c.getContext('2d');
 const statusEl=document.getElementById('status');
@@ -94,7 +113,7 @@ function attack(a,t,special=false){
  if(special){t.x+=Math.sign(dx||1)*23;t.y+=Math.sign(dy||1)*10;}
  if(t.hp<=0){playing=false;if(t===enemy){wins++;try{localStorage.setItem('iaWins',wins)}catch(e){}statusEl.textContent='GEWONNEN! Totaal: '+wins+' · Start opnieuw.';}else statusEl.textContent='VERLOREN! Probeer opnieuw.';}
 }
-function controlPlayer(dt){if(!player)return;let mx=(keys.right?1:0)-(keys.left?1:0),my=(keys.down?1:0)-(keys.up?1:0);if(mx||my){const len=Math.hypot(mx,my)||1;player.x+=mx/len*player.speed*3.2*dt;player.y+=my/len*player.speed*3.2*dt;player.face=mx>=0?1:-1;player.walk+=0.17*dt}else{player.walk*=0.82}if(keys.hit){attack(player,enemy,false);keys.hit=false}if(keys.special){attack(player,enemy,true);keys.special=false}}
+function controlPlayer(dt){if(!player)return;const joy=window.iaJoystick;let mx=joy?.active?joy.x*joy.sensitivity:(keys.right?1:0)-(keys.left?1:0),my=joy?.active?joy.y*joy.sensitivity:(keys.down?1:0)-(keys.up?1:0);if(mx||my){const len=Math.hypot(mx,my)||1;player.x+=mx/len*player.speed*3.2*dt;player.y+=my/len*player.speed*3.2*dt;player.face=mx>=0?1:-1;player.walk+=0.17*dt}else{player.walk*=0.82}if(keys.hit){attack(player,enemy,false);keys.hit=false}if(keys.special){attack(player,enemy,true);keys.special=false}}
 function controlEnemy(dt){if(!enemy||!player)return;const dx=player.x-enemy.x,dy=player.y-enemy.y,d=Math.hypot(dx,dy)||1;if(d>enemy.range*.85){enemy.x+=dx/d*enemy.speed*.48*dt;enemy.y+=dy/d*enemy.speed*.48*dt;enemy.walk+=0.12*dt}else{enemy.walk*=0.85}enemy.face=dx>=0?1:-1;if(d<enemy.range*.85&&Math.random()<0.08)attack(enemy,player,false)}
 function confine(a){a.x=Math.max(85,Math.min(c.width-85,a.x));a.y=Math.max(165,Math.min(c.height-78,a.y));a.cool=Math.max(0,a.cool-1);a.special=Math.max(0,a.special-1);a.flash=Math.max(0,a.flash-1)}
 function drawArenaBase(){
@@ -608,7 +627,7 @@ function drawArena(time=0){
  }else{g.drawImage(arenaCache,0,0)}
  // Sunlit moisture drifting over the forest floor.
  g.save();
- for(const p of ambient){
+ for(const p of (window.iaReducedEffects?[]:ambient)){
   const drift=time*p.velocity*.004;
   const x=(p.x+Math.sin(drift+p.sway)*16+c.width)%c.width;
   const y=(p.y-drift*4+c.height)%c.height;
@@ -744,5 +763,6 @@ addEventListener('keydown',e=>{const k=({ArrowLeft:'left',ArrowRight:'right',Arr
 addEventListener('keyup',e=>{const k=({ArrowLeft:'left',ArrowRight:'right',ArrowUp:'up',ArrowDown:'down',a:'left',d:'right',w:'up',s:'down',' ':'hit',Shift:'special'})[e.key];if(k)keys[k]=false});
 requestAnimationFrame(frame);
 </script>
+<script src="ui-06.js?v=0.6A"></script>
 </body>
 </html>
