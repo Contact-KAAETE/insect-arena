@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>INSECT ARENA 0.4A — De Levende Oerwereld</title>
+<title>INSECT ARENA 0.4B — De Levende Oerwereld</title>
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:radial-gradient(circle at top,#20442f 0%,#12291f 48%,#08140e 100%);color:#f4ebc9;font:16px system-ui;text-align:center}
@@ -27,12 +27,12 @@ canvas{width:100%;max-width:900px;aspect-ratio:16/10;display:block;margin:auto;t
 .help{font-size:clamp(16px,3vw,24px);opacity:.9;padding:8px 0 6px}
 .small{font-size:14px;opacity:.75}
 @media (max-width:640px){.pad{grid-template-columns:1fr 1fr}.dpad{grid-column:1}.actions{grid-column:2;display:grid;gap:16px}}
-</style>
+@media(max-width:640px){body{font-size:14px}header{padding:5px 0 2px}header .wrap{padding:0 8px}h1{font-size:22px;margin:0 0 4px}.controls{display:grid;grid-template-columns:1fr auto auto;gap:5px}.controls label{display:none}.controls select{grid-column:1/4;width:100%;min-width:0;padding:8px 10px;border-radius:10px;font-size:15px}.controls button{min-width:0;padding:7px 12px;border-radius:10px;font-size:15px}#start{grid-column:2}#pause{grid-column:3}#status{font-size:14px;margin:5px 0;min-height:18px}.canvasBox{border-width:2px}.wrap{padding:0 7px 8px}.pad{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0 0}.dpad{flex:1;max-width:220px;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:6px}.dpad [data-key]{min-height:44px;font-size:19px;padding:5px}.actions{width:34%;max-width:118px;display:flex;flex-direction:column;gap:8px}.actions .big{min-height:44px;font-size:13px;padding:5px}.help,.small{display:none}}@media(max-width:390px){h1{font-size:20px}.dpad [data-key]{min-height:42px}.actions .big{min-height:42px}}</style>
 </head>
 <body>
 <header>
   <div class="wrap">
-    <h1>INSECT ARENA · 0.4A</h1>
+    <h1>INSECT ARENA · 0.4B</h1>
     <div class="controls">
       <label for="fighter">Vechter</label>
       <select id="fighter"></select>
@@ -608,9 +608,10 @@ function drawArena(time=0){
  g.fillStyle=shade;g.fillRect(0,0,c.width,c.height);
  g.restore();
 }
-function hpBar(x,y,u){g.fillStyle='rgba(0,0,0,.75)';g.fillRect(x-52,y-38,104,8);g.fillStyle=u===player?'#70d96a':'#d65e5b';g.fillRect(x-52,y-38,104*(u.hp/u.maxHp),8);g.fillStyle='#f3f1d5';g.font='15px system-ui';g.textAlign='center';g.fillText(u.name,x,y-46)}
+function hpBar(x,y,u){} // Name and health now have fixed HUD positions, preventing overlapping labels.
+function drawHUD(){const entries=[[player,18],[enemy,642]];for(const [u,x] of entries){if(!u)continue;g.fillStyle='rgba(7,25,13,.72)';g.fillRect(x,10,240,57);g.textAlign='left';g.fillStyle='#fff2d7';g.font='bold 19px system-ui';g.fillText((u===player?'JIJ · ':'VIJAND · ')+u.name,x+10,32);g.fillStyle='rgba(0,0,0,.7)';g.fillRect(x+10,41,220,14);g.fillStyle=u===player?'#6ce29a':'#e57d72';g.fillRect(x+10,41,220*Math.max(0,u.hp)/u.maxHp,14)}}
 function drawShadow(x,y,scale){g.fillStyle='rgba(0,0,0,.26)';g.beginPath();g.ellipse(x,y+28,36*scale,12*scale,0,0,Math.PI*2);g.fill()}
-function drawInsect(u){const s=1.02+(u===enemy?0.02:0);const bob=Math.sin(u.walk)*4;const legSwing=Math.sin(u.walk*1.5)*7;drawShadow(u.x,u.y,s);g.save();g.translate(u.x,u.y+bob);if(u.face<0)g.scale(-1,1);if(u.flash>0){g.shadowColor='#fff2b0';g.shadowBlur=10}
+function drawInsect(u){const s=1.4+(u===enemy?0.02:0);const bob=Math.sin(u.walk)*4;const legSwing=Math.sin(u.walk*1.5)*7;drawShadow(u.x,u.y,s);g.save();g.translate(u.x,u.y+bob);g.scale(1.4,1.4);if(u.face<0)g.scale(-1,1);if(u.flash>0){g.shadowColor='#fff2b0';g.shadowBlur=10}
   // legs
   g.strokeStyle='#141512';g.lineWidth=5;g.lineCap='round';
   for(let i=0;i<3;i++){
@@ -634,7 +635,7 @@ function drawInsect(u){const s=1.02+(u===enemy?0.02:0);const bob=Math.sin(u.walk
 }
 function drawParticles(){for(const p of particles){p.x+=p.vx;p.y+=p.vy;p.life-=1;g.fillStyle=p.color;g.fillRect(p.x,p.y,p.size,p.size)}particles=particles.filter(p=>p.life>0)}
 let last=0;
-function frame(ts){const dt=Math.min(2.2,(ts-last)/16.67||1);last=ts;drawArena(ts);if(player&&enemy){if(playing&&!paused){controlPlayer(dt);controlEnemy(dt);confine(player);confine(enemy)}drawInsect(player);drawInsect(enemy);drawParticles();g.fillStyle='#f5edcb';g.font='18px system-ui';g.textAlign='left';g.fillText('Special: '+(player.special?Math.ceil(player.special/60)+'s':'KLAAR'),16,26);if(paused){g.fillStyle='rgba(0,0,0,.35)';g.fillRect(0,0,c.width,c.height);g.fillStyle='#fff3ce';g.font='bold 62px system-ui';g.textAlign='center';g.fillText('PAUZE',c.width/2,c.height/2)}}requestAnimationFrame(frame)}
+function frame(ts){const dt=Math.min(2.2,(ts-last)/16.67||1);last=ts;drawArena(ts);if(player&&enemy){if(playing&&!paused){controlPlayer(dt);controlEnemy(dt);confine(player);confine(enemy)}drawInsect(player);drawInsect(enemy);drawParticles();drawHUD();g.fillStyle='#f5edcb';g.font='18px system-ui';g.textAlign='left';g.fillText('Special: '+(player.special?Math.ceil(player.special/60)+'s':'KLAAR'),18,93);if(paused){g.fillStyle='rgba(0,0,0,.35)';g.fillRect(0,0,c.width,c.height);g.fillStyle='#fff3ce';g.font='bold 62px system-ui';g.textAlign='center';g.fillText('PAUZE',c.width/2,c.height/2)}}requestAnimationFrame(frame)}
 document.getElementById('start').addEventListener('click',()=>{try{reset()}catch(e){statusEl.textContent='Fout bij starten: '+e.message;console.error(e)}});
 document.getElementById('pause').addEventListener('click',()=>{if(player){paused=!paused;statusEl.textContent=paused?'Gepauzeerd':'Gevecht hervat'}});
 for(const b of document.querySelectorAll('[data-key]')){const k=b.dataset.key;const off=()=>keys[k]=false;b.addEventListener('pointerdown',e=>{e.preventDefault();keys[k]=true; if(b.setPointerCapture)try{b.setPointerCapture(e.pointerId)}catch(_){}});b.addEventListener('pointerup',off);b.addEventListener('pointercancel',off);b.addEventListener('pointerleave',off)}
