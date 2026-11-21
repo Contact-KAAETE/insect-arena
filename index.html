@@ -3,8 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>INSECT ARENA 0.6A — De Jungle Ontwaakt</title>
+<title>INSECT ARENA 0.7A — Acht Legendarische Vechters</title>
 <link rel="stylesheet" href="ui-06.css?v=0.6A">
+<link rel="stylesheet" href="ui-07.css?v=0.7A">
 </head>
 <body>
 <main id="app">
@@ -24,22 +25,30 @@
   </div>
   <button id="menu-settings" class="menuSecondary">⚙ INSTELLINGEN</button>
  </div>
- <footer class="menuFooter"><span id="menu-wins">0 OVERWINNINGEN</span><span>0.6A · PRIVÉ-VOORTGANG</span></footer>
+ <footer class="menuFooter"><span id="menu-wins">0 OVERWINNINGEN</span><span>0.7A · 8 VECHTERS · 2 WERELDEN</span></footer>
 </section>
 <section id="select-view" class="view" hidden>
  <div class="sceneTop"><button class="iconBtn" data-back="menu">‹ TERUG</button><span class="smallBrand">INSECT ARENA</span><span class="eyebrow">0.6A</span></div>
  <div class="panel">
-  <h2 class="sceneTitle">KIES JE VECHTER</h2><p class="sceneSub">Vier unieke roofdieren, vier verschillende vechtstijlen.</p>
+  <h2 class="sceneTitle">KIES JE VECHTER</h2><p class="sceneSub">Acht spectaculaire roofdieren met hun eigen speciale vaardigheid.</p>
   <div id="fighter-roster" class="roster"></div>
-  <div class="selectFoot"><div class="selectedInfo" id="selected-summary"></div><button id="launch-battle" class="goldButton">⚔ START GEVECHT</button></div>
+  <div class="selectFoot">
+   <div class="selectedInfo" id="selected-summary"></div>
+   <div id="current-world">GEKOZEN WERELD · GROENE BOSBODEM</div>
+   <div class="worldPicker" aria-label="Kies je wereld">
+     <button class="worldChoice" data-choose-world="forest">🌿 BOSBODEM</button>
+     <button class="worldChoice" data-choose-world="fungus">🍄 SCHIMMELVALLEI</button>
+   </div>
+   <button id="launch-battle" class="goldButton">⚔ START GEVECHT</button>
+  </div>
  </div>
 </section>
 <section id="world-view" class="view" hidden>
  <div class="sceneTop"><button class="iconBtn" data-back="menu">‹ TERUG</button><span class="smallBrand">WERELDEN</span><span></span></div>
- <div class="panel"><h2 class="sceneTitle">HET OERWOUD</h2><p class="sceneSub">Eén speelbare bosbodem. De overige gebieden zijn gepland, nog niet gebouwd.</p>
-  <div class="worldCard"><strong>01 · GROENE BOSBODEM</strong><p>Beschikbaar · fotorealistische junglearena</p><button id="world-play" class="goldButton">SPEEL DEZE WERELD</button></div>
+ <div class="panel"><h2 class="sceneTitle">HET OERWOUD</h2><p class="sceneSub">Twee speelbare werelden. In Schimmelvallei vertragen magische sporenwolken beide vechters.</p>
+  <div id="world-card-forest" data-world="forest" class="worldCard worldTile"><strong>01 · GROENE BOSBODEM</strong><p>Regenwoud · natuurlijk duelterrein</p><button id="world-play" class="goldButton">KIES BOSBODEM</button></div>
   <div class="worldCard locked"><strong>02 · WORTELDOOLHOF</strong><p>Nog niet beschikbaar</p></div>
-  <div class="worldCard locked"><strong>03 · SCHIMMELVALLEI</strong><p>Nog niet beschikbaar</p></div>
+  <div id="world-card-fungus" data-world="fungus" class="worldCard worldTile"><strong>03 · SCHIMMELVALLEI ✦ NIEUW</strong><p>Bioluminescent oerwoud · sporenwolken en vertraging</p><button id="world-spores" class="goldButton">KIES SCHIMMELVALLEI</button></div>
   <div class="worldCard locked"><strong>04 · DAUWMOERAS</strong><p>Nog niet beschikbaar</p></div>
   <div class="worldCard locked"><strong>05 · ROTSHOLTE</strong><p>Nog niet beschikbaar</p></div>
   <div class="worldCard locked"><strong>06 · RODE BREUKGROND</strong><p>Nog niet beschikbaar</p></div>
@@ -763,6 +772,7 @@ addEventListener('keydown',e=>{const k=({ArrowLeft:'left',ArrowRight:'right',Arr
 addEventListener('keyup',e=>{const k=({ArrowLeft:'left',ArrowRight:'right',ArrowUp:'up',ArrowDown:'down',a:'left',d:'right',w:'up',s:'down',' ':'hit',Shift:'special'})[e.key];if(k)keys[k]=false});
 requestAnimationFrame(frame);
 </script>
-<script src="ui-06.js?v=0.6A"></script>
+<script src="expansion-07.js?v=0.7A"></script>
+<script src="ui-07.js?v=0.7A"></script>
 </body>
 </html>
