@@ -1,3 +1,140 @@
-<!doctype html><html lang="nl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><title>INSECT ARENA</title><style>*{box-sizing:border-box}body{margin:0;background:#101c15;color:#f5efcf;font:16px system-ui;text-align:center}header{padding:12px;background:#203927}h1{font-size:23px;margin:5px}button,select{font:inherit;padding:10px;border:0;border-radius:12px;background:#d5b96a;color:#162519;margin:4px;touch-action:none}canvas{width:100%;max-width:900px;aspect-ratio:16/10;display:block;margin:auto;background:#263f2c;touch-action:none}.controls{display:flex;justify-content:space-around;max-width:900px;margin:auto}.controls button{min-width:65px;min-height:62px}#status{min-height:25px}small{color:#c6c6ad}</style><header><h1>INSECT ARENA · 0.2</h1><label>Vechter <select id="fighter"><option value="0">Mier · snelle steek</option><option value="1">Bidsprinkhaan · klauwslag</option><option value="2">Neushoornkever · stormram</option><option value="3">Schorpioen · gifsteek</option></select></label><button id="start">Start gevecht</button><button id="pause">Pauze</button><div id="status">Kies je vechter en start.</div></header><canvas id="game" width="900" height="560"></canvas><div class="controls"><div><button data-key="left">◀</button><button data-key="up">▲</button><button data-key="down">▼</button><button data-key="right">▶</button></div><div><button data-key="hit">AANVAL</button><button data-key="special">SPECIAL</button></div></div><small>Toetsen: WASD/pijlen bewegen · spatie aanval · Shift special. Voortgang wordt lokaal bewaard.</small><script>
-const c=document.querySelector('canvas'),g=c.getContext('2d'),status=document.querySelector('#status'),keys={},types=[{name:'Mier',color:'#392b21',hp:125,speed:4.4,damage:16,range:82},{name:'Bidsprinkhaan',color:'#72aa4e',hp:105,speed:3.2,damage:16,range:88},{name:'Neushoornkever',color:'#663e27',hp:145,speed:2.5,damage:21,range:65},{name:'Schorpioen',color:'#a17b40',hp:115,speed:3,damage:13,range:98}];let player,enemy,playing=false,paused=false,particles=[],wins=Number((()=>{try{return localStorage.getItem('iaWins')}catch(e){return 0}})()||0),last=0;function unit(id,x,y){let t=types[id];return{id,x,y,hp:t.hp,max:t.hp,face:1,cool:0,special:0,flash:0}}function reset(){player=unit(+document.querySelector('#fighter').value,190,300);enemy=unit((player.id+1+Math.floor(Math.random()*3))%4,710,300);playing=true;paused=false;particles=[];status.textContent='Overwin de tegenstander! · Overwinningen: '+wins}function attack(a,b,special=false){if(!playing||paused||a.cool>0||special&&a.special>0)return;let t=types[a.id],dx=b.x-a.x,dy=b.y-a.y,dist=Math.hypot(dx,dy);a.face=dx>=0?1:-1;a.cool=special?42:(a===enemy?45:20);if(special)a.special=220;if(dist<t.range+(special?45:0)){b.hp=Math.max(0,b.hp-t.damage*(special?2.2:1)*(a===enemy?.65:1));b.flash=12;b.x=Math.max(55,Math.min(845,b.x+Math.sign(dx)*24));for(let i=0;i<14;i++)particles.push({x:b.x,y:b.y,vx:(Math.random()-.5)*9,vy:(Math.random()-.5)*9,life:25,color:special?'#f8d657':'#e6e3a0'});if(b.hp<=0){playing=false;if(b===enemy){wins++;try{localStorage.setItem('iaWins',wins)}catch(e){};status.textContent='GEWONNEN! Totaal: '+wins+' · Start opnieuw.'}else status.textContent='VERLOREN! Probeer opnieuw.'}}}function drawUnit(a){let t=types[a.id];g.save();g.translate(a.x,a.y);g.scale(a.face,1);g.fillStyle='rgba(0,0,0,.35)';g.beginPath();g.ellipse(0,24,43,11,0,0,7);g.fill();g.strokeStyle='#1c1b12';g.lineWidth=5;for(let i=-1;i<=1;i++){g.beginPath();g.moveTo(-16,i*10);g.lineTo(-39,i*17+24);g.moveTo(16,i*10);g.lineTo(39,i*17+24);g.stroke()}g.fillStyle=a.flash?'#fff2aa':t.color;g.beginPath();g.ellipse(0,0,a.id===2?38:29,22,0,0,7);g.fill();g.beginPath();g.arc(29,-5,15,0,7);g.fill();g.strokeStyle=t.color;g.lineWidth=5;g.beginPath();if(a.id===1){g.moveTo(25,4);g.lineTo(49,-36);g.lineTo(68,-20)}else if(a.id===3){g.moveTo(-24,0);g.quadraticCurveTo(-70,-65,-20,-85)}else if(a.id===2){g.moveTo(33,-13);g.lineTo(56,-42)}else{g.moveTo(33,-14);g.lineTo(55,-30)}g.stroke();g.restore();g.fillStyle='#1a1a1a';g.fillRect(a.x-49,a.y-66,98,11);g.fillStyle=a===player?'#75e68b':'#e66b61';g.fillRect(a.x-47,a.y-64,94*a.hp/a.max,7);g.fillStyle='#fff';g.font='15px system-ui';g.textAlign='center';g.fillText(t.name,a.x,a.y-76)}function frame(ts){let dt=Math.min(2,(ts-last)/16.67||1);last=ts;g.clearRect(0,0,900,560);let grad=g.createLinearGradient(0,0,0,560);grad.addColorStop(0,'#173c2d');grad.addColorStop(1,'#64703a');g.fillStyle=grad;g.fillRect(0,0,900,560);for(let i=0;i<70;i++){g.fillStyle=i%3?'#344f2b':'#59733a';g.beginPath();g.arc((i*137)%900,(i*83)%560,3+i%11,0,7);g.fill()}g.strokeStyle='#b5a365';g.lineWidth=7;g.strokeRect(32,35,836,485);if(player&&enemy){if(playing&&!paused){let p=types[player.id],e=types[enemy.id],mx=(+!!keys.right-+!!keys.left),my=(+!!keys.down-+!!keys.up);player.x+=mx*p.speed*dt;player.y+=my*p.speed*dt;if(mx)player.face=Math.sign(mx);let dx=player.x-enemy.x,dy=player.y-enemy.y,d=Math.hypot(dx,dy)||1;if(d>e.range*.78){enemy.x+=dx/d*e.speed*.48*dt;enemy.y+=dy/d*e.speed*.65*dt}enemy.face=dx>=0?1:-1;if(d<e.range*.85)attack(enemy,player,false);if(keys.hit)attack(player,enemy);if(keys.special)attack(player,enemy,true);for(let a of [player,enemy]){a.x=Math.max(55,Math.min(845,a.x));a.y=Math.max(115,Math.min(480,a.y));a.cool=Math.max(0,a.cool-dt);a.special=Math.max(0,a.special-dt);a.flash=Math.max(0,a.flash-dt)}}drawUnit(player);drawUnit(enemy);g.fillStyle='#fff';g.font='17px system-ui';g.textAlign='left';g.fillText('Special: '+(player.special?Math.ceil(player.special/60)+'s':'KLAAR'),40,28);if(paused){g.font='bold 55px system-ui';g.textAlign='center';g.fillText('PAUZE',450,280)}}for(let p of particles){p.x+=p.vx*dt;p.y+=p.vy*dt;p.life-=dt;g.fillStyle=p.color;g.fillRect(p.x,p.y,5,5)}particles=particles.filter(p=>p.life>0);requestAnimationFrame(frame)}document.querySelector('#start').addEventListener('click',()=>{try{reset()}catch(e){document.querySelector('#status').textContent='Startfout: '+e.message;console.error(e)}});document.querySelector('#pause').onclick=()=>{if(player){paused=!paused;status.textContent=paused?'Gepauzeerd':'Gevecht hervat'}};for(let b of document.querySelectorAll('[data-key]')){let k=b.dataset.key;b.onpointerdown=e=>{e.preventDefault();keys[k]=true;b.setPointerCapture(e.pointerId)};b.onpointerup=b.onpointercancel=()=>keys[k]=false}addEventListener('keydown',e=>{let k=({ArrowLeft:'left',ArrowRight:'right',ArrowUp:'up',ArrowDown:'down',a:'left',d:'right',w:'up',s:'down',' ':'hit',Shift:'special'})[e.key];if(k){e.preventDefault();keys[k]=true}});addEventListener('keyup',e=>{let k=({ArrowLeft:'left',ArrowRight:'right',ArrowUp:'up',ArrowDown:'down',a:'left',d:'right',w:'up',s:'down',' ':'hit',Shift:'special'})[e.key];if(k)keys[k]=false});try{requestAnimationFrame(frame)}catch(e){document.querySelector('#status').textContent='Animatiefout: '+e.message;console.error(e)}
-</script></html>
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>INSECT ARENA 0.3</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at top,#20442f 0%,#12291f 48%,#08140e 100%);color:#f4ebc9;font:16px system-ui;text-align:center}
+header{padding:18px 12px 8px;background:linear-gradient(180deg,rgba(11,40,24,.96),rgba(11,40,24,.78));box-shadow:0 6px 30px rgba(0,0,0,.25)}
+h1{font-size:clamp(26px,6vw,48px);margin:4px 0 14px;letter-spacing:1px}
+.wrap{max-width:980px;margin:auto;padding:0 12px 20px}
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center}
+label{font-size:20px}
+button,select{font:inherit;padding:14px 18px;border:0;border-radius:18px;background:#d9bf69;color:#182319;box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 8px 18px rgba(0,0,0,.18)}
+button{font-weight:700}
+button:active,[data-key]:active{transform:translateY(1px)}
+select{min-width:280px;max-width:100%}
+#status{font-size:clamp(24px,4vw,44px);min-height:1.3em;margin:14px 0 18px}
+.canvasBox{position:relative;background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(0,0,0,.14));border:3px solid #bfa764;border-radius:8px;overflow:hidden;box-shadow:0 12px 28px rgba(0,0,0,.28)}
+canvas{width:100%;max-width:900px;aspect-ratio:16/10;display:block;margin:auto;touch-action:none;background:#1d3625}
+.pad{display:grid;grid-template-columns:repeat(4,minmax(72px,120px));gap:16px;justify-content:center;align-items:center;padding:18px 0 6px}
+.dpad{grid-column:1 / span 2;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:14px}
+.dpad .up{grid-column:2}.dpad .left{grid-column:1;grid-row:1 / span 2}.dpad .down{grid-column:2;grid-row:2}.dpad .right{grid-column:3;grid-row:1 / span 2}
+[data-key]{min-height:74px;font-size:22px}
+.big{min-height:88px;font-size:22px}
+.help{font-size:clamp(16px,3vw,24px);opacity:.9;padding:8px 0 6px}
+.small{font-size:14px;opacity:.75}
+@media (max-width:640px){.pad{grid-template-columns:1fr 1fr}.dpad{grid-column:1}.actions{grid-column:2;display:grid;gap:16px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>INSECT ARENA · 0.3</h1>
+    <div class="controls">
+      <label for="fighter">Vechter</label>
+      <select id="fighter"></select>
+      <button id="start">Start gevecht</button>
+      <button id="pause">Pauze</button>
+    </div>
+    <div id="status">Kies je vechter en start.</div>
+  </div>
+</header>
+<div class="wrap">
+  <div class="canvasBox"><canvas id="arena" width="900" height="560"></canvas></div>
+  <div class="pad">
+    <div class="dpad">
+      <button class="left" data-key="left">◀</button>
+      <button class="up" data-key="up">▲</button>
+      <button class="down" data-key="down">▼</button>
+      <button class="right" data-key="right">▶</button>
+    </div>
+    <div class="actions">
+      <button class="big" data-key="hit">AANVAL</button>
+      <button class="big" data-key="special">SPECIAL</button>
+    </div>
+  </div>
+  <div class="help">Toetsen: WASD/pijlen bewegen · spatie aanval · Shift special.</div>
+  <div class="small">Voortgang wordt lokaal bewaard.</div>
+</div>
+<script>
+const c=document.getElementById('arena'),g=c.getContext('2d');
+const statusEl=document.getElementById('status');
+const keys={};
+const types=[
+  {name:'Mier',move:'snelle steek',body:'#f5ecb4',accent:'#6f3e25',hp:125,speed:4.4,damage:16,range:82},
+  {name:'Bidsprinkhaan',move:'sikkelklauw',body:'#79aa4d',accent:'#355724',hp:105,speed:3.2,damage:16,range:88},
+  {name:'Neushoornkever',move:'ramstoot',body:'#7b4b2b',accent:'#2c1a13',hp:145,speed:2.5,damage:21,range:65},
+  {name:'Schorpioen',move:'gifpiek',body:'#b8863f',accent:'#5a3316',hp:115,speed:3.0,damage:13,range:98}
+];
+const fighterSel=document.getElementById('fighter');
+types.forEach((t,i)=>fighterSel.add(new Option(`${t.name} · ${t.move}`,i)));
+let player=null,enemy=null,playing=false,paused=false;
+let particles=[];
+let wins=Number((()=>{try{return localStorage.getItem('iaWins')}catch(e){return 0}})()||0);
+const arenaCache=document.createElement('canvas'); arenaCache.width=c.width; arenaCache.height=c.height;
+const ag=arenaCache.getContext('2d');
+function rand(a,b){return a+Math.random()*(b-a)}
+function unit(id,x,y){const t=types[id];return{...t,id,x,y,hp:t.hp,maxHp:t.hp,cool:0,special:0,flash:0,face:1,walk:0}}
+function reset(){player=unit(+fighterSel.value,210,330);enemy=unit((player.id+1+Math.floor(Math.random()*3))%4,700,320);playing=true;paused=false;particles=[];statusEl.textContent='Overwin de tegenstander! · Overwinningen: '+wins}
+function burst(x,y,color,count=10,spread=3.5){for(let i=0;i<count;i++)particles.push({x,y,vx:rand(-spread,spread),vy:rand(-spread,spread)-1.2,life:rand(18,34),color,size:rand(3,7)})}
+function attack(a,t,special=false){if(!a||!t||a.cool>0)return;const dx=t.x-a.x,dy=t.y-a.y,d=Math.hypot(dx,dy);if(d>a.range)return;a.cool=special?42:(a===enemy?45:20);if(special&&a.special>0)return;if(special)a.special=240;const dmg=a.damage*(special?2.2:1);t.hp-=dmg;t.flash=7;burst(t.x,t.y,special?'#ffd95a':'#ffe7a3',special?22:10,special?5:3.5);if(special){t.x+=Math.sign(dx||1)*20;t.y+=Math.sign(dy||1)*12}if(t.hp<=0){t.hp=0;playing=false;if(t===enemy){wins++;try{localStorage.setItem('iaWins',wins)}catch(e){}statusEl.textContent='GEWONNEN! Totaal: '+wins+' · Start opnieuw.'}else{statusEl.textContent='VERLOREN! Probeer opnieuw.'}}}
+function controlPlayer(dt){if(!player)return;let mx=(keys.right?1:0)-(keys.left?1:0),my=(keys.down?1:0)-(keys.up?1:0);if(mx||my){const len=Math.hypot(mx,my)||1;player.x+=mx/len*player.speed*3.2*dt;player.y+=my/len*player.speed*3.2*dt;player.face=mx>=0?1:-1;player.walk+=0.17*dt}else{player.walk*=0.82}if(keys.hit){attack(player,enemy,false);keys.hit=false}if(keys.special){attack(player,enemy,true);keys.special=false}}
+function controlEnemy(dt){if(!enemy||!player)return;const dx=player.x-enemy.x,dy=player.y-enemy.y,d=Math.hypot(dx,dy)||1;if(d>enemy.range*.85){enemy.x+=dx/d*enemy.speed*.48*dt;enemy.y+=dy/d*enemy.speed*.48*dt;enemy.walk+=0.12*dt}else{enemy.walk*=0.85}enemy.face=dx>=0?1:-1;if(d<enemy.range*.85&&Math.random()<0.08)attack(enemy,player,false)}
+function confine(a){a.x=Math.max(85,Math.min(c.width-85,a.x));a.y=Math.max(165,Math.min(c.height-78,a.y));a.cool=Math.max(0,a.cool-1);a.special=Math.max(0,a.special-1);a.flash=Math.max(0,a.flash-1)}
+function drawArenaBase(){
+  const ctx=ag; ctx.clearRect(0,0,arenaCache.width,arenaCache.height);
+  const bg=ctx.createLinearGradient(0,0,0,c.height); bg.addColorStop(0,'#2f5b34'); bg.addColorStop(.58,'#416934'); bg.addColorStop(1,'#4d5f2e'); ctx.fillStyle=bg; ctx.fillRect(0,0,c.width,c.height);
+  for(let i=0;i<6;i++){ctx.fillStyle=`rgba(255,245,190,${0.05-i*0.006})`;ctx.beginPath();ctx.moveTo(90+i*120,0);ctx.lineTo(210+i*105,0);ctx.lineTo(520+i*35,c.height);ctx.lineTo(350+i*40,c.height);ctx.closePath();ctx.fill()}
+  for(let i=0;i<140;i++){ctx.fillStyle=`rgba(${30+Math.random()*50},${70+Math.random()*90},${25+Math.random()*35},${Math.random()*0.22})`;ctx.beginPath();ctx.arc(rand(0,c.width),rand(50,c.height),rand(4,16),0,Math.PI*2);ctx.fill()}
+  for(let i=0;i<70;i++){const x=rand(0,c.width),y=rand(c.height*0.55,c.height*0.98),r=rand(12,40);ctx.fillStyle=`rgba(${50+Math.random()*30},${70+Math.random()*55},${24+Math.random()*25},0.20)`;ctx.beginPath();ctx.ellipse(x,y,r,r*.55,rand(0,Math.PI),0,Math.PI*2);ctx.fill()}
+  // branches / roots
+  for(let i=0;i<7;i++){ctx.strokeStyle=`rgba(74,46,26,${0.38+Math.random()*0.18})`;ctx.lineWidth=rand(6,12);ctx.lineCap='round';ctx.beginPath();let x=rand(-80,c.width*.9),y=rand(c.height*.68,c.height*.96);ctx.moveTo(x,y);for(let j=0;j<4;j++){x+=rand(70,170);y+=rand(-24,30);ctx.quadraticCurveTo(x-rand(10,40),y-rand(20,25),x,y)}ctx.stroke()}
+  // stones
+  for(let i=0;i<24;i++){let x=rand(40,c.width-40),y=rand(c.height*.63,c.height-22),w=rand(18,42),h=rand(12,26);ctx.fillStyle='rgba(62,74,54,0.55)';ctx.beginPath();ctx.ellipse(x,y,w,h,rand(0,Math.PI),0,Math.PI*2);ctx.fill();ctx.fillStyle='rgba(120,132,98,0.18)';ctx.beginPath();ctx.ellipse(x-w*.12,y-h*.16,w*.46,h*.28,rand(0,Math.PI),0,Math.PI*2);ctx.fill()}
+  // ferns / plants around border
+  function leafCluster(x,y,s,flip=1){for(let i=0;i<7;i++){ctx.fillStyle=`rgba(${28+i*5},${74+i*8},${22+i*4},0.5)`;ctx.beginPath();ctx.ellipse(x+flip*i*s*8,y-i*s*6,s*13,s*5,-0.7*flip,0,Math.PI*2);ctx.fill()}}
+  for(let i=0;i<8;i++){leafCluster(rand(0,120),rand(380,560),rand(.7,1.2),1); leafCluster(rand(780,900),rand(380,560),rand(.7,1.2),-1)}
+  // vignette and glow
+  const vignette=ctx.createRadialGradient(c.width/2,c.height/2,120,c.width/2,c.height/2,c.width/1.05); vignette.addColorStop(0,'rgba(255,255,255,0)'); vignette.addColorStop(1,'rgba(0,0,0,0.26)'); ctx.fillStyle=vignette; ctx.fillRect(0,0,c.width,c.height);
+}
+drawArenaBase();
+function drawArena(){g.drawImage(arenaCache,0,0)}
+function hpBar(x,y,u){g.fillStyle='rgba(0,0,0,.75)';g.fillRect(x-52,y-38,104,8);g.fillStyle=u===player?'#70d96a':'#d65e5b';g.fillRect(x-52,y-38,104*(u.hp/u.maxHp),8);g.fillStyle='#f3f1d5';g.font='15px system-ui';g.textAlign='center';g.fillText(u.name,x,y-46)}
+function drawShadow(x,y,scale){g.fillStyle='rgba(0,0,0,.26)';g.beginPath();g.ellipse(x,y+28,36*scale,12*scale,0,0,Math.PI*2);g.fill()}
+function drawInsect(u){const s=1.02+(u===enemy?0.02:0);const bob=Math.sin(u.walk)*4;const legSwing=Math.sin(u.walk*1.5)*7;drawShadow(u.x,u.y,s);g.save();g.translate(u.x,u.y+bob);if(u.face<0)g.scale(-1,1);if(u.flash>0){g.shadowColor='#fff2b0';g.shadowBlur=10}
+  // legs
+  g.strokeStyle='#141512';g.lineWidth=5;g.lineCap='round';
+  for(let i=0;i<3;i++){
+    const oy=[-9,5,16][i],lx=10+i*10;g.beginPath();g.moveTo(-12,oy);g.lineTo(-28-lx,-2+oy+legSwing*.08*(i-1));g.lineTo(-39-lx,10+oy);g.stroke();
+    g.beginPath();g.moveTo(6,oy);g.lineTo(26+lx,-1+oy-legSwing*.08*(i-1));g.lineTo(38+lx,9+oy);g.stroke();
+  }
+  // body segments
+  g.fillStyle=u.body; g.strokeStyle='rgba(0,0,0,.18)'; g.lineWidth=2;
+  g.beginPath(); g.ellipse(-18,0,20,16,0,0,Math.PI*2); g.fill(); g.stroke();
+  g.beginPath(); g.ellipse(8,-2,25,20,0,0,Math.PI*2); g.fill(); g.stroke();
+  g.beginPath(); g.ellipse(33,-1,15,13,0,0,Math.PI*2); g.fill(); g.stroke();
+  // highlight
+  g.fillStyle='rgba(255,255,255,.18)'; g.beginPath(); g.ellipse(3,-10,18,6,-.2,0,Math.PI*2); g.fill();
+  // species accents
+  g.strokeStyle=u.accent; g.fillStyle=u.accent; g.lineWidth=4;
+  if(u.name==='Mier'){g.beginPath();g.moveTo(39,-8);g.lineTo(54,-17);g.stroke();g.beginPath();g.moveTo(37,7);g.lineTo(50,14);g.stroke();g.beginPath();g.moveTo(35,-3);g.lineTo(56,-5);g.stroke()}
+  if(u.name==='Bidsprinkhaan'){g.strokeStyle='#2f4c1e';g.lineWidth=6;g.beginPath();g.moveTo(20,-8);g.lineTo(43,-28);g.lineTo(54,-13);g.stroke();g.beginPath();g.moveTo(17,10);g.lineTo(40,30);g.stroke();}
+  if(u.name==='Neushoornkever'){g.beginPath();g.moveTo(45,-5);g.quadraticCurveTo(61,-26,53,-1);g.stroke();g.beginPath();g.moveTo(44,4);g.lineTo(58,8);g.stroke();}
+  if(u.name==='Schorpioen'){g.beginPath();g.moveTo(-28,-8);g.quadraticCurveTo(-58,-40,-34,-57);g.quadraticCurveTo(-12,-45,-13,-18);g.stroke();g.beginPath();g.arc(-34,-57,4,0,Math.PI*2);g.fill();g.beginPath();g.moveTo(30,-6);g.lineTo(52,-20);g.stroke();}
+  g.restore(); hpBar(u.x,u.y,u);
+}
+function drawParticles(){for(const p of particles){p.x+=p.vx;p.y+=p.vy;p.life-=1;g.fillStyle=p.color;g.fillRect(p.x,p.y,p.size,p.size)}particles=particles.filter(p=>p.life>0)}
+let last=0;
+function frame(ts){const dt=Math.min(2.2,(ts-last)/16.67||1);last=ts;drawArena();if(player&&enemy){if(playing&&!paused){controlPlayer(dt);controlEnemy(dt);confine(player);confine(enemy)}drawInsect(player);drawInsect(enemy);drawParticles();g.fillStyle='#f5edcb';g.font='18px system-ui';g.textAlign='left';g.fillText('Special: '+(player.special?Math.ceil(player.special/60)+'s':'KLAAR'),16,26);if(paused){g.fillStyle='rgba(0,0,0,.35)';g.fillRect(0,0,c.width,c.height);g.fillStyle='#fff3ce';g.font='bold 62px system-ui';g.textAlign='center';g.fillText('PAUZE',c.width/2,c.height/2)}}requestAnimationFrame(frame)}
+document.getElementById('start').addEventListener('click',()=>{try{reset()}catch(e){statusEl.textContent='Fout bij starten: '+e.message;console.error(e)}});
+document.getElementById('pause').addEventListener('click',()=>{if(player){paused=!paused;statusEl.textContent=paused?'Gepauzeerd':'Gevecht hervat'}});
+for(const b of document.querySelectorAll('[data-key]')){const k=b.dataset.key;const off=()=>keys[k]=false;b.addEventListener('pointerdown',e=>{e.preventDefault();keys[k]=true; if(b.setPointerCapture)try{b.setPointerCapture(e.pointerId)}catch(_){}});b.addEventListener('pointerup',off);b.addEventListener('pointercancel',off);b.addEventListener('pointerleave',off)}
+addEventListener('keydown',e=>{const k=({ArrowLeft:'left',ArrowRight:'right',ArrowUp:'up',ArrowDown:'down',a:'left',d:'right',w:'up',s:'down',' ':'hit',Shift:'special'})[e.key];if(k){e.preventDefault();keys[k]=true}});
+addEventListener('keyup',e=>{const k=({ArrowLeft:'left',ArrowRight:'right',ArrowUp:'up',ArrowDown:'down',a:'left',d:'right',w:'up',s:'down',' ':'hit',Shift:'special'})[e.key];if(k)keys[k]=false});
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
