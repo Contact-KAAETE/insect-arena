@@ -91,7 +91,7 @@ function beginWindup(ai,u,dx,dy,cfg){
  ai.aim=Math.atan2(dy,dx);
  ai.windupTotal=cfg.windup+(powerful?12:0);
  setPhase(ai,'windup',ai.windupTotal);
- ai.combo=0;
+ // Keep the hit streak across windups so repeated button-mashing triggers a side-step.
  ai.cooldown=cfg.strikeDelay;
 }
 function rewardDodge(){
