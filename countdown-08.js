@@ -72,11 +72,6 @@
   originalReset(...args);
   if(!window.iaDuelRole)start();
  };
- document.addEventListener('visibilitychange',()=>{
-  // Do not accidentally let a tab return mid-fight from a frozen intro.
-  if(document.hidden&&window.iaCountdownActive){
-   stop();
-   paused=true;
-  }
- });
+ // The absolute deadline keeps the intro consistent even if iOS throttles timers.
+ // Returning from another app simply advances to VECHT! without freezing the game.
 })();
