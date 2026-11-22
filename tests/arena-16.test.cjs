@@ -158,7 +158,7 @@ test('app loads new assets in correct order and stays PWA-compatible',()=>{
  assert.ok(html.indexOf('expansion-15.js')<html.indexOf('terrain-16.js'));
  assert.ok(source('adventure-14.js').includes('window.iaTerrain16BlocksAttack'));
  assert.ok(html.includes('terrain-16.css?v=1.6A'));
- assert.equal(JSON.parse(source('manifest.webmanifest')).start_url,'/insect-arena/?v=1.7A');
+ assert.equal(JSON.parse(source('manifest.webmanifest')).start_url,'/insect-arena/');
  for(const f of ['terrain-16-data.js','terrain-16-art.js','terrain-16.js'])
   assert.doesNotThrow(()=>new Function(source(f)),f);
  assert.ok(source('duel-08.js').includes('d.hostFighter<8'),'Keep PvP eight fighters');
