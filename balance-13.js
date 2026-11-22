@@ -9,12 +9,12 @@ const $=id=>document.getElementById(id);
 const selector=$('ia-difficulty'),guide=$('ia-difficulty-guide'),warning=$('ai-danger-tag');
 const solo=()=>!window.iaDuelRole;
 const levels={
- training:{name:'Training',enemyLife:1.28,windup:62,recover:58,dodgeHits:5,dodgeTime:12,
+ training:{name:'Training',enemyLife:1.4,windup:62,recover:58,dodgeHits:5,dodgeTime:12,
   advance:1.75,strikeDelay:58,attackBoost:.89,playerDelay:34,bonus:0},
- tactical:{name:'Tactisch',enemyLife:1.93,windup:47,recover:46,dodgeHits:3,dodgeTime:17,
-  advance:2.4,strikeDelay:43,attackBoost:1.02,playerDelay:42,bonus:0},
- alpha:{name:'Alfa-roofdier',enemyLife:2.15,windup:36,recover:33,dodgeHits:2,dodgeTime:19,
-  advance:2.85,strikeDelay:34,attackBoost:1.13,playerDelay:45,bonus:0}
+ tactical:{name:'Tactisch',enemyLife:2.45,windup:44,recover:40,dodgeHits:3,dodgeTime:17,
+  advance:2.65,strikeDelay:40,attackBoost:1.02,playerDelay:46,bonus:0},
+ alpha:{name:'Alfa-roofdier',enemyLife:2.77,windup:32,recover:31,dodgeHits:2,dodgeTime:19,
+  advance:3.1,strikeDelay:32,attackBoost:1.13,playerDelay:49,bonus:0}
 };
 let mode='tactical',noticeTimeout=null,lastCue='';
 try{const saved=localStorage.getItem('iaDifficulty');if(saved in levels)mode=saved}catch(_){}
@@ -146,8 +146,8 @@ controlEnemy=function(dt){
  }
  // Chase to stop endlessly kiting; strafe near the player instead of
  // standing in place receiving every hit.
- const desired=Math.max(70,u.range*.95);
- if(d>desired*1.14){
+ const desired=Math.max(55,u.range*.80);
+ if(d>desired*1.08){
   const sprint=d>250?1.35:1;
   moveEnemy(u,dx,dy,dt,u.speed*cfg.advance*sprint);
  }else if(d<desired*.54){
@@ -156,7 +156,7 @@ controlEnemy=function(dt){
   moveEnemy(u,-dy*ai.side,dx*ai.side,dt,u.speed*cfg.advance*.44);
  }
  d=Math.hypot(player.x-u.x,player.y-u.y);
- if(ai.cooldown<=0&&d<Math.max(u.range*1.22,120)&&u.cool<=0){
+ if(ai.cooldown<=0&&d<Math.max(u.range*.92,60)&&u.cool<=0){
   beginWindup(ai,u,player.x-u.x,player.y-u.y,cfg);
  }
 };
@@ -185,9 +185,9 @@ attack=function(a,t,special=false){
     ai.specialAttack=false;ai.cooldown=Math.max(ai.cooldown,42);
     floater(enemy,'ONDERBROKEN!','#ffefb2');
     cue('PERFECTE COUNTER!');
-   }else if(ai.phase!=='stagger'&&ai.phase!=='evade'&&ai.phase!=='recover'){
+   }else if(ai.phase!=='stagger'&&ai.phase!=='evade'){
     ai.combo++;
-    if(ai.combo>=cfg.dodgeHits&&ai.cooldown>0){
+    if(ai.combo>=cfg.dodgeHits&&ai.phase!=='windup'&&ai.cooldown>0){
      ai.combo=0;
      ai.side*=-1;
      setPhase(ai,'evade',cfg.dodgeTime);
