@@ -9,24 +9,28 @@
 <meta name="apple-mobile-web-app-title" content="INSECT ARENA">
 <link rel="manifest" href="manifest.webmanifest?v=1.0A">
 <link rel="icon" type="image/svg+xml" href="assets/icon-insect-arena.svg">
-<title>INSECT ARENA 1.0A — Landscape Fullscreen</title>
+<title>INSECT ARENA 1.1A — Premium Jungle Game</title>
 <link rel="stylesheet" href="ui-06.css?v=0.6A">
 <link rel="stylesheet" href="ui-07.css?v=0.7B">
 <link rel="stylesheet" href="duel-08.css?v=0.8A">
 <link rel="stylesheet" href="countdown-08.css?v=0.8B">
 <link rel="stylesheet" href="match-09.css?v=0.9A">
 <link rel="stylesheet" href="landscape-10.css?v=1.0A">
+<link rel="stylesheet" href="premium-11.css?v=1.1A">
 </head>
 <body>
 <main id="app">
 <section id="menu-view" class="view menuView">
  <div class="menuFog"></div>
+ <div class="menuLaurel" aria-hidden="true">✦ LEGENDARISCHE ROOFDIEREN ✦</div>
+ <div class="premiumHomeBadge" aria-hidden="true"><span>❧</span> PREMIUM ARENA <span>❧</span></div>
  <header class="menuTop">
   <div class="eyebrow">HET LEVENDE ROOFDIERENRIJK</div>
   <h1 class="gameLogo"><span>INSECT</span><span>ARENA</span></h1>
   <p class="tagline">OVERLEEF · VECHT · HEERS</p>
  </header>
- <img id="menu-hero-unit" class="heroFighter" alt="Fotorealistische bidsprinkhaan">
+ <img id="menu-hero-unit" class="heroFighter" alt="Fotorealistische orchidee-bidsprinkhaan">
+ <img id="menu-hero-rival" alt="Fotorealistische mier" draggable="false">
  <div class="menuActions">
   <button id="menu-play" class="menuPrimary">▶ SPELEN</button>
   <button id="menu-duel" class="menuSecondary" style="background:linear-gradient(130deg,#483b68,#205c49);border-color:#ecd38e">⚔ ONLINE DUEL · BEST-OF-3</button>
@@ -36,10 +40,10 @@
   </div>
   <button id="menu-settings" class="menuSecondary">⚙ INSTELLINGEN</button>
  </div>
- <footer class="menuFooter"><span id="menu-wins">0 OVERWINNINGEN</span><span>1.0A · LANDSCAPE · 8 VECHTERS · DUELS</span></footer>
+ <footer class="menuFooter"><span id="menu-wins">0 OVERWINNINGEN</span><span>1.1A · PREMIUM · 8 VECHTERS · DUELS</span></footer>
 </section>
 <section id="select-view" class="view" hidden>
- <div class="sceneTop"><button class="iconBtn" data-back="menu">‹ TERUG</button><span class="smallBrand">INSECT ARENA</span><span class="eyebrow">1.0A</span></div>
+ <div class="sceneTop"><button class="iconBtn" data-back="menu">‹ TERUG</button><span class="smallBrand">INSECT ARENA</span><span class="eyebrow">1.1A</span></div>
  <div class="panel">
   <h2 class="sceneTitle">KIES JE VECHTER</h2><p class="sceneSub">Acht spectaculaire roofdieren met hun eigen speciale vaardigheid.</p>
   <div id="fighter-roster" class="roster"></div>
@@ -74,7 +78,7 @@
  <button id="settings-done" class="goldButton">OPSLAAN EN TERUG</button></div>
 </section>
 <section id="duel-view" class="view" hidden>
- <div class="sceneTop"><button id="duel-back" class="iconBtn">‹ TERUG</button><span class="smallBrand">DUEL ARENA</span><span class="eyebrow">1.0A</span></div>
+ <div class="sceneTop"><button id="duel-back" class="iconBtn">‹ TERUG</button><span class="smallBrand">DUEL ARENA</span><span class="eyebrow">1.1A</span></div>
  <div class="panel duelPanel">
   <h2 class="duelHeadline">⚔ PRIVÉ DUEL ARENA</h2>
   <p class="duelIntro">Speel een kampioenschap op twee telefoons: drie rondes van 90 seconden. Eerste tot twee zeges wint een mysteriefragment. Bij tijdsverloop beslist de volgende rake aanval!</p>
@@ -119,6 +123,25 @@
    <div id="match-score">HOST 0 : 0 GAST<small>EERSTE TOT 2</small></div>
   </div>
  <div class="canvasBox"><canvas id="arena" width="900" height="560"></canvas>
+  <div id="premium-fighter-hud" class="premiumFighterHUD" hidden aria-label="Vechters en hun gezondheid">
+   <div class="premiumPortrait player">
+    <img id="premium-player-avatar" class="premiumAvatar" alt="" draggable="false">
+    <div class="premiumHpContent">
+     <span id="premium-player-name" class="premiumFighterName">JIJ · VECHTER</span>
+     <div class="premiumLifeTrack"><div id="premium-player-hp" class="premiumLifeFill"></div></div>
+     <small id="premium-player-label" class="premiumLifeLabel">100 / 100</small>
+    </div>
+   </div>
+   <div class="premiumVS">VS</div>
+   <div class="premiumPortrait enemy">
+    <img id="premium-enemy-avatar" class="premiumAvatar" alt="" draggable="false">
+    <div class="premiumHpContent">
+     <span id="premium-enemy-name" class="premiumFighterName">VIJAND · VECHTER</span>
+     <div class="premiumLifeTrack"><div id="premium-enemy-hp" class="premiumLifeFill"></div></div>
+     <small id="premium-enemy-label" class="premiumLifeLabel">100 / 100</small>
+    </div>
+   </div>
+  </div>
   <div id="countdown-overlay" hidden aria-live="polite" aria-atomic="true">
    <div id="countdown-tag">HET GEVECHT BEGINT</div>
    <div id="countdown-number">3</div>
@@ -854,5 +877,6 @@ requestAnimationFrame(frame);
 <script src="countdown-08.js?v=0.9A"></script>
 <script src="match-09.js?v=0.9A"></script>
 <script src="landscape-10.js?v=1.0A"></script>
+<script src="premium-11.js?v=1.1A"></script>
 </body>
 </html>
