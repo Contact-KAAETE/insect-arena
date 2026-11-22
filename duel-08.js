@@ -248,7 +248,7 @@ function enterBattle(info){
  window.iaMatchHUD?.beginDuel({startAt:state.startAt,round:state.round,scores:state.scores});
  window.iaStartCountdown?.(state.startAt);
 }
-const savedKeys=['id','name','x','y','hp','maxHp','face','walk','cool','special','flash','attackAnim','attackMax','attackSpecial','hitAnim','burn','poison','root','slow','cloak','sporeSlow','ambush'];
+const savedKeys=['id','name','x','y','hp','maxHp','face','walk','cool','special','flash','attackAnim','attackMax','attackSpecial','hitAnim','burn','poison','root','slow','cloak','sporeSlow','ambush','charge','acid','acidFrame'];
 function serialize(unit){
  const o={};
  for(const key of savedKeys)if(unit&&unit[key]!==undefined)o[key]=unit[key];
