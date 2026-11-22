@@ -1,5 +1,5 @@
 
-/* INSECT ARENA 0.7A — premium menus, fighter selection and analog iPhone joystick.
+/* INSECT ARENA 0.7B — premium menus, fighter selection and analog iPhone joystick.
    The original combat engine and local save remain intact. */
 (()=>{
 const ids=['menu','select','world','settings','arena'];
@@ -60,6 +60,7 @@ function resetJoystick(){
  const j=window.iaJoystick;j.active=false;j.x=j.y=0;
  el('joystick-nub').style.transform='translate(-50%,-50%)';
  pointer=null;
+ touchId=null;
 }
 function beginBattle(){
  resetJoystick();state.shownResult=false;
@@ -128,23 +129,68 @@ el('pause').addEventListener('click',()=>{
   ]);
  }else{el('battle-overlay').hidden=true;statusEl.textContent='Gevecht hervat';}
 });
-const pad=el('joystick'),nub=el('joystick-nub');let pointer=null;
-function movePad(e){
- const bounds=pad.getBoundingClientRect(),cx=bounds.left+bounds.width/2,cy=bounds.top+bounds.height/2;
- const r=bounds.width*.33,dx=e.clientX-cx,dy=e.clientY-cy,len=Math.hypot(dx,dy);
- const m=Math.min(r,len),x=len?dx/len*m:0,y=len?dy/len*m:0;
+const pad=el('joystick'),nub=el('joystick-nub');
+let pointer=null,touchId=null;
+function movePadAt(clientX,clientY){
+ const box=pad.getBoundingClientRect(),r=Math.max(1,box.width*.33);
+ const dx=clientX-(box.left+box.width/2),dy=clientY-(box.top+box.height/2);
+ const len=Math.hypot(dx,dy),factor=len>0?Math.min(1,r/len):0;
+ const x=dx*factor,y=dy*factor;
  const joy=window.iaJoystick;
- joy.x=Math.abs(x/r)<.10?0:x/r;joy.y=Math.abs(y/r)<.10?0:y/r;joy.active=true;
- nub.style.transform='translate(-50%,-50%) translate('+x+'px,'+y+'px)';
+ joy.x=Math.abs(x/r)<.12?0:x/r;
+ joy.y=Math.abs(y/r)<.12?0:y/r;
+ joy.active=true;
+ nub.style.transform='translate(-50%,-50%) translate('+x.toFixed(1)+'px,'+y.toFixed(1)+'px)';
 }
+// Native touch handling prevents iOS text selection, page scrolling, and smart zoom.
+// The first finger drives the pad; the second is free to use AANVAL/SPECIAL.
+pad.addEventListener('touchstart',e=>{
+ if(e.cancelable)e.preventDefault();
+ if(touchId!==null || pointer!==null)return;
+ const t=e.changedTouches[0];if(!t)return;
+ touchId=t.identifier;
+ movePadAt(t.clientX,t.clientY);
+},{passive:false});
+pad.addEventListener('touchmove',e=>{
+ if(e.cancelable)e.preventDefault();
+ if(touchId===null)return;
+ const t=Array.from(e.touches).find(item=>item.identifier===touchId);
+ if(t)movePadAt(t.clientX,t.clientY);
+},{passive:false});
+for(const kind of ['touchend','touchcancel'])pad.addEventListener(kind,e=>{
+ if(e.cancelable)e.preventDefault();
+ if(touchId===null)return;
+ if(Array.from(e.changedTouches).some(t=>t.identifier===touchId))resetJoystick();
+},{passive:false});
 pad.addEventListener('pointerdown',e=>{
- if(pointer!==null)return;
- e.preventDefault();pointer=e.pointerId;pad.setPointerCapture?.(e.pointerId);movePad(e);
+ if(e.pointerType==='touch'||pointer!==null||touchId!==null)return;
+ e.preventDefault();pointer=e.pointerId;
+ try{pad.setPointerCapture?.(e.pointerId)}catch(_){}
+ movePadAt(e.clientX,e.clientY);
 });
-pad.addEventListener('pointermove',e=>{if(pointer!==e.pointerId)return;e.preventDefault();movePad(e)});
+pad.addEventListener('pointermove',e=>{
+ if(e.pointerType==='touch'||e.pointerId!==pointer)return;
+ e.preventDefault();movePadAt(e.clientX,e.clientY);
+});
 for(const kind of ['pointerup','pointercancel','lostpointercapture'])pad.addEventListener(kind,e=>{
- if(pointer===null||e.pointerId===pointer)resetJoystick();
+ if(e.pointerType==='touch')return;
+ if(pointer!==null&&pointer===e.pointerId)resetJoystick();
 });
+for(const kind of ['contextmenu','selectstart','dragstart','dblclick']){
+ pad.addEventListener(kind,e=>{e.preventDefault();e.stopPropagation()});
+}
+document.querySelectorAll('.touchPanel button').forEach(b=>{
+ b.addEventListener('contextmenu',e=>e.preventDefault());
+ b.addEventListener('selectstart',e=>e.preventDefault());
+ b.addEventListener('touchstart',e=>{if(e.cancelable)e.preventDefault()},{passive:false});
+ b.addEventListener('dblclick',e=>e.preventDefault());
+});
+const arenaElement=el('arena-view');
+arenaElement.addEventListener('dblclick',e=>e.preventDefault());
+for(const kind of ['gesturestart','gesturechange']){
+ document.addEventListener(kind,e=>{if(!arenaElement.hidden&&e.cancelable)e.preventDefault()},{passive:false});
+}
+document.addEventListener('visibilitychange',()=>{if(document.hidden)resetJoystick()});
 window.addEventListener('blur',resetJoystick);
 window.addEventListener('pagehide',resetJoystick);
 const slider=el('joy-sens'),motion=el('less-motion');
