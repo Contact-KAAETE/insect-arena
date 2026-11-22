@@ -3,11 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>INSECT ARENA 0.8B — 3·2·1·VECHT!</title>
+<title>INSECT ARENA 0.9A — Kampioenschap & Sudden Death</title>
 <link rel="stylesheet" href="ui-06.css?v=0.6A">
 <link rel="stylesheet" href="ui-07.css?v=0.7B">
 <link rel="stylesheet" href="duel-08.css?v=0.8A">
 <link rel="stylesheet" href="countdown-08.css?v=0.8B">
+<link rel="stylesheet" href="match-09.css?v=0.9A">
 </head>
 <body>
 <main id="app">
@@ -21,14 +22,14 @@
  <img id="menu-hero-unit" class="heroFighter" alt="Fotorealistische bidsprinkhaan">
  <div class="menuActions">
   <button id="menu-play" class="menuPrimary">▶ SPELEN</button>
-  <button id="menu-duel" class="menuSecondary" style="background:linear-gradient(130deg,#483b68,#205c49);border-color:#ecd38e">⚔ ONLINE DUEL · 1 TEGEN 1</button>
+  <button id="menu-duel" class="menuSecondary" style="background:linear-gradient(130deg,#483b68,#205c49);border-color:#ecd38e">⚔ ONLINE DUEL · BEST-OF-3</button>
   <div class="menuTwocol">
    <button id="menu-fighters" class="menuSecondary">VECHTERS</button>
    <button id="menu-worlds" class="menuSecondary">WERELDEN</button>
   </div>
   <button id="menu-settings" class="menuSecondary">⚙ INSTELLINGEN</button>
  </div>
- <footer class="menuFooter"><span id="menu-wins">0 OVERWINNINGEN</span><span>0.8A · 8 VECHTERS · 2 WERELDEN</span></footer>
+ <footer class="menuFooter"><span id="menu-wins">0 OVERWINNINGEN</span><span>0.9A · 8 VECHTERS · 2 WERELDEN · DUELS</span></footer>
 </section>
 <section id="select-view" class="view" hidden>
  <div class="sceneTop"><button class="iconBtn" data-back="menu">‹ TERUG</button><span class="smallBrand">INSECT ARENA</span><span class="eyebrow">0.8A</span></div>
@@ -69,7 +70,7 @@
  <div class="sceneTop"><button id="duel-back" class="iconBtn">‹ TERUG</button><span class="smallBrand">DUEL ARENA</span><span class="eyebrow">0.8A</span></div>
  <div class="panel duelPanel">
   <h2 class="duelHeadline">⚔ PRIVÉ DUEL ARENA</h2>
-  <p class="duelIntro">Speel live op twee telefoons. Eén speler maakt een kamer; de ander scant de QR-code. Geen chat, account of vreemden.</p>
+  <p class="duelIntro">Speel een kampioenschap op twee telefoons: drie rondes van 90 seconden. Eerste tot twee zeges wint een mysteriefragment. Bij tijdsverloop beslist de volgende rake aanval!</p>
   <div class="duelChoices"><button id="duel-host">🏆 KAMER MAKEN</button><button id="duel-join">🔗 MEEDOEN</button></div>
   <div id="duel-status" class="duelStatus" role="status" aria-live="polite">Maak een privékamer of voer een uitnodigingscode in.</div>
   <div id="duel-invite-section" class="duelInvite" hidden>
@@ -104,6 +105,11 @@
   <span id="status" class="battleStatus">Kies je vechter en start.</span>
   <button id="pause" class="iconBtn">Ⅱ PAUZE</button>
  </div>
+ <div id="match-hud" hidden aria-label="Rondetimer en wedstrijdstand">
+   <div id="match-round">RONDE 1 / 3<small>BEST-OF-THREE</small></div>
+   <strong id="match-clock">01:30</strong>
+   <div id="match-score">HOST 0 : 0 GAST<small>EERSTE TOT 2</small></div>
+  </div>
  <div class="canvasBox"><canvas id="arena" width="900" height="560"></canvas>
   <div id="countdown-overlay" hidden aria-live="polite" aria-atomic="true">
    <div id="countdown-tag">HET GEVECHT BEGINT</div>
@@ -111,6 +117,7 @@
    <div id="countdown-match">VECHTER VS UITDAGER</div>
    <div id="countdown-mode">SOLO ARENA</div>
   </div>
+  <div id="match-flash" hidden aria-live="polite">SUDDEN DEATH!</div>
   <div id="battle-overlay" class="floatOverlay" hidden>
    <strong id="overlay-title" class="resultTitle">GEWONNEN!</strong>
    <div id="overlay-desc" class="resultSub"></div>
@@ -806,19 +813,20 @@ function drawInsect(u){
 function drawParticles(){for(const p of particles){p.x+=p.vx;p.y+=p.vy;p.life-=1;g.fillStyle=p.color;g.fillRect(p.x,p.y,p.size,p.size)}particles=particles.filter(p=>p.life>0)}
 function drawDamageNumbers(){for(let i=floaters.length-1;i>=0;i--){const p=floaters[i];p.y-=1.2;p.life--;g.save();g.globalAlpha=Math.min(1,p.life/15);g.textAlign='center';g.font='bold 26px system-ui';g.lineWidth=5;g.strokeStyle='#1d200f';g.strokeText('-'+p.value,p.x,p.y);g.fillStyle=p.color;g.fillText('-'+p.value,p.x,p.y);g.restore();if(p.life<=0)floaters.splice(i,1);}}
 let last=0;
-function frame(ts){const dt=Math.min(2.2,(ts-last)/16.67||1);last=ts;drawArena(ts);if(player&&enemy){if(playing&&!paused&&!window.iaCountdownActive){controlPlayer(dt);controlEnemy(dt);confine(player);confine(enemy)}drawInsect(player);drawInsect(enemy);drawParticles();drawDamageNumbers();drawHUD();g.fillStyle='#f5edcb';g.font='18px system-ui';g.textAlign='left';g.fillText('Special: '+(player.special?Math.ceil(player.special/60)+'s':'KLAAR'),18,93);if(paused){g.fillStyle='rgba(0,0,0,.35)';g.fillRect(0,0,c.width,c.height);g.fillStyle='#fff3ce';g.font='bold 62px system-ui';g.textAlign='center';g.fillText('PAUZE',c.width/2,c.height/2)}}requestAnimationFrame(frame)}
+function frame(ts){const dt=Math.min(2.2,(ts-last)/16.67||1);last=ts;drawArena(ts);window.iaMatchHUD?.tick();if(player&&enemy){if(playing&&!paused&&!window.iaCountdownActive){controlPlayer(dt);controlEnemy(dt);confine(player);confine(enemy)}drawInsect(player);drawInsect(enemy);drawParticles();drawDamageNumbers();drawHUD();g.fillStyle='#f5edcb';g.font='18px system-ui';g.textAlign='left';g.fillText('Special: '+(player.special?Math.ceil(player.special/60)+'s':'KLAAR'),18,93);if(paused){g.fillStyle='rgba(0,0,0,.35)';g.fillRect(0,0,c.width,c.height);g.fillStyle='#fff3ce';g.font='bold 62px system-ui';g.textAlign='center';g.fillText('PAUZE',c.width/2,c.height/2)}}requestAnimationFrame(frame)}
 document.getElementById('start').addEventListener('click',()=>{try{reset()}catch(e){statusEl.textContent='Fout bij starten: '+e.message;console.error(e)}});
-document.getElementById('pause').addEventListener('click',()=>{if(player){paused=!paused;statusEl.textContent=paused?'Gepauzeerd':'Gevecht hervat'}});
+document.getElementById('pause').addEventListener('click',()=>{if(player){paused=!paused;window.iaMatchHUD?.setPaused(paused);statusEl.textContent=paused?'Gepauzeerd':'Gevecht hervat'}});
 for(const b of document.querySelectorAll('[data-key]')){const k=b.dataset.key;const off=()=>keys[k]=false;b.addEventListener('pointerdown',e=>{e.preventDefault();keys[k]=true; if(b.setPointerCapture)try{b.setPointerCapture(e.pointerId)}catch(_){}});b.addEventListener('pointerup',off);b.addEventListener('pointercancel',off);b.addEventListener('pointerleave',off)}
 addEventListener('keydown',e=>{const k=({ArrowLeft:'left',ArrowRight:'right',ArrowUp:'up',ArrowDown:'down',a:'left',d:'right',w:'up',s:'down',' ':'hit',Shift:'special'})[e.key];if(k){e.preventDefault();keys[k]=true}});
 addEventListener('keyup',e=>{const k=({ArrowLeft:'left',ArrowRight:'right',ArrowUp:'up',ArrowDown:'down',a:'left',d:'right',w:'up',s:'down',' ':'hit',Shift:'special'})[e.key];if(k)keys[k]=false});
 requestAnimationFrame(frame);
 </script>
 <script src="expansion-07.js?v=0.8B"></script>
-<script src="ui-07.js?v=0.8B"></script>
+<script src="ui-07.js?v=0.9A"></script>
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="duel-08.js?v=0.8B"></script>
-<script src="countdown-08.js?v=0.8B"></script>
+<script src="duel-08.js?v=0.9A"></script>
+<script src="countdown-08.js?v=0.9A"></script>
+<script src="match-09.js?v=0.9A"></script>
 </body>
 </html>
