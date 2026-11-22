@@ -54,7 +54,7 @@ test('manifest URL stays permanently stable and old home-screen icons share its 
  assert.equal(manifest.display,'standalone');
  const html=source('index.html');
  assert.ok(html.includes('pwa-update-18.js?v=1.9A'));
- assert.ok(html.includes('pwa-update-18.css?v=1.9A'));
+ assert.ok(html.includes('pwa-update-18.css?v=1.8A')); // CSS unchanged in release 1.9A
  assert.ok(html.includes('manifest.webmanifest?v=1.9A'));
  assert.ok(html.includes('id="ia-update-status"'));
  assert.ok(html.includes('id="ia-check-updates"'));
