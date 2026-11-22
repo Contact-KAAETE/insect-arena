@@ -1,0 +1,185 @@
+/* INSECT ARENA 1.0A — immersive landscape + iPhone standalone stage.
+   The game canvas keeps its original 900x560 rendering aspect ratio.
+   Virtual controls occupy its horizontal side-gutters, not a second row. */
+html{height:100%;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{min-height:100%;overscroll-behavior-y:none}
+button,canvas,.joystick,.actionBtn{-webkit-touch-callout:none}
+#battle-fullscreen{font-size:12px;min-width:38px;white-space:nowrap}
+#rotate-phone{display:none}
+#fullscreen-help{
+ position:fixed;inset:0;z-index:2000;display:grid;place-items:center;
+ background:#020c08e8;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+ padding:18px max(18px,env(safe-area-inset-right)) 18px max(18px,env(safe-area-inset-left));
+}
+#fullscreen-help[hidden]{display:none!important}
+.fullscreenHelpCard{width:min(100%,460px);max-height:90dvh;overflow:auto;
+ background:linear-gradient(145deg,#244936,#061c15);border:2px solid #e5ca84;
+ border-radius:22px;box-shadow:0 22px 75px #000e;padding:24px;text-align:center}
+.fullscreenHelpCard h2{font-size:clamp(22px,5vw,32px);margin:5px 0 12px;color:#ffe29b}
+.fullscreenHelpCard p{font-size:15px;line-height:1.6;color:#f7e9c5}
+.fullscreenHelpCard strong{color:#fbe19a}
+.fullscreenHelpCard .goldButton{margin-top:13px}
+#install-note{font-size:11px;line-height:1.4;color:#f0dfac;text-align:center;margin-top:6px}
+/* All landscape devices (including iPhones, iPads and desktop browsers). */
+@media (orientation:landscape) and (min-width:580px) {
+  #app{max-width:none;width:100%;padding:
+     max(2px,env(safe-area-inset-top))
+     max(7px,env(safe-area-inset-right))
+     max(3px,env(safe-area-inset-bottom))
+     max(7px,env(safe-area-inset-left));
+  }
+  #arena-view:not([hidden]){
+    position:fixed;inset:0;z-index:500;
+    width:100vw;height:100vh;height:100dvh;
+    display:grid;grid-template-rows:36px 47px minmax(0,1fr);
+    min-width:0;min-height:0;overflow:hidden;
+    padding:
+      max(2px,env(safe-area-inset-top))
+      max(8px,env(safe-area-inset-right))
+      max(4px,env(safe-area-inset-bottom))
+      max(8px,env(safe-area-inset-left));
+    background:radial-gradient(ellipse at 50% 58%,#345740 0%,#07170d 78%);
+    overscroll-behavior:none;
+  }
+  #arena-view .battleHeader{
+    grid-row:1;min-height:0;height:34px;padding:0 3px;
+    margin:0;display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;
+    align-items:center;gap:7px;
+  }
+  #arena-view .battleHeader .iconBtn{
+    min-height:30px;font-size:11px;padding:6px 8px;
+    border-radius:9px;letter-spacing:0;line-height:1.1;
+  }
+  #arena-view .battleStatus{
+    text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    font-size:11px;line-height:1.1;letter-spacing:0;
+  }
+  #arena-view #match-hud{
+    grid-row:2;display:grid;min-width:0;min-height:0;
+    height:43px;margin:0 1px 4px;padding:3px 10px;
+    grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);
+    border-radius:10px;gap:4px;
+  }
+  #arena-view #match-hud[hidden]{display:none!important}
+  #arena-view #match-round{font-size:12px;gap:1px}
+  #arena-view #match-round small{font-size:9px}
+  #arena-view #match-clock{font-size:29px;min-width:80px}
+  #arena-view #match-hud.suddenDeath #match-clock{font-size:17px;min-width:115px}
+  #arena-view #match-score{font-size:11px;gap:2px}
+  #arena-view #match-score small{font-size:9px}
+  #arena-view .canvasBox{
+    grid-row:3;display:flex;position:relative;align-items:center;justify-content:center;
+    width:100%;height:100%;min-height:0;min-width:0;max-height:100%;
+    margin:0;padding:0;overflow:hidden;border:1px solid #8f9f6a85;border-radius:11px;
+    box-shadow:inset 0 0 28px #0007,0 8px 19px #0005;
+    background:radial-gradient(ellipse at 50% 45%,#49634b 0%,#173925 45%,#081d16 100%);
+    isolation:isolate;
+  }
+  #arena-view canvas#arena{
+    display:block;flex:1 1 auto;width:100%;height:100%;min-width:0;min-height:0;
+    max-width:none;max-height:none;aspect-ratio:auto;object-fit:contain;
+    margin:0;padding:0;border:0;background:transparent;touch-action:none;
+  }
+  #arena-view .touchPanel{
+    position:absolute;inset:0;z-index:8;pointer-events:none;
+    width:100%;height:100%;max-width:none;display:block;
+    padding:0;margin:0;border:0;contain:none;
+    -webkit-user-select:none;user-select:none;
+  }
+  #arena-view #joystick{
+    pointer-events:auto;
+    position:absolute;left:clamp(6px,1.6vw,19px);bottom:clamp(9px,2dvh,20px);
+    width:clamp(91px,28dvh,148px);height:clamp(91px,28dvh,148px);
+    max-width:none;flex:none;min-height:0;margin:0;
+  }
+  #arena-view .joystickText{bottom:-13px;font-size:9px}
+  #arena-view .touchActions{
+    pointer-events:none;
+    display:block;position:absolute;right:clamp(4px,1.5vw,20px);
+    bottom:clamp(7px,1.4dvh,16px);width:165px;height:135px;
+    padding:0;margin:0;max-width:none;min-width:0;flex:none;
+  }
+  #arena-view .actionBtn{pointer-events:auto;position:absolute;margin:0;min-height:0;min-width:0;line-height:1.05}
+  #arena-view .attackBtn{
+    right:0;bottom:0;width:clamp(88px,24dvh,122px);
+    height:clamp(81px,21dvh,109px);border-radius:50%;
+  }
+  #arena-view .specialBtn{
+    right:clamp(77px,21dvh,105px);bottom:clamp(61px,17dvh,90px);
+    width:clamp(76px,20dvh,100px);height:clamp(65px,17dvh,85px);border-radius:50%;
+  }
+  #arena-view .actionBtn strong{font-size:clamp(12px,3dvh,18px)}
+  #arena-view .actionBtn small{font-size:9px;margin-top:4px}
+  #arena-view .floatOverlay{z-index:40}
+  #arena-view #countdown-overlay{z-index:30}
+  #arena-view #match-flash{z-index:31}
+  #arena-view > p{display:none!important}
+  #menu-view{
+    height:calc(100dvh - max(2px,env(safe-area-inset-top)) - max(3px,env(safe-area-inset-bottom)) - 6px);
+    min-height:0;max-height:850px;border-radius:15px;
+  }
+  #menu-view .menuTop{top:7%;left:5%;right:46%;text-align:center}
+  #menu-view .gameLogo{font-size:clamp(46px,13.5dvh,96px);line-height:.95;margin-top:9px}
+  #menu-view .eyebrow{font-size:10px;letter-spacing:.2em}
+  #menu-view .tagline{font-size:11px;letter-spacing:.11em;margin:7px 0}
+  #menu-view .heroFighter{width:53%;height:90%;right:-1%;bottom:0;object-position:center center}
+  #menu-view .menuActions{left:6%;bottom:8%;width:41%;gap:5px}
+  #menu-view .menuPrimary{padding:9px;font-size:clamp(15px,4.5dvh,23px);box-shadow:inset 0 2px #fff8,0 3px 0 #58391a,0 6px 14px #0008}
+  #menu-view .menuSecondary{padding:8px 5px;font-size:clamp(10px,2.9dvh,13px)}
+  #menu-view .menuTwocol{gap:5px}
+  #menu-view .menuFooter{bottom:1.5%;font-size:9px}
+  #select-view .panel{padding:10px}
+  #select-view .sceneTitle{font-size:clamp(20px,5.7dvh,32px);margin:3px 0}
+  #select-view .sceneSub{font-size:11px;margin:3px auto 8px}
+  #select-view .roster{grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+  #select-view .fighterCard{display:flex;flex-direction:row;min-height:107px;height:107px;padding:6px;gap:5px}
+  #select-view .fighterCard img{width:38%;height:88px;flex:none;object-fit:contain}
+  #select-view .fighterText{flex:1;min-width:0}
+  #select-view .fighterName{font-size:clamp(10px,1.1vw,14px);line-height:1.11;text-align:left;min-height:0}
+  #select-view .fighterSkill{font-size:9px;line-height:1.05;margin:2px 0 3px;min-height:0;text-align:left}
+  #select-view .fighterCard .statLabel{font-size:7px;margin-top:2px}
+  #select-view .fighterCard .barTrack{height:3px;margin:2px 0}
+  #select-view .fighterCard.isNew .fighterName{padding-top:7px}
+  #select-view .selectFoot{margin-top:8px;gap:4px}
+  #select-view .selectedInfo,#select-view #current-world{font-size:11px}
+  #select-view .goldButton{padding:9px;font-size:14px}
+  #select-view .worldChoice{padding:7px;font-size:11px}
+  #select-view .worldPicker{margin:3px 0 5px}
+  #select-view .sceneTop{margin:2px 0 6px}
+}
+@media (orientation:landscape) and (min-width:580px) and (max-height:410px){
+ #arena-view:not([hidden]){grid-template-rows:32px 38px minmax(0,1fr)}
+ #arena-view .battleHeader{height:30px}
+ #arena-view #match-hud{height:35px;padding:2px 8px;margin:0 1px 2px}
+ #arena-view #match-clock{font-size:24px}
+ #arena-view #match-round{font-size:10px}
+ #arena-view #match-round small{font-size:8px}
+ #arena-view #match-score{font-size:10px}
+ #arena-view #joystick{width:clamp(85px,29dvh,122px);height:clamp(85px,29dvh,122px)}
+ #arena-view .touchActions{width:148px;height:115px}
+ #arena-view .attackBtn{width:clamp(83px,22dvh,108px);height:clamp(75px,20dvh,96px)}
+ #arena-view .specialBtn{right:clamp(70px,20dvh,92px);bottom:clamp(55px,15dvh,72px);width:clamp(69px,18dvh,89px);height:clamp(59px,16dvh,76px)}
+ #arena-view .actionBtn strong{font-size:12px}
+ #menu-view .menuActions{bottom:9%}
+ #menu-view .menuFooter{font-size:8px}
+ #select-view .fighterCard{height:93px;min-height:93px}
+ #select-view .fighterCard img{height:75px}
+ #select-view .sceneSub{margin-bottom:5px}
+}
+@media (orientation:landscape) and (pointer:fine) and (hover:hover) {
+ #arena-view .touchPanel{display:none!important}
+}
+@media (orientation:portrait) and (max-width:700px){
+ #arena-view:not([hidden]) #rotate-phone{
+  display:grid;place-items:center;align-content:center;gap:14px;
+  position:fixed;inset:0;z-index:1500;text-align:center;
+  padding:28px;background:radial-gradient(circle at 50% 45%,#30553a,#04140e 70%);
+  color:#fff2c8;-webkit-user-select:none;user-select:none;
+ }
+ #rotate-phone .rotateSymbol{font-size:76px;display:block;line-height:1;animation:iaRotateHint 2s ease-in-out infinite alternate}
+ #rotate-phone h2{font-size:clamp(24px,6vw,35px);margin:0}
+ #rotate-phone p{font-size:16px;max-width:320px;line-height:1.5;margin:0}
+ #rotate-phone button{margin-top:12px;max-width:270px}
+}
+@keyframes iaRotateHint{from{transform:rotate(-22deg)}to{transform:rotate(70deg)}}
+@media(prefers-reduced-motion:reduce){#rotate-phone .rotateSymbol{animation:none}}
