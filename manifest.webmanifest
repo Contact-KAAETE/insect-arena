@@ -3,7 +3,7 @@
   "name": "INSECT ARENA — Duel Arena",
   "short_name": "INSECT ARENA",
   "description": "Tactische roofdiergevechten met een verplichte tutorial, negen vrijspeelbare vechters, drie werelden en privéduels.",
-  "start_url": "/insect-arena/?v=1.4A",
+  "start_url": "/insect-arena/?v=1.4B",
   "scope": "/insect-arena/",
   "display": "standalone",
   "orientation": "landscape",
