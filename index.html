@@ -7,10 +7,10 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="INSECT ARENA">
-<link rel="manifest" href="manifest.webmanifest?v=1.7A">
+<link rel="manifest" href="manifest.webmanifest?v=1.8A">
 <link rel="icon" type="image/svg+xml" href="assets/icon-insect-arena.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png?v=1.1A">
-<title>INSECT ARENA 1.7A — Cinematic Fullscreen</title>
+<title>INSECT ARENA 1.8A — Automatische Updates</title>
 <link rel="stylesheet" href="ui-06.css?v=0.6A">
 <link rel="stylesheet" href="ui-07.css?v=0.7B">
 <link rel="stylesheet" href="duel-08.css?v=0.8A">
@@ -47,7 +47,7 @@
   </div>
   <button id="menu-settings" class="menuSecondary">⚙ INSTELLINGEN</button>
  </div>
- <footer class="menuFooter"><span id="menu-wins">0 OVERWINNINGEN</span><span>1.7A · CINEMATIC ARENA · 13 VECHTERS · 6 WERELDEN</span></footer>
+ <footer class="menuFooter"><span id="menu-wins">0 OVERWINNINGEN</span><span>1.8A · AUTOMATISCHE UPDATES · 13 VECHTERS · 6 WERELDEN</span></footer>
 </section>
 <section id="select-view" class="view" hidden>
  <div class="sceneTop"><button class="iconBtn" data-back="menu">‹ TERUG</button><span class="smallBrand">INSECT ARENA</span><span class="eyebrow">1.6A</span></div>
@@ -96,6 +96,7 @@
  </select></div>
  <p id="ia-difficulty-guide">Slimme tegenstander met zichtbare aanvallen die je kunt ontwijken.</p>
  <p style="color:#e3d8b2;font-size:13px">Je overwinningen blijven op dit apparaat opgeslagen.</p>
+ <div class="settingsRow ia18UpdateRow"><span id="ia-update-status" role="status" aria-live="polite">Automatische updates worden ingesteld…</span><button id="ia-check-updates" type="button" class="iconBtn">↻ CONTROLEER UPDATE</button></div>
  <button id="settings-done" class="goldButton">OPSLAAN EN TERUG</button></div>
 </section>
 <section id="duel-view" class="view" hidden>
@@ -915,5 +916,6 @@ requestAnimationFrame(frame);
 <script src="terrain-16-art.js?v=1.6A"></script>
 <script src="terrain-16.js?v=1.6A"></script>
 <script src="immersive-17.js?v=1.7A"></script>
+<script src="pwa-update-18.js?v=1.8A"></script>
 </body>
 </html>
