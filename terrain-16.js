@@ -213,10 +213,14 @@ controlEnemy=function(dt){
  const wanted={x:enemy.x,y:enemy.y};
  const moved=hypot(wanted.x-from.x,wanted.y-from.y);
  const wasBlocked=moved>.4&&inSolid(wanted,13);
+ const newHazard=danger(wanted),oldHazard=danger(from);
  collisionResolve(from,enemy);
- // Bot chooses a plausible side route rather than walking into the same rock
- // forever. Avoid danger during the attack wind-up unless forced.
- if(wasBlocked&&moved>.4&&enemy.hp>0){
+ // Route around stones AND around new hazards before entering a dangerous zone.
+ // Low-health predators also favour a sheltered flanking position.
+ const critical=enemy.hp>0&&enemy.maxHp>0&&enemy.hp/enemy.maxHp<.31;
+ const reroute=(wasBlocked||newHazard>oldHazard||(critical&&coverType(enemy,player)!=='hard'));
+ const committed=(enemy.ai?.phase==='windup'||enemy.ai?.phase==='attack');
+ if(reroute&&moved>.4&&!committed&&enemy.hp>0){
   const candidate=chooseDetour(from,player,dt);
   if(candidate){
    enemy.x=candidate.x;enemy.y=candidate.y;
