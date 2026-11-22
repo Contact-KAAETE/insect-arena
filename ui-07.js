@@ -11,7 +11,7 @@ const read=(key,fallback)=>{try{return localStorage.getItem(key)??fallback}catch
 window.iaJoystick={active:false,x:0,y:0,sensitivity:1};
 window.iaReducedEffects=false;
 function switchPage(page){
- if(page!=='arena')window.iaStopCountdown?.();
+ if(page!=='arena'){window.iaStopCountdown?.();window.iaMatchHUD?.stop();}
  state.page=page;
  ids.forEach(id=>views[id].hidden=id!==page);
  if(page==='menu')el('menu-wins').textContent=wins+' OVERWINNINGEN';
@@ -115,11 +115,11 @@ function outcome(){
  {text:'HOOFDMENU',action:goMenu}
  ]);
 }
-window.iaOnWorldKO=()=>{if(state.page==='arena'&&!state.shownResult)outcome();};
+window.iaOnWorldKO=()=>{if(!window.iaDuelRole&&state.page==='arena'&&!state.shownResult)outcome();};
 const originalAttack=attack;
 attack=function(a,t,special=false){
  originalAttack(a,t,special);
- if(!playing&&player&&enemy&&state.page==='arena'&&!state.shownResult)outcome();
+ if(!window.iaDuelRole&&!playing&&player&&enemy&&state.page==='arena'&&!state.shownResult)outcome();
 };
 el('pause').addEventListener('click',()=>{
  if(!playing||!player)return;
