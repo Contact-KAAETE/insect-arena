@@ -11,6 +11,7 @@ const read=(key,fallback)=>{try{return localStorage.getItem(key)??fallback}catch
 window.iaJoystick={active:false,x:0,y:0,sensitivity:1};
 window.iaReducedEffects=false;
 function switchPage(page){
+ if(page!=='arena')window.iaStopCountdown?.();
  state.page=page;
  ids.forEach(id=>views[id].hidden=id!==page);
  if(page==='menu')el('menu-wins').textContent=wins+' OVERWINNINGEN';
