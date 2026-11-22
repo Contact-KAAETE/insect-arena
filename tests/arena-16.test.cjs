@@ -128,6 +128,27 @@ test('terrain slowdown, bot detours and online PvP isolation',()=>{
  assert.ok(calls.basic>0,'PvP attack must delegate without applying new cover rules');
  assert.equal(scope.enemy.hp,h0);
 });
+test('tutorial and network fights stay outside new terrain simulation',()=>{
+ const {scope,state,calls,api}=runtime();
+ state.world='roots';
+ const p=scope.player;
+ const oldX=p.x;
+ scope.window.iaAdventure14={isTutorialActive:()=>true};
+ scope.controlPlayer(1);
+ assert.equal(p.x,oldX+30,'Tutorial movement still uses original joystick controller');
+ const obj=api.objects('roots')[0];
+ const center={x:obj.x+obj.points[2][0],y:obj.y+obj.points[2][1]};
+ const t={x:center.x+70,y:center.y+23,hp:100};
+ const oldHits=calls.basic;
+ scope.attack({...center,damage:18,charge:100,id:0,cool:0,special:0},t,true);
+ assert.equal(calls.basic,oldHits+1,'Tutorial attack must pass to legacy engine');
+ scope.window.iaAdventure14.isTutorialActive=()=>false;
+ scope.window.iaDuelRole='guest';
+ scope.player.x=oldX;
+ scope.controlPlayer(1);
+ assert.equal(scope.player.x,oldX+30,'PvP movement unchanged');
+});
+
 test('app loads new assets in correct order and stays PWA-compatible',()=>{
  const html=source('index.html');
  const scripts=['terrain-16-data.js?v=1.6A','terrain-16-art.js?v=1.6A','terrain-16.js?v=1.6A'];
