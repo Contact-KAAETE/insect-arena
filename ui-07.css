@@ -37,3 +37,90 @@
  .worldTile p{font-size:12px}
  .worldChoice{font-size:12px}
 }
+
+/* INSECT ARENA 0.7B touch & mobile layout fixes */
+html { -webkit-text-size-adjust:100%; text-size-adjust:100%; }
+#arena-view, #arena-view *, #fighter-roster, #fighter-roster * {
+  -webkit-user-select:none !important;
+  user-select:none !important;
+  -webkit-touch-callout:none !important;
+}
+#joystick, #joystick *, .touchPanel, .touchPanel *,
+.actionBtn, .actionBtn *, #arena {
+  touch-action:none !important;
+  -webkit-touch-callout:none !important;
+  -webkit-user-drag:none !important;
+}
+#joystick, #joystick * { -webkit-tap-highlight-color:transparent !important; }
+#joystick-nub, .joystickText, #joystick::before { pointer-events:none; }
+#arena-view .touchPanel {
+  overscroll-behavior:contain;
+  contain:layout style;
+}
+#arena-view button:focus { outline:none; }
+#arena-view button:focus-visible {outline:2px solid #fce69b;outline-offset:3px}
+#fighter-roster, #fighter-roster .fighterCard,
+#fighter-roster .fighterText, #fighter-roster .fighterName, #fighter-roster .fighterSkill {
+  min-width:0;
+}
+#fighter-roster .fighterName {
+  white-space:normal;
+  overflow-wrap:anywhere;
+  line-height:1.15;
+}
+#fighter-roster .fighterSkill {
+  white-space:normal;
+  overflow-wrap:anywhere;
+}
+#fighter-roster .fighterCard .fighterText { overflow:visible; }
+@media(max-width:600px){
+  #fighter-roster {grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+  #fighter-roster .fighterCard {
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+    justify-content:flex-start;
+    min-height:223px;
+    padding:8px 9px 11px;
+    gap:4px;
+    overflow:hidden;
+  }
+  #fighter-roster .fighterCard img {
+    flex:none;
+    width:100%;
+    height:71px;
+    object-fit:contain;
+    object-position:center;
+  }
+  #fighter-roster .fighterCard .fighterText {width:100%;flex:none;}
+  #fighter-roster .fighterCard .fighterName {
+    font-size:clamp(11px,3.15vw,14px);
+    font-weight:1000;
+    text-align:center;
+    min-height:30px;
+    max-width:100%;
+    padding:0;
+    padding-top:0;
+    line-height:1.12;
+    text-wrap:pretty;
+  }
+  #fighter-roster .fighterCard .fighterSkill{
+    font-size:10px;
+    text-align:center;
+    min-height:26px;
+    line-height:1.2;
+    margin:3px 0 6px;
+  }
+  #fighter-roster .fighterCard .statLabel{font-size:8px;margin-top:3px}
+  #fighter-roster .fighterCard .barTrack{margin:2px 0;height:5px}
+  #fighter-roster .fighterCard.isNew .fighterName{padding-top:0}
+  #fighter-roster .fighterCard.isNew::after{top:5px;right:5px;font-size:7px;letter-spacing:.08em}
+  #fighter-roster .fighterCard.isNew img{margin-top:8px;height:63px}
+  .joystick { touch-action:none; }
+  .touchPanel { width:100%; }
+}
+@media(max-width:350px){
+  #fighter-roster{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+  #fighter-roster .fighterCard{padding:6px;min-height:220px}
+  #fighter-roster .fighterCard .fighterName{font-size:11px}
+}
