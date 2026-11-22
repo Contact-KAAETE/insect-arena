@@ -2,7 +2,7 @@
 /* INSECT ARENA 0.7B — premium menus, fighter selection and analog iPhone joystick.
    The original combat engine and local save remain intact. */
 (()=>{
-const ids=['menu','select','world','settings','arena'];
+const ids=['menu','select','world','settings','arena','duel'];
 const views=Object.fromEntries(ids.map(id=>[id,document.getElementById(id+'-view')]));
 const el=id=>document.getElementById(id);
 const state={page:'menu',shownResult:false};
@@ -204,4 +204,5 @@ el('settings-done').addEventListener('click',()=>{
  save('iaJoySensitivity',slider.value);save('iaReduceFX',motion.checked?'1':'0');switchPage('menu');
 });
 roster();refreshWorldCards();switchPage('menu');
+window.iaUI={open:switchPage,beginBattle,goMenu,refreshRoster,refreshWorldCards};
 })();
