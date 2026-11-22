@@ -39,6 +39,7 @@ function openDuel(){
  syncButtons();
 }
 function clearSession(notify=true){
+ $('pause').textContent='Ⅱ PAUZE';
  state.active=false;
  if(notify)try{state.conn?.send({t:'leave'})}catch(_){}
  if(state.snapshotTimer)clearInterval(state.snapshotTimer);
