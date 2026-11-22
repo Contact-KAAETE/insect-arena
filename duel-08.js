@@ -35,6 +35,10 @@ function syncButtons(){
  $('duel-join').classList.toggle('chosen',state.role==='guest');
 }
 function openDuel(){
+ if(window.ia14Unlocked?.()===false){
+  setTimeout(()=>window.iaAdventure14?.restartTutorial?.(),0);
+  return;
+ }
  // Solo-unlocked centipede is not used by the eight-fighter WebRTC protocol.
  if((+fighterSel.value)>7)fighterSel.value='0';
  ui().open('duel');
@@ -519,6 +523,11 @@ makeRoster();syncButtons();
 const fragment=decodeURIComponent((location.hash||'').slice(1));
 if(fragment.startsWith('duel=')){
  const code=fragment.slice(5).split('&')[0].toLowerCase();
- if(/^ia8-[a-f0-9]{32}$/.test(code))join(code);
+ if(/^ia8-[a-f0-9]{32}$/.test(code)){
+  if(window.ia14Unlocked?.()===false){
+   displayStatus('Voltooi eerst de verplichte training. Daarna kun je je dueluitnodiging openen.');
+   setTimeout(()=>window.iaAdventure14?.restartTutorial?.(),0);
+  }else join(code);
+ }
 }
 })();
