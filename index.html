@@ -3,9 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>INSECT ARENA 0.7B — iPhone Besturing Verbeterd</title>
+<title>INSECT ARENA 0.8A — Privé Duel Arena</title>
 <link rel="stylesheet" href="ui-06.css?v=0.6A">
 <link rel="stylesheet" href="ui-07.css?v=0.7B">
+<link rel="stylesheet" href="duel-08.css?v=0.8A">
 </head>
 <body>
 <main id="app">
@@ -19,16 +20,17 @@
  <img id="menu-hero-unit" class="heroFighter" alt="Fotorealistische bidsprinkhaan">
  <div class="menuActions">
   <button id="menu-play" class="menuPrimary">▶ SPELEN</button>
+  <button id="menu-duel" class="menuSecondary" style="background:linear-gradient(130deg,#483b68,#205c49);border-color:#ecd38e">⚔ ONLINE DUEL · 1 TEGEN 1</button>
   <div class="menuTwocol">
    <button id="menu-fighters" class="menuSecondary">VECHTERS</button>
    <button id="menu-worlds" class="menuSecondary">WERELDEN</button>
   </div>
   <button id="menu-settings" class="menuSecondary">⚙ INSTELLINGEN</button>
  </div>
- <footer class="menuFooter"><span id="menu-wins">0 OVERWINNINGEN</span><span>0.7B · 8 VECHTERS · 2 WERELDEN</span></footer>
+ <footer class="menuFooter"><span id="menu-wins">0 OVERWINNINGEN</span><span>0.8A · 8 VECHTERS · 2 WERELDEN</span></footer>
 </section>
 <section id="select-view" class="view" hidden>
- <div class="sceneTop"><button class="iconBtn" data-back="menu">‹ TERUG</button><span class="smallBrand">INSECT ARENA</span><span class="eyebrow">0.7B</span></div>
+ <div class="sceneTop"><button class="iconBtn" data-back="menu">‹ TERUG</button><span class="smallBrand">INSECT ARENA</span><span class="eyebrow">0.8A</span></div>
  <div class="panel">
   <h2 class="sceneTitle">KIES JE VECHTER</h2><p class="sceneSub">Acht spectaculaire roofdieren met hun eigen speciale vaardigheid.</p>
   <div id="fighter-roster" class="roster"></div>
@@ -61,6 +63,39 @@
  <div class="settingsRow"><label for="less-motion">Minder omgevingseffecten</label><input id="less-motion" type="checkbox"></div>
  <p style="color:#e3d8b2;font-size:13px">Je overwinningen blijven op dit apparaat opgeslagen.</p>
  <button id="settings-done" class="goldButton">OPSLAAN EN TERUG</button></div>
+</section>
+<section id="duel-view" class="view" hidden>
+ <div class="sceneTop"><button id="duel-back" class="iconBtn">‹ TERUG</button><span class="smallBrand">DUEL ARENA</span><span class="eyebrow">0.8A</span></div>
+ <div class="panel duelPanel">
+  <h2 class="duelHeadline">⚔ PRIVÉ DUEL ARENA</h2>
+  <p class="duelIntro">Speel live op twee telefoons. Eén speler maakt een kamer; de ander scant de QR-code. Geen chat, account of vreemden.</p>
+  <div class="duelChoices"><button id="duel-host">🏆 KAMER MAKEN</button><button id="duel-join">🔗 MEEDOEN</button></div>
+  <div id="duel-status" class="duelStatus" role="status" aria-live="polite">Maak een privékamer of voer een uitnodigingscode in.</div>
+  <div id="duel-invite-section" class="duelInvite" hidden>
+   <div>
+    <strong id="duel-room-label" class="duelRoom">WACHT OP KAMERCODE</strong>
+    <label for="duel-share-link">UITNODIGINGSLINK</label>
+    <input id="duel-share-link" type="text" readonly spellcheck="false" aria-label="Uitnodigingslink">
+    <div class="duelActions"><button id="duel-copy">DEEL / KOPIEER LINK</button></div>
+    <div class="duelWaiting">De host houdt de pagina open. De andere speler scant de QR-code met zijn telefooncamera.</div>
+   </div>
+   <div id="duel-qr" class="duelQr" aria-label="QR-code voor privéduel"></div>
+  </div>
+  <div id="duel-join-section" hidden>
+   <div class="duelSectionTitle">KAMERCODE INVULLEN</div>
+   <label for="duel-room-input" class="duelTiny">Plak de uitnodigingscode of -link hieronder.</label>
+   <input id="duel-room-input" class="duelJoinInput" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="ia8-... of uitnodigingslink">
+   <div class="duelActions"><button id="duel-join-go" class="goldButton">VERBIND MET KAMER</button></div>
+  </div>
+  <div class="duelConnection" id="duel-peer-count">WACHT OP TEGENSTANDER</div>
+  <div class="duelSectionTitle">JOUW VECHTER</div>
+  <div class="duelRoster" id="duel-roster"></div>
+  <div class="duelSectionTitle">WERELD VAN HET DUEL</div>
+  <div class="duelWorlds"><button data-duel-world="forest">🌿 GROENE BOSBODEM</button><button data-duel-world="fungus">🍄 SCHIMMELVALLEI</button></div>
+  <button id="duel-start" class="goldButton" disabled hidden>⚔ START ONLINE DUEL</button>
+  <p id="duel-fragment-count" class="duelConnection">MYSTERIEFRAGMENTEN 0 / 8</p>
+  <p class="duelRule"><strong>Privé:</strong> alleen met jouw geheime link. Live gevechtsdata zijn versleuteld via WebRTC. Een openbare PeerJS-signaleringsdienst helpt bij het verbinden; op sommige mobiele netwerken kan dit mislukken. Geen openbare chat, namen, accounts of ranglijsten.</p>
+ </div>
 </section>
 <section id="arena-view" class="view" hidden>
  <div class="battleHeader">
@@ -774,5 +809,8 @@ requestAnimationFrame(frame);
 </script>
 <script src="expansion-07.js?v=0.7A"></script>
 <script src="ui-07.js?v=0.7B"></script>
+<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="duel-08.js?v=0.8A"></script>
 </body>
 </html>
