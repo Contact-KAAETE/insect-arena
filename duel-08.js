@@ -34,6 +34,8 @@ function syncButtons(){
 }
 function openDuel(){
  ui().open('duel');
+ let count=0;try{count=Math.max(0,Math.min(8,Number(localStorage.getItem('iaMysteryFragments')||0)))}catch(_){}
+ $('duel-fragment-count').textContent='MYSTERIEFRAGMENTEN '+count+' / 8';
  syncButtons();
 }
 function clearSession(notify=true){
@@ -308,9 +310,19 @@ function result(){
  if(state.resultShown)return;
  state.resultShown=true;
  const won=enemy.hp<=0;
+ let fragment='';
+ if(won){
+  let count=0;
+  try{count=Math.max(0,Math.min(8,Number(localStorage.getItem('iaMysteryFragments')||0)))+1;
+    count=Math.min(8,count);
+    localStorage.setItem('iaMysteryFragments',count);
+  }catch(_){count=0}
+  fragment=count?' · Mysteriefragment '+count+'/8 verzameld!':'';
+ }
+
  const overlay=$('battle-overlay'),root=$('overlay-buttons');
  $('overlay-title').textContent=won?'DUEL GEWONNEN!':'DUEL VERLOREN';
- $('overlay-desc').textContent=won?'Je tegenstander is verslagen!':'Volgende keer pak je hem!';
+ $('overlay-desc').textContent=won?'Je tegenstander is verslagen!'+fragment:'Volgende keer pak je hem!';
  root.replaceChildren();
  for(const [title,fn,major] of [['NOG EEN DUEL',restoreLobby,true],['HOOFDMENU',endToMenu,false]]){
   const b=document.createElement('button');b.className=major?'goldButton':'iconBtn';
