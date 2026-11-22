@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.webmanifest?v=1.2A">
 <link rel="icon" type="image/svg+xml" href="assets/icon-insect-arena.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png?v=1.1A">
-<title>INSECT ARENA 1.2A — Charged Specials & Slim Vechten</title>
+<title>INSECT ARENA 1.3A — Slimme Roofdieren</title>
 <link rel="stylesheet" href="ui-06.css?v=0.6A">
 <link rel="stylesheet" href="ui-07.css?v=0.7B">
 <link rel="stylesheet" href="duel-08.css?v=0.8A">
@@ -19,6 +19,7 @@
 <link rel="stylesheet" href="landscape-10.css?v=1.0A">
 <link rel="stylesheet" href="premium-11.css?v=1.1A">
 <link rel="stylesheet" href="tactical-12.css?v=1.2A">
+<link rel="stylesheet" href="balance-13.css?v=1.3A">
 </head>
 <body>
 <main id="app">
@@ -42,10 +43,10 @@
   </div>
   <button id="menu-settings" class="menuSecondary">⚙ INSTELLINGEN</button>
  </div>
- <footer class="menuFooter"><span id="menu-wins">0 OVERWINNINGEN</span><span>1.2A · TACTICAL · 8 VECHTERS · DUELS</span></footer>
+ <footer class="menuFooter"><span id="menu-wins">0 OVERWINNINGEN</span><span>1.3A · SLIMME AI · 8 VECHTERS · DUELS</span></footer>
 </section>
 <section id="select-view" class="view" hidden>
- <div class="sceneTop"><button class="iconBtn" data-back="menu">‹ TERUG</button><span class="smallBrand">INSECT ARENA</span><span class="eyebrow">1.2A</span></div>
+ <div class="sceneTop"><button class="iconBtn" data-back="menu">‹ TERUG</button><span class="smallBrand">INSECT ARENA</span><span class="eyebrow">1.3A</span></div>
  <div class="panel">
   <h2 class="sceneTitle">KIES JE VECHTER</h2><p class="sceneSub">Acht spectaculaire roofdieren met hun eigen speciale vaardigheid.</p>
   <small id="tactical-help-note">✦ Vul je special-meter met rake aanvallen · extra energie wanneer je geraakt wordt · langere, slimmere duels</small>
@@ -77,11 +78,18 @@
  <div class="panel"><h2 class="sceneTitle">INSTELLINGEN</h2>
  <div class="settingsRow"><label for="joy-sens">Joystickgevoeligheid</label><input id="joy-sens" type="range" min="65" max="135" step="5" value="100"><output id="joy-sens-label">100%</output></div>
  <div class="settingsRow"><label for="less-motion">Minder omgevingseffecten</label><input id="less-motion" type="checkbox"></div>
+ <div class="settingsRow"><label for="ia-difficulty">Moeilijkheid tegen computer</label>
+ <select id="ia-difficulty" aria-label="Moeilijkheid van solo-gevechten">
+  <option value="training">Training · rustig</option>
+  <option value="tactical" selected>Tactisch · slim</option>
+  <option value="alpha">Alfa-roofdier · uitdagend</option>
+ </select></div>
+ <p id="ia-difficulty-guide">Slimme tegenstander met zichtbare aanvallen die je kunt ontwijken.</p>
  <p style="color:#e3d8b2;font-size:13px">Je overwinningen blijven op dit apparaat opgeslagen.</p>
  <button id="settings-done" class="goldButton">OPSLAAN EN TERUG</button></div>
 </section>
 <section id="duel-view" class="view" hidden>
- <div class="sceneTop"><button id="duel-back" class="iconBtn">‹ TERUG</button><span class="smallBrand">DUEL ARENA</span><span class="eyebrow">1.2A</span></div>
+ <div class="sceneTop"><button id="duel-back" class="iconBtn">‹ TERUG</button><span class="smallBrand">DUEL ARENA</span><span class="eyebrow">1.3A</span></div>
  <div class="panel duelPanel">
   <h2 class="duelHeadline">⚔ PRIVÉ DUEL ARENA</h2>
   <p class="duelIntro">Speel een kampioenschap op twee telefoons: drie rondes van 90 seconden. Eerste tot twee zeges wint een mysteriefragment. Bij tijdsverloop beslist de volgende rake aanval!</p>
@@ -153,6 +161,7 @@
   </div>
   <div id="match-flash" hidden aria-live="polite">SUDDEN DEATH!</div>
   <div id="tactical-toast" hidden aria-live="polite"></div>
+  <div id="ai-danger-tag" hidden aria-live="polite"></div>
   <div id="battle-overlay" class="floatOverlay" hidden>
    <strong id="overlay-title" class="resultTitle">GEWONNEN!</strong>
    <div id="overlay-desc" class="resultSub"></div>
@@ -887,5 +896,6 @@ requestAnimationFrame(frame);
 <script src="landscape-10.js?v=1.0A"></script>
 <script src="premium-11.js?v=1.1A"></script>
 <script src="tactical-12.js?v=1.2A"></script>
+<script src="balance-13.js?v=1.3A"></script>
 </body>
 </html>
