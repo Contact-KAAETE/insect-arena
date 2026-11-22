@@ -6,6 +6,13 @@ const ids=['menu','select','world','settings','arena','duel'];
 const views=Object.fromEntries(ids.map(id=>[id,document.getElementById(id+'-view')]));
 const el=id=>document.getElementById(id);
 const state={page:'menu',shownResult:false};
+function syncPageScroll(page){
+ // Immersive battle is fixed; menu/select/world/settings/duel scroll naturally.
+ const allow=page!=='arena';
+ document.documentElement.classList.toggle('ia19-menu-scroll',allow);
+ document.body.classList.toggle('ia19-menu-scroll',allow);
+}
+syncPageScroll('menu');
 const save=(key,val)=>{try{localStorage.setItem(key,String(val))}catch(e){}};
 const read=(key,fallback)=>{try{return localStorage.getItem(key)??fallback}catch(e){return fallback}};
 window.iaJoystick={active:false,x:0,y:0,sensitivity:1};
@@ -13,6 +20,7 @@ window.iaReducedEffects=false;
 function switchPage(page){
  if(page!=='arena'){window.iaStopCountdown?.();window.iaMatchHUD?.stop();}
  state.page=page;
+ syncPageScroll(page);
  ids.forEach(id=>views[id].hidden=id!==page);
  if(page==='menu')el('menu-wins').textContent=wins+' OVERWINNINGEN';
  if(typeof window.scrollTo==='function')window.scrollTo(0,0);
