@@ -196,6 +196,13 @@ attack=function(a,t,special=false){
   floaters.push({x:t.x,y:t.y-92,value:'GIFGREEP!',life:42,color:'#deff94'});
  }
 };
+const previousReset=reset;
+reset=function(...args){
+ const outcome=previousReset(...args);
+ if(solo()&&world()==='roots'&&!tutorial)
+  status('WORTELDOOLHOF · Gebruik wortels als schuilplek · Overwinningen: '+wins);
+ return outcome;
+};
 const previousEnemy=controlEnemy;
 controlEnemy=function(dt){
  if(tutorial)return;
