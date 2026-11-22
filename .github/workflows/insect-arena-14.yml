@@ -1,4 +1,4 @@
-name: INSECT ARENA 1.6A living terrains checks
+name: INSECT ARENA 1.7A immersive fullscreen checks
 on:
   push:
     branches:
@@ -6,6 +6,7 @@ on:
       - feature/adventure-tutorial-centipede-14a
       - feature/biomes-creatures-15a
       - feature/living-terrains-16a
+      - feature/immersive-fullscreen-17a
   pull_request:
 jobs:
   smoke:
@@ -17,4 +18,4 @@ jobs:
         with:
           node-version: '22'
       - name: Check tutorial, six biomes and thirteen predators
-        run: node --test tests/arena-14.test.cjs tests/arena-15.test.cjs tests/arena-16.test.cjs
+        run: node --test tests/arena-14.test.cjs tests/arena-15.test.cjs tests/arena-16.test.cjs tests/arena-17.test.cjs
