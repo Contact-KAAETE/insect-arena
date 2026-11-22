@@ -2,13 +2,20 @@
 <html lang="nl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>INSECT ARENA 0.9A — Kampioenschap & Sudden Death</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#0d281c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="INSECT ARENA">
+<link rel="manifest" href="manifest.webmanifest?v=1.0A">
+<link rel="icon" type="image/svg+xml" href="assets/icon-insect-arena.svg">
+<title>INSECT ARENA 1.0A — Landscape Fullscreen</title>
 <link rel="stylesheet" href="ui-06.css?v=0.6A">
 <link rel="stylesheet" href="ui-07.css?v=0.7B">
 <link rel="stylesheet" href="duel-08.css?v=0.8A">
 <link rel="stylesheet" href="countdown-08.css?v=0.8B">
 <link rel="stylesheet" href="match-09.css?v=0.9A">
+<link rel="stylesheet" href="landscape-10.css?v=1.0A">
 </head>
 <body>
 <main id="app">
@@ -29,10 +36,10 @@
   </div>
   <button id="menu-settings" class="menuSecondary">⚙ INSTELLINGEN</button>
  </div>
- <footer class="menuFooter"><span id="menu-wins">0 OVERWINNINGEN</span><span>0.9A · 8 VECHTERS · 2 WERELDEN · DUELS</span></footer>
+ <footer class="menuFooter"><span id="menu-wins">0 OVERWINNINGEN</span><span>1.0A · LANDSCAPE · 8 VECHTERS · DUELS</span></footer>
 </section>
 <section id="select-view" class="view" hidden>
- <div class="sceneTop"><button class="iconBtn" data-back="menu">‹ TERUG</button><span class="smallBrand">INSECT ARENA</span><span class="eyebrow">0.8A</span></div>
+ <div class="sceneTop"><button class="iconBtn" data-back="menu">‹ TERUG</button><span class="smallBrand">INSECT ARENA</span><span class="eyebrow">1.0A</span></div>
  <div class="panel">
   <h2 class="sceneTitle">KIES JE VECHTER</h2><p class="sceneSub">Acht spectaculaire roofdieren met hun eigen speciale vaardigheid.</p>
   <div id="fighter-roster" class="roster"></div>
@@ -67,7 +74,7 @@
  <button id="settings-done" class="goldButton">OPSLAAN EN TERUG</button></div>
 </section>
 <section id="duel-view" class="view" hidden>
- <div class="sceneTop"><button id="duel-back" class="iconBtn">‹ TERUG</button><span class="smallBrand">DUEL ARENA</span><span class="eyebrow">0.8A</span></div>
+ <div class="sceneTop"><button id="duel-back" class="iconBtn">‹ TERUG</button><span class="smallBrand">DUEL ARENA</span><span class="eyebrow">1.0A</span></div>
  <div class="panel duelPanel">
   <h2 class="duelHeadline">⚔ PRIVÉ DUEL ARENA</h2>
   <p class="duelIntro">Speel een kampioenschap op twee telefoons: drie rondes van 90 seconden. Eerste tot twee zeges wint een mysteriefragment. Bij tijdsverloop beslist de volgende rake aanval!</p>
@@ -104,6 +111,7 @@
   <button id="battle-menu" class="iconBtn">☰ MENU</button>
   <span id="status" class="battleStatus">Kies je vechter en start.</span>
   <button id="pause" class="iconBtn">Ⅱ PAUZE</button>
+  <button id="battle-fullscreen" class="iconBtn" title="Volledig scherm" type="button">⛶ SCHERM</button>
  </div>
  <div id="match-hud" hidden aria-label="Rondetimer en wedstrijdstand">
    <div id="match-round">RONDE 1 / 3<small>BEST-OF-THREE</small></div>
@@ -131,9 +139,26 @@
    <button data-key="hit" class="actionBtn attackBtn"><strong>⚔ AANVAL</strong><small>SLAG</small></button>
   </div>
  </div>
- <p style="text-align:center;color:#c8b98b;font-size:11px;margin:12px 0">iPhone: joystick + aanval · computer: WASD + spatie + Shift</p>
+ <p style="text-align:center;color:#c8b98b;font-size:11px;margin:12px 0">Speel liggend voor de grootste arena · iPhone: joystick + aanval · computer: WASD + spatie + Shift.</p>
+ <div id="rotate-phone" role="status">
+  <span class="rotateSymbol" aria-hidden="true">↻</span>
+  <h2>HOUD JE TELEFOON LIGGEND</h2>
+  <p>Draai je iPhone horizontaal voor de volledige arena. Zet zo nodig de rotatievergrendeling uit.</p>
+  <button id="rotate-exit" class="goldButton" type="button">TERUG NAAR MENU</button>
+ </div>
 </section>
 </main>
+<div id="fullscreen-help" hidden role="dialog" aria-modal="true" aria-label="Landscape volledig scherm">
+ <div class="fullscreenHelpCard">
+  <h2>⛶ FULLSCREEN OP iPHONE</h2>
+  <p>De game past zich al aan je liggende scherm aan. Voor een scherm zonder Safari-balken:</p>
+  <p><strong>1.</strong> Open INSECT ARENA in Safari.<br>
+     <strong>2.</strong> Tik op <strong>Deel</strong> en kies <strong>Zet op beginscherm</strong>.<br>
+     <strong>3.</strong> Open het nieuwe INSECT ARENA-icoon en draai de telefoon liggend.</p>
+  <p style="font-size:12px">Safari op iPhone laat een gewone website niet rechtstreeks volledig scherm afdwingen. Andere browsers kunnen dit via de ⛶-knop wel ondersteunen.</p>
+  <button id="install-help-close" class="goldButton" type="button">BEGREPEN</button>
+ </div>
+</div>
 <select id="fighter" hidden aria-hidden="true"></select>
 <button id="start" hidden></button>
 <script>
@@ -828,5 +853,6 @@ requestAnimationFrame(frame);
 <script src="duel-08.js?v=0.9A"></script>
 <script src="countdown-08.js?v=0.9A"></script>
 <script src="match-09.js?v=0.9A"></script>
+<script src="landscape-10.js?v=1.0A"></script>
 </body>
 </html>
