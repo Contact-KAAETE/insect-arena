@@ -51,7 +51,7 @@ function setEnemySolo(){
  enemy.hp=enemy.maxHp;
  enemy.damage=Math.round(enemy.damage*cfg.attackBoost*10)/10;
  enemy.ai={phase:'hunt',timer:0,cooldown:75,aim:0,side:Math.random()<.5?-1:1,
-   combo:0,evades:0,sidesteps:0,stagger:0,attacks:0,specialAttack:false};
+   combo:0,evades:0,sidesteps:0,stagger:0,attacks:0,specialAttack:false,rage:false};
  player.iaLastChance=false;player.iaBoost=0;
  warning.hidden=true;
 }
@@ -80,7 +80,7 @@ controlPlayer=function(dt){
 const coreEnemy=controlEnemy;
 function moveEnemy(u,mx,my,dt,speed){
  const d=hypot(mx,my);
- const mult=u.root>0?.08:u.slow>0?.46:u.sporeSlow>0?.62:1;
+ const mult=(u.root>0?.08:u.slow>0?.46:u.sporeSlow>0?.62:1)*(u.ai?.rage?1.12:1);
  u.x+=mx/d*speed*mult*dt;
  u.y+=my/d*speed*mult*dt;
  u.walk+=.09*dt;
@@ -89,7 +89,7 @@ function beginWindup(ai,u,dx,dy,cfg){
  const powerful=(u.charge||0)>=100&&u.special<=0;
  ai.specialAttack=powerful;
  ai.aim=Math.atan2(dy,dx);
- ai.windupTotal=cfg.windup+(powerful?12:0);
+ ai.windupTotal=Math.max(29,Math.round(cfg.windup*(ai.rage?.88:1)))+(powerful?12:0);
  setPhase(ai,'windup',ai.windupTotal);
  // Keep the hit streak across windups so repeated button-mashing triggers a side-step.
  ai.cooldown=cfg.strikeDelay;
@@ -104,6 +104,12 @@ controlEnemy=function(dt){
   return coreEnemy(dt);
  const ai=enemy.ai,cfg=levels[mode],u=enemy;
  dt=clamp(Number(dt)||1,.2,2.2);
+ if(!ai.rage&&u.hp>0&&u.hp<=u.maxHp*.46){
+  ai.rage=true;
+  u.charge=Math.min(100,(u.charge||0)+26);
+  cue('⚡ ROOFDIER ONTKETEND!');
+  floater(u,'FASE 2!','#ffbe7a');
+ }
  let dx=player.x-u.x,dy=player.y-u.y,d=hypot(dx,dy);
  u.face=dx>=0?1:-1;
  ai.cooldown=Math.max(0,ai.cooldown-dt);
@@ -225,8 +231,15 @@ drawInsect=function(u){
  originalDraw(u);
  if(!solo()||!u?.ai||!playing)return;
  const ai=u.ai;
- if(ai.phase!=='evade'&&ai.phase!=='windup')return;
+ if(ai.phase!=='evade'&&ai.phase!=='windup'&&!ai.rage)return;
  g.save();
+ if(ai.rage){
+  g.globalAlpha=.55;g.strokeStyle='#ff9d52';g.shadowColor='#ff773c';
+  g.shadowBlur=18;g.lineWidth=4;
+  g.beginPath();g.ellipse(u.x,u.y+24,74,24,0,0,Math.PI*2);g.stroke();
+  g.globalAlpha=1;
+ }
+ if(ai.phase!=='evade'&&ai.phase!=='windup'){g.restore();return;}
  g.strokeStyle=ai.phase==='evade'?'rgba(124,232,255,.72)':'rgba(255,144,56,.64)';
  g.shadowColor=ai.phase==='evade'?'#a6eaff':'#ffad51';g.shadowBlur=12;
  g.lineWidth=4;g.beginPath();g.ellipse(u.x,u.y+24,67,20,0,0,Math.PI*2);g.stroke();
