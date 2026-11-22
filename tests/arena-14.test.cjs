@@ -13,8 +13,8 @@ test('1.4A boot references and JavaScript syntax',()=>{
   'assets/fighters/centipede-14.svg'
  ])assert.ok(fs.existsSync(path.join(base,file)),'Missing '+file);
  assert.ok(html.includes('adventure-14-pre.js?v=1.4A'));
- assert.ok(html.includes('adventure-14.js?v=1.4A'));
- assert.ok(html.includes('adventure-14.css?v=1.4A'));
+ assert.ok(html.includes('adventure-14.js?v=1.4B'));
+ assert.ok(html.includes('adventure-14.css?v=1.4B'));
  assert.ok(html.includes('data-choose-world="roots"'));
  const order=html.indexOf('adventure-14-pre.js')<html.indexOf('ui-07.js')&&
    html.indexOf('balance-13.js')<html.indexOf('adventure-14.js');
@@ -22,7 +22,7 @@ test('1.4A boot references and JavaScript syntax',()=>{
  for(const file of ['expansion-07.js','ui-07.js','duel-08.js',
   'match-09.js','tactical-12.js','balance-13.js',
   'adventure-14-pre.js','adventure-14.js'])assert.doesNotThrow(()=>new Function(get(file)),file);
- assert.equal(JSON.parse(get('manifest.webmanifest')).start_url,'/insect-arena/?v=1.4A');
+ assert.equal(JSON.parse(get('manifest.webmanifest')).start_url,'/insect-arena/?v=1.4B');
  assert.ok(get('assets/fighters/centipede-14.svg').endsWith('</svg>'));
 });
 
