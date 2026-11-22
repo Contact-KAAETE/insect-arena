@@ -87,7 +87,8 @@ test('iPhone landscape camera displays full playable vertical floor',()=>{
 
 test('impact lighting is decoration only and respects reduced motion and pause',()=>{
  const r=scene();
- assert.equal(r.objects.length,2);
+ assert.equal(r.objects.length,3,'Two impact lights and one subtle biome ambience layer');
+ assert.equal(r.objects[2].className,'ia17-atmosphere');
  const cam=r.win.iaImmersive17.camera();
  const first=r.objects[0],second=r.objects[1];
  assert.equal(r.scope.drawHUD(),'drawn');
@@ -123,6 +124,7 @@ test('CSS keeps full-screen controls, progress overlay and menu touchable',()=>{
  assert.match(css,/#arena-view \.attackBtn/);
  assert.match(css,/#arena-view \.specialBtn/);
  assert.match(css,/#arena-view \.premiumFighterHUD/);
+ assert.match(css,/#arena-view \.ia17-atmosphere\[data-world="red"\]/);
  assert.match(css,/#arena-view #ia14-guide/);
  assert.match(css,/#arena-view \.floatOverlay/);
  assert.match(css,/env\(safe-area-inset-left/);
