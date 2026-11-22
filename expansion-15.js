@@ -42,6 +42,7 @@ function chooseWorld(id){
  window.iaUI?.open?.('select');
  window.iaUI?.refreshRoster?.();
  window.iaPremiumRefresh?.();
+ refreshMessage();
 }
 for(const id of Object.keys(window.ia15WorldNames||{})){
  $('world-play-'+id)?.addEventListener('click',()=>chooseWorld(id));
