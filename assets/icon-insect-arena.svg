@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Insect Arena">
+<defs><radialGradient id="bg"><stop stop-color="#355b3d"/><stop offset="1" stop-color="#06160f"/></radialGradient><linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff7c6"/><stop offset=".55" stop-color="#e7ba59"/><stop offset="1" stop-color="#9b6c24"/></linearGradient></defs>
+<rect width="512" height="512" rx="110" fill="url(#bg)"/>
+<rect x="25" y="25" width="462" height="462" rx="95" fill="none" stroke="url(#gold)" stroke-width="17"/>
+<path d="M172 250c-70-70-119-27-107 10 18 58 80 81 144 70m131-80c70-70 119-27 107 10-18 58-80 81-144 70" fill="none" stroke="#ba9c59" stroke-width="20" stroke-linecap="round"/>
+<path d="M227 193c-70-89-52-123-37-124m95 124c70-89 52-123 37-124" fill="none" stroke="#e8c879" stroke-width="19" stroke-linecap="round"/>
+<path d="M256 151c-88 0-115 79-100 152 12 64 62 101 100 101s88-37 100-101c15-73-12-152-100-152z" fill="#141a0d" stroke="url(#gold)" stroke-width="17"/>
+<path d="M256 170v211M174 266h164" stroke="#d5b06b" stroke-width="11" stroke-linecap="round"/>
+<path d="M221 237c16-13 29-13 35-8m35 8c-16-13-29-13-35-8" fill="none" stroke="#f9e5a8" stroke-width="9"/>
+<text x="256" y="462" text-anchor="middle" font-family="system-ui,sans-serif" font-size="48" font-weight="900" letter-spacing="5" fill="#efda9b">ARENA</text>
+</svg>
