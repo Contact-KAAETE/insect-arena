@@ -1,0 +1,44 @@
+/* INSECT ARENA 0.8A — private duel lobby */
+.duelPanel{position:relative;overflow:hidden;background:radial-gradient(ellipse at 76% -20%,#66512b77,transparent 54%),linear-gradient(145deg,#173b2e,#08190f 85%);}
+.duelPanel::before{content:"";position:absolute;inset:0;background:linear-gradient(130deg,transparent 42%,#8be4880a);pointer-events:none}
+.duelPanel > *{position:relative}
+.duelHeadline{text-align:center;line-height:1.15;font-size:clamp(26px,5vw,45px);font-weight:1000;color:#f9de9a;margin:10px 0 6px;text-shadow:0 5px 12px #000}
+.duelIntro{text-align:center;color:#e8d6ad;font-size:14px;max-width:630px;margin:7px auto 19px;line-height:1.5}
+.duelChoices{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin:14px 0}
+.duelChoices button{padding:17px 11px;border:1px solid #d8bb79;border-radius:14px;color:#fff4ca;font-weight:900;background:linear-gradient(135deg,#3c5937,#0e2822);box-shadow:0 8px 17px #0008}
+.duelChoices button.chosen{background:linear-gradient(140deg,#a78141,#2d5136);border-color:#f6dc9a}
+.duelSectionTitle{font-size:13px;font-weight:1000;letter-spacing:.15em;color:#f5db93;margin:18px 0 9px}
+.duelRoster{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+.duelFighter{min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:space-between;border:1px solid #a89a6b82;border-radius:11px;background:#152e25;padding:7px 5px 9px;color:#f6e9c5;min-height:110px;box-shadow:inset 0 0 17px #0006}
+.duelFighter.chosen{border:2px solid #fce7a5;background:linear-gradient(145deg,#534a2b,#1f4433)}
+.duelFighter img{display:block;max-width:100%;width:100%;height:66px;object-fit:contain;pointer-events:none}
+.duelFighter span{font-size:clamp(9px,2vw,12px);font-weight:900;line-height:1.18;max-width:100%;overflow-wrap:anywhere;text-align:center}
+.duelWorlds{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:4px 0 12px}
+.duelWorlds button{padding:12px 8px;background:#1d3628;border:1px solid #9d955f;border-radius:10px;color:#f4dfb1;font-weight:800}
+.duelWorlds button.chosen{background:linear-gradient(130deg,#60693a,#41395d);border:2px solid #f4d38a}
+.duelWorlds button:disabled{opacity:.52}
+.duelStatus{margin:13px 0;padding:12px;border:1px solid #b39d667c;border-radius:13px;color:#fff0bd;background:#081e1799;text-align:center;line-height:1.55;min-height:48px}
+.duelInvite{display:grid;grid-template-columns:minmax(0,1fr) 174px;gap:13px;align-items:center;background:#0b251bc9;border:1px solid #d2b87c7d;border-radius:16px;padding:13px;margin:12px 0}
+.duelInvite label{display:block;font-size:12px;color:#dfcd9f;margin-bottom:5px}
+.duelInvite input,.duelJoinInput{width:100%;font:inherit;color:#fff4d6;min-width:0;border-radius:9px;border:1px solid #ac9b6b85;background:#091810;padding:11px 10px;font-size:13px;-webkit-user-select:text;user-select:text}
+.duelQr{width:174px;height:174px;background:white;padding:8px;border-radius:9px;display:grid;place-items:center}
+.duelQr img,.duelQr canvas{max-width:100%;height:auto!important}
+.duelActions{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.duelActions button{flex:1 1 135px;padding:11px 9px;border-radius:11px;color:#f9eecf;background:#194330;border:1px solid #d3b46d;font-weight:850}
+.duelActions .goldButton{color:#1d2c18}
+.duelTiny{font-size:11px;color:#b8bb9b;line-height:1.45;margin:10px 0}
+.duelConnection{font-size:12px;letter-spacing:.035em;color:#d9ecbc;margin:9px 0}
+#duel-start:disabled{opacity:.43;filter:grayscale(1);cursor:not-allowed;box-shadow:none}
+.duelRoom{font-size:13px;color:#fce3a7;margin:7px 0;overflow-wrap:anywhere}
+.duelWaiting{padding:10px 13px;background:#3c302779;border:1px solid #f3cb7c66;border-radius:9px;color:#f6e6b9;font-size:12px}
+.duelRule{border-top:1px solid #d5bd7659;padding-top:13px;margin-top:15px;color:#d9d4b3;font-size:12px;line-height:1.6}
+#duel-view *{-webkit-tap-highlight-color:transparent}
+@media(max-width:500px){
+.duelInvite{grid-template-columns:1fr;justify-items:center}
+.duelInvite > div:first-child{width:100%}
+.duelRoster{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+.duelFighter{min-height:102px;padding:5px 3px}
+.duelFighter img{height:59px}
+.duelFighter span{font-size:9px}
+.duelHeadline{font-size:30px}
+}
