@@ -9,6 +9,7 @@ const roundEl=document.getElementById('match-round');
 const clockEl=document.getElementById('match-clock');
 const scoreEl=document.getElementById('match-score');
 const flashEl=document.getElementById('match-flash');
+const SOLO_MS=150000; // Solo is 2:30; online remains 90 seconds.
 const state={mode:'none',active:false,startAt:0,remaining:90000,sudden:false,
   pausedAt:0,pausedTotal:0,round:1,scores:{host:0,guest:0},flashTimeout:null};
 const render=()=>{
@@ -17,7 +18,7 @@ const render=()=>{
  roundEl.innerHTML=(solo?'SOLO · RONDE 1':('RONDE '+state.round+' / 3'))+
     '<small>'+(solo?'OVERLEEF DE UITDAGER':'BEST-OF-THREE')+'</small>';
  clockEl.textContent=state.sudden?'SUDDEN DEATH':format(state.remaining);
- scoreEl.innerHTML=solo?'JUNGLE ARENA<small>90 SECONDEN</small>':
+ scoreEl.innerHTML=solo?'JUNGLE ARENA<small>150 SECONDEN</small>':
    '<span class="scorePips">HOST '+state.scores.host+' : '+state.scores.guest+' GAST</span><small>EERSTE TOT 2 WINT</small>';
  root.classList.toggle('urgent',!state.sudden&&state.remaining<=15000);
  root.classList.toggle('suddenDeath',state.sudden);
@@ -45,7 +46,7 @@ function clearEffects(a){
 }
 function beginSolo(startAt){
  state.mode='solo';state.active=true;state.sudden=false;
- state.startAt=startAt;state.remaining=90000;
+ state.startAt=startAt;state.remaining=SOLO_MS;
  state.pausedAt=0;state.pausedTotal=0;state.round=1;
  state.scores={host:0,guest:0};root.hidden=false;flashEl.hidden=true;
  render();
@@ -87,7 +88,7 @@ function tick(){
  }
  if(state.pausedAt){state.pausedTotal+=Date.now()-state.pausedAt;state.pausedAt=0;}
  if(state.sudden)return;
- state.remaining=Math.max(0,90000-(Date.now()-state.startAt-state.pausedTotal));
+ state.remaining=Math.max(0,SOLO_MS-(Date.now()-state.startAt-state.pausedTotal));
  if(state.remaining<=0)beginOvertime();
  else render();
 }
