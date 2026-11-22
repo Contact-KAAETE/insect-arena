@@ -156,7 +156,7 @@
    const veil=g.createLinearGradient(0,0,0,c.height);
    veil.addColorStop(0,'rgba(37,7,77,.13)');veil.addColorStop(.65,'rgba(48,4,82,.02)');veil.addColorStop(1,'rgba(14,4,48,.15)');
    g.fillStyle=veil;g.fillRect(0,0,c.width,c.height);
-   if(playing&&!paused){
+   if(playing&&!paused&&!window.iaCountdownActive){
      worldFrame++;
      if(worldFrame%235===0)createSporeCloud();
      for(const cl of spores){
