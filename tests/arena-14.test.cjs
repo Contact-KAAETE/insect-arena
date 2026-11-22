@@ -95,7 +95,7 @@ function fixture(){
  const g=new Proxy({createLinearGradient:()=>({addColorStop(){}})},
   {get(o,k){return k in o?o[k]:()=>{}}});
  const noop=()=>{};
- const source=get('adventure-14.js')+
+ const source='let reset=()=>{};let wins=0;\n'+get('adventure-14.js')+
   '\nreturn {state:()=>({player,enemy,playing,paused}),attack:(...xs)=>attack(...xs),tick:(...xs)=>drawArena(...xs)};';
  const runner=new Function(
   'document','window','localStorage','MutationObserver','fighterSel',
