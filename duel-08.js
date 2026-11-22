@@ -325,29 +325,102 @@ function restoreLobby(){
  ui().open('duel');syncButtons();
  displayStatus(state.role==='host'?'Kies je vechter en start een nieuw duel.':'Kies je vechter; wacht op de host.');
 }
+function awardMatchFragment(){
+ let count=0;
+ try{
+  count=Math.max(0,Math.min(8,Number(localStorage.getItem('iaMysteryFragments')||0)));
+  if(count<8){count++;localStorage.setItem('iaMysteryFragments',count);}
+ }catch(_){}
+ return count?'Mysteriefragment '+count+'/8 verzameld!':'Mysteriefragment verdiend!';
+}
+function showRoundResult(winner,finishedRound,matchOver,reason,fragment=''){
+ const localWon=winner===state.role;
+ const label=matchOver?(localWon?'KAMPIOEN!':'WEDSTRIJD VERLOREN'):
+    (localWon?'RONDE GEWONNEN!':'RONDE VERLOREN');
+ $('overlay-title').textContent=label;
+ const tally='HOST '+state.scores.host+' : '+state.scores.guest+' GAST';
+ const phase=reason==='SUDDEN DEATH'?'· SUDDEN DEATH':'· KNOCK-OUT';
+ $('overlay-desc').textContent=(matchOver?'BEST-OF-THREE AFGELOPEN':'RONDE '+finishedRound+' / 3')+
+   ' '+phase+' · '+tally+(fragment?' · '+fragment:'');
+ const root=$('overlay-buttons');root.replaceChildren();
+ if(state.role==='host'){
+  const go=document.createElement('button');go.className='goldButton';
+  go.textContent=matchOver?'⚔ NIEUWE WEDSTRIJD':'▶ VOLGENDE RONDE';
+  go.addEventListener('click',()=>{
+   if(!state.connected)return;
+   if(matchOver){state.round=1;state.scores={host:0,guest:0};state.matchDone=false;}
+   beginOnlineRound();
+  });
+  root.appendChild(go);
+ }else{
+  const wait=document.createElement('button');wait.className='goldButton';
+  wait.textContent=matchOver?'WACHT OP NIEUWE WEDSTRIJD':'WACHT OP VOLGENDE RONDE';
+  wait.disabled=true;root.appendChild(wait);
+ }
+ const back=document.createElement('button');back.className='iconBtn';
+ back.textContent='HOOFDMENU';back.addEventListener('click',endToMenu);root.appendChild(back);
+ $('battle-overlay').hidden=false;
+}
+function completeRound(winner,reason){
+ if(state.role!=='host'||!state.active||state.resultShown)return;
+ state.resultShown=true;state.active=false;playing=false;
+ state.scores[winner]+=1;
+ const finishedRound=state.round;
+ const matchOver=state.scores.host>=2||state.scores.guest>=2||finishedRound>=3;
+ state.matchDone=matchOver;
+ const frag=matchOver&&winner==='host'?awardMatchFragment():'';
+ const data={t:'round_end',round:finishedRound,winner,reason,
+   scores:{host:state.scores.host,guest:state.scores.guest},matchOver,
+   hostHp:player.hp,guestHp:enemy.hp};
+ send(data);
+ window.iaMatchHUD?.updateDuel({remaining:state.remaining,sudden:state.sudden,
+   round:finishedRound,scores:state.scores});
+ showRoundResult(winner,finishedRound,matchOver,reason,frag);
+ if(!matchOver)state.round+=1;
+ syncButtons();
+}
+function acceptRoundEnd(d){
+ if(state.role!=='guest'||!state.active||state.resultShown)return;
+ if(!Number.isInteger(d.round)||d.round!==state.round)return;
+ if(d.winner!=='host'&&d.winner!=='guest')return;
+ if(!d.scores||!Number.isInteger(d.scores.host)||!Number.isInteger(d.scores.guest))return;
+ state.active=false;state.resultShown=true;playing=false;
+ state.scores={host:Math.max(0,Math.min(3,d.scores.host)),guest:Math.max(0,Math.min(3,d.scores.guest))};
+ state.matchDone=!!d.matchOver;
+ if(Number.isFinite(d.guestHp))player.hp=Math.max(0,d.guestHp);
+ if(Number.isFinite(d.hostHp))enemy.hp=Math.max(0,d.hostHp);
+ if(d.winner==='guest'){wins++;try{localStorage.setItem('iaWins',wins)}catch(_){}}
+ const frag=state.matchDone&&d.winner==='guest'?awardMatchFragment():'';
+ window.iaMatchHUD?.updateDuel({remaining:state.remaining,sudden:state.sudden,
+   round:state.round,scores:state.scores});
+ showRoundResult(d.winner,d.round,state.matchDone,d.reason,frag);
+ if(!state.matchDone)state.round+=1;
+ syncButtons();
+}
+function hostTick(){
+ if(state.role!=='host'||!state.active||!player||!enemy)return;
+ if(!playing){result();return;}
+ if(window.iaCountdownActive)return;
+ state.remaining=Math.max(0,90000-(Date.now()-state.startAt));
+ if(state.remaining===0&&!state.sudden){
+  state.sudden=true;
+  // Strip all lingering status damage so sudden death is decided by a fresh hit.
+  for(const f of [player,enemy]){f.burn=0;f.poison=0;}
+  state.overtimeHealth={host:player.hp,guest:enemy.hp};
+  statusEl.textContent='SUDDEN DEATH · de eerstvolgende rake aanval beslist!';
+ }
+ if(state.sudden&&state.overtimeHealth){
+  if(enemy.hp<state.overtimeHealth.guest){enemy.hp=0;playing=false;result();}
+  else if(player.hp<state.overtimeHealth.host){player.hp=0;playing=false;result();}
+  state.overtimeHealth={host:player.hp,guest:enemy.hp};
+ }
+ window.iaMatchHUD?.updateDuel({remaining:state.remaining,sudden:state.sudden,
+   round:state.round,scores:state.scores});
+}
 function result(){
- if(state.resultShown)return;
- state.resultShown=true;
- const won=enemy.hp<=0;
- let fragment='';
- if(won){
-  let count=0;
-  try{count=Math.max(0,Math.min(8,Number(localStorage.getItem('iaMysteryFragments')||0)))+1;
-    count=Math.min(8,count);
-    localStorage.setItem('iaMysteryFragments',count);
-  }catch(_){count=0}
-  fragment=count?' · Mysteriefragment '+count+'/8 verzameld!':'';
- }
-
- const overlay=$('battle-overlay'),root=$('overlay-buttons');
- $('overlay-title').textContent=won?'DUEL GEWONNEN!':'DUEL VERLOREN';
- $('overlay-desc').textContent=won?'Je tegenstander is verslagen!'+fragment:'Volgende keer pak je hem!';
- root.replaceChildren();
- for(const [title,fn,major] of [['NOG EEN DUEL',restoreLobby,true],['HOOFDMENU',endToMenu,false]]){
-  const b=document.createElement('button');b.className=major?'goldButton':'iconBtn';
-  b.textContent=title;b.addEventListener('click',fn);root.appendChild(b);
- }
- overlay.hidden=false;
+ if(state.role!=='host'||!state.active||state.resultShown)return;
+ if(enemy?.hp<=0)completeRound('host',state.sudden?'SUDDEN DEATH':'KO');
+ else if(player?.hp<=0)completeRound('guest',state.sudden?'SUDDEN DEATH':'KO');
 }
 const corePlayer=controlPlayer;
 controlPlayer=function(dt){
@@ -387,8 +460,13 @@ attack=function(a,t,special=false){
   if(a===player){send({t:special?'special':'hit'});}
   return; // Host alone determines damage, winner, and ability cooldowns.
  }
- const beforePlaying=playing;
+ const beforePlaying=playing,previousHp=t?.hp;
  coreAttack(a,t,special);
+ if(state.active&&state.role==='host'&&state.sudden&&beforePlaying&&playing&&
+    t&&t.hp<previousHp){
+  t.hp=0;playing=false;
+  if(t===enemy){wins++;try{localStorage.setItem('iaWins',wins)}catch(_){}}
+ }
  if(state.active&&state.role==='host'&&beforePlaying&&!playing)result();
 };
 const coreArena=drawArena;
