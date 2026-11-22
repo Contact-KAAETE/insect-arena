@@ -7,10 +7,10 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="INSECT ARENA">
-<link rel="manifest" href="manifest.webmanifest?v=1.5A">
+<link rel="manifest" href="manifest.webmanifest?v=1.6A">
 <link rel="icon" type="image/svg+xml" href="assets/icon-insect-arena.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png?v=1.1A">
-<title>INSECT ARENA 1.5A — Zes Levende Werelden</title>
+<title>INSECT ARENA 1.6A — Levende Terreinen</title>
 <link rel="stylesheet" href="ui-06.css?v=0.6A">
 <link rel="stylesheet" href="ui-07.css?v=0.7B">
 <link rel="stylesheet" href="duel-08.css?v=0.8A">
@@ -22,6 +22,7 @@
 <link rel="stylesheet" href="balance-13.css?v=1.3A">
 <link rel="stylesheet" href="adventure-14.css?v=1.4B">
 <link rel="stylesheet" href="expansion-15.css?v=1.5A">
+<link rel="stylesheet" href="terrain-16.css?v=1.6A">
 </head>
 <body>
 <main id="app">
@@ -45,10 +46,10 @@
   </div>
   <button id="menu-settings" class="menuSecondary">⚙ INSTELLINGEN</button>
  </div>
- <footer class="menuFooter"><span id="menu-wins">0 OVERWINNINGEN</span><span>1.5A · 13 VECHTERS · 6 WERELDEN · DUELS</span></footer>
+ <footer class="menuFooter"><span id="menu-wins">0 OVERWINNINGEN</span><span>1.6A · 13 VECHTERS · 6 LEVENDE WERELDEN</span></footer>
 </section>
 <section id="select-view" class="view" hidden>
- <div class="sceneTop"><button class="iconBtn" data-back="menu">‹ TERUG</button><span class="smallBrand">INSECT ARENA</span><span class="eyebrow">1.5A</span></div>
+ <div class="sceneTop"><button class="iconBtn" data-back="menu">‹ TERUG</button><span class="smallBrand">INSECT ARENA</span><span class="eyebrow">1.6A</span></div>
  <div class="panel">
   <h2 class="sceneTitle">KIES JE VECHTER</h2><p class="sceneSub">Dertien unieke roofdieren met eigen aanvallen, waaronder een vrijspeelbare reuzenduizendpoot.</p>
   <small id="tactical-help-note">✦ Vul je special-meter met rake aanvallen · extra energie wanneer je geraakt wordt · langere, slimmere duels</small>
@@ -65,13 +66,14 @@
      <button class="worldChoice" data-choose-world="red">🔥 BREUKGROND</button>
    </div>
    <p id="ia15-world-note" role="status">In iedere arena bepaalt de omgeving hoe je het best kunt vechten.</p>
+   <p id="ia16-terrain-key" aria-label="Uitleg omgevingsobjecten"><span>HOGE DEKKING: wortels en rotsen</span><span>LAGE DEKKING: blad en riet</span><span>VERTRAGING: modder en mos</span></p>
    <button id="launch-battle" class="goldButton">⚔ START GEVECHT</button>
   </div>
  </div>
 </section>
 <section id="world-view" class="view" hidden>
  <div class="sceneTop"><button class="iconBtn" data-back="menu">‹ TERUG</button><span class="smallBrand">WERELDEN</span><span></span></div>
- <div class="panel"><h2 class="sceneTitle">HET OERWOUD</h2><p class="sceneSub">Zes speelbare arena’s. Elk terrein heeft unieke kleuren, beschutting en gevaren. Het Worteldoolhof speel je vrij via de eerste training.</p>
+ <div class="panel"><h2 class="sceneTitle">HET OERWOUD</h2><p class="sceneSub">Zes speelbare arena’s met natuurlijke wortels, rotsen, struiken, bladeren en echte dekking. Flankeer obstakels en ontwijk gevaren. Het Worteldoolhof speel je vrij via de training.</p>
   <div id="world-card-forest" data-world="forest" class="worldCard worldTile"><strong>01 · GROENE BOSBODEM</strong><p>Regenwoud · natuurlijk duelterrein</p><button id="world-play" class="goldButton">KIES BOSBODEM</button></div>
   <div id="world-card-roots" data-world="roots" class="worldCard worldTile ia14-locked"><strong>02 · WORTELDOOLHOF · VRIJ TE SPELEN</strong><p>Wortels als hindernis · verschuil je en plan je aanval. Ontgrendel via de training.</p><button id="world-roots" class="goldButton" disabled>KIES WORTELDOOLHOF</button></div>
   <div id="world-card-fungus" data-world="fungus" class="worldCard worldTile"><strong>03 · SCHIMMELVALLEI ✦ NIEUW</strong><p>Bioluminescent oerwoud · sporenwolken en vertraging</p><button id="world-spores" class="goldButton">KIES SCHIMMELVALLEI</button></div>
@@ -96,7 +98,7 @@
  <button id="settings-done" class="goldButton">OPSLAAN EN TERUG</button></div>
 </section>
 <section id="duel-view" class="view" hidden>
- <div class="sceneTop"><button id="duel-back" class="iconBtn">‹ TERUG</button><span class="smallBrand">DUEL ARENA</span><span class="eyebrow">1.5A</span></div>
+ <div class="sceneTop"><button id="duel-back" class="iconBtn">‹ TERUG</button><span class="smallBrand">DUEL ARENA</span><span class="eyebrow">1.6A</span></div>
  <div class="panel duelPanel">
   <h2 class="duelHeadline">⚔ PRIVÉ DUEL ARENA</h2>
   <p class="duelIntro">Speel een kampioenschap op twee telefoons: drie rondes van 90 seconden. Eerste tot twee zeges wint een mysteriefragment. Bij tijdsverloop beslist de volgende rake aanval!</p>
@@ -906,7 +908,10 @@ requestAnimationFrame(frame);
 <script src="premium-11.js?v=1.5A"></script>
 <script src="tactical-12.js?v=1.2A"></script>
 <script src="balance-13.js?v=1.5A"></script>
-<script src="adventure-14.js?v=1.5A"></script>
+<script src="adventure-14.js?v=1.6A"></script>
 <script src="expansion-15.js?v=1.5A"></script>
+<script src="terrain-16-data.js?v=1.6A"></script>
+<script src="terrain-16-art.js?v=1.6A"></script>
+<script src="terrain-16.js?v=1.6A"></script>
 </body>
 </html>
