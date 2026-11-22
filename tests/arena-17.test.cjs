@@ -65,7 +65,7 @@ test('new full-bleed styling does not distort the 900x560 world',()=>{
  assert.match(css,/#arena-view #battle-fullscreen\{grid-column:4\}/);
  assert.match(css,/#arena-view #ia14-guide/);
  assert.match(css,/#arena-view \.touchPanel/);
- assert.equal(JSON.parse(get('manifest.webmanifest')).start_url,'/insect-arena/?v=1.7A');
+ assert.equal(JSON.parse(get('manifest.webmanifest')).start_url,'/insect-arena/');
 });
 
 test('iPhone landscape camera displays full playable vertical floor',()=>{
