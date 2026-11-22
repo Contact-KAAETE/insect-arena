@@ -22,7 +22,7 @@ test('1.4A boot references and JavaScript syntax',()=>{
  for(const file of ['expansion-07.js','ui-07.js','duel-08.js',
   'match-09.js','tactical-12.js','balance-13.js',
   'adventure-14-pre.js','adventure-14.js'])assert.doesNotThrow(()=>new Function(get(file)),file);
- assert.equal(JSON.parse(get('manifest.webmanifest')).start_url,'/insect-arena/?v=1.6A');
+ assert.equal(JSON.parse(get('manifest.webmanifest')).start_url,'/insect-arena/?v=1.7A');
  assert.ok(get('assets/fighters/centipede-14.svg').endsWith('</svg>'));
 });
 
