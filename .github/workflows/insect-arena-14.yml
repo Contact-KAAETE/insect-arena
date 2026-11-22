@@ -1,4 +1,4 @@
-name: INSECT ARENA 1.7A immersive fullscreen checks
+name: INSECT ARENA 1.8A PWA auto-update checks
 on:
   push:
     branches:
@@ -7,6 +7,7 @@ on:
       - feature/biomes-creatures-15a
       - feature/living-terrains-16a
       - feature/immersive-fullscreen-17a
+      - feature/seamless-pwa-updates-18a
   pull_request:
 jobs:
   smoke:
@@ -18,4 +19,4 @@ jobs:
         with:
           node-version: '22'
       - name: Check tutorial, six biomes and thirteen predators
-        run: node --test tests/arena-14.test.cjs tests/arena-15.test.cjs tests/arena-16.test.cjs tests/arena-17.test.cjs
+        run: node --test tests/arena-14.test.cjs tests/arena-15.test.cjs tests/arena-16.test.cjs tests/arena-17.test.cjs tests/arena-18.test.cjs
