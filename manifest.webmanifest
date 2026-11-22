@@ -1,0 +1,20 @@
+{
+  "id": "/insect-arena/",
+  "name": "INSECT ARENA — Duel Arena",
+  "short_name": "INSECT ARENA",
+  "description": "Fotorealistische gevechten met acht roofdieren, twee werelden en privéduels.",
+  "start_url": "/insect-arena/?v=1.0A",
+  "scope": "/insect-arena/",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#07150e",
+  "theme_color": "#0d281c",
+  "icons": [
+    {
+      "src": "assets/icon-insect-arena.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
