@@ -281,7 +281,6 @@ drawArena=function(ts){
  previousArena(ts);
  if(!solo())return; // Online stays visually identical to the networked 1.3A arenas.
  const current=world();
- window.ia15PaintBiomeBackground?.(g,c,ts);
  // The pulsing rings are under both animals (not covering the sprites).
  if(tutorial&&enemy&&player){
   for(const [u,color] of [[player,'#c3f6a4'],[enemy,'#ffe18c']]){
