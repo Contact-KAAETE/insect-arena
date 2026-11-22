@@ -82,18 +82,27 @@ function collisionResolve(from,u){
    if(!o.solid)continue;
    const q=closest({x,y},o),desired=r+(o.points?q.r:0);
    if(q.d>=desired)continue;
-   const dx=x-q.x,dy=y-q.y,len=hypot(dx,dy)||1;
+   let dx=x-q.x,dy=y-q.y,len=hypot(dx,dy);
+   // If the creature is exactly in the middle of a root, use its normal.
+   // Without this, a zero-distance collision would never resolve.
+   if(len<.001&&o.points){
+    const a=o.points[0],b=o.points[o.points.length-1];
+    dx=-(b[1]-a[1]);dy=b[0]-a[0];len=hypot(dx,dy);
+   }
+   if(len<.001){dx=1;dy=0;len=1}
    // For a rock the foot's signed elliptic distance already includes the rock.
    if(!o.points){
-    const x0=x-o.x,y0=y-o.y,old=hypot(x0,y0)||1;
+    const x0=x-o.x,y0=y-o.y,old=hypot(x0,y0);
     if(o.rx){
-     const ratio=Math.sqrt((x0/(o.rx+r))**2+(y0/(o.ry+r))**2)||.0001;
-     x=o.x+x0/ratio;y=o.y+y0/ratio;
-     if(old<.01){x=o.x+o.rx+r;y=o.y}
+     if(old<.001){x=o.x+o.rx+r+1;y=o.y}
+     else{
+      const ratio=Math.sqrt((x0/(o.rx+r))**2+(y0/(o.ry+r))**2)||.0001;
+      x=o.x+x0/ratio;y=o.y+y0/ratio;
+     }
     }else{
      const rad=o.solid&&o.kind==='mushroom'?o.r*.40:o.r*.66;
-     x=o.x+x0/old*(rad+r);y=o.y+y0/old*(rad+r);
-     if(old<.01)x=o.x+rad+r;
+     if(old<.001){x=o.x+rad+r+1;y=o.y}
+     else{x=o.x+x0/old*(rad+r+1);y=o.y+y0/old*(rad+r+1)}
     }
    }else{
     x=q.x+dx/len*(desired+1.2);
