@@ -9,7 +9,8 @@ if(!Z||!art)throw new Error('INSECT ARENA: terrain data or art missing');
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),hypot=Math.hypot;
 const world=()=>window.iaWorldSelected?.()||'forest';
 const solo=()=>!window.iaDuelRole;
-const active=()=>solo()&&playing&&!paused&&!window.iaCountdownActive;
+const active=()=>solo()&&playing&&!paused&&!window.iaCountdownActive&&
+ !window.iaAdventure14?.isTutorialActive?.(); // Existing four-step tutorial must stay unchanged.
 const props=()=>Z[world()]?.props||[];
 let blockedHits=0,lightHits=0,collisions=0,detours=0;
 const pointSegment=(p,a,b)=>{
