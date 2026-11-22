@@ -36,6 +36,12 @@ test('all 13 fighters and 6 worlds are wired to the app',()=>{
  assert.ok(html.indexOf('adventure-14-pre.js')<html.indexOf('expansion-15-pre.js'));
  assert.ok(html.indexOf('expansion-15-pre.js')<html.indexOf('ui-07.js'));
  assert.ok(html.indexOf('adventure-14.js')<html.indexOf('expansion-15.js'));
+ assert.ok(read('balance-13.js').includes('window.ia15PaintBiomeBackground'),
+  'Biomes must render under enemy warning cones');
+ assert.ok(read('adventure-14.js').includes('window.ia15CoverNodes'),
+  'New biome cover must participate in attack blocking');
+ assert.ok(read('premium-11.js').includes('window.ia15WorldArt'),
+  'New backgrounds must cover landscape side gutters');
 });
 test('existing unlocked centipede persists, new solo animals register at 9..12',()=>{
  const map=new Map();
