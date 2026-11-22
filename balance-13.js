@@ -211,6 +211,7 @@ attack=function(a,t,special=false){
 const originalArena=drawArena;
 drawArena=function(ts){
  originalArena(ts);
+ window.ia15PaintBiomeBackground?.(g,c,ts); // Under AI warning cones and tutorial markers.
  if(!solo()||!playing||paused||window.iaCountdownActive||!enemy?.ai)return;
  const ai=enemy.ai;
  if(ai.phase==='windup'&&ai.windupTotal>0){
