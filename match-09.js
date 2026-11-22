@@ -72,6 +72,11 @@ function beginOvertime(){
  statusEl.textContent='SUDDEN DEATH! De volgende rake aanval beslist!';
  render();
 }
+function setPaused(value){
+ if(!state.active||state.mode!=='solo')return;
+ if(value){if(!state.pausedAt)state.pausedAt=Date.now();}
+ else if(state.pausedAt){state.pausedTotal+=Date.now()-state.pausedAt;state.pausedAt=0;}
+}
 function tick(){
  if(!state.active||!playing)return;
  if(state.mode!=='solo')return; // host timers are computed by the PvP module
@@ -99,7 +104,7 @@ attack=function(a,t,special=false){
  state.active=false;
  window.iaOnWorldKO?.();
 }
-window.iaMatchHUD={stop,beginSolo,beginDuel,updateDuel,tick,flash,
+window.iaMatchHUD={stop,beginSolo,beginDuel,updateDuel,tick,flash,setPaused,
   getState:()=>({mode:state.mode,active:state.active,sudden:state.sudden,
     remaining:state.remaining,round:state.round,scores:{...state.scores}})};
 const beforeScheduled=window.iaOnCountdownScheduled;
