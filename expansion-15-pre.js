@@ -17,7 +17,7 @@ const newcomers=[
   hp:167,speed:3.05,damage:19,range:98,
   description:'Graafkracht en ondergrondse schokgolf maken deze jager uniek.'}
 ];
-const imgs=['kruisspin-15.svg','roofwants-15.svg','libellenlarve-15.svg','veenmol-15.svg'];
+const imgs=['kruisspin-19.svg','roofwants-19.svg','libellenlarve-19.svg','veenmol-19.svg'];
 const widths=[190,200,212,235];
 newcomers.forEach((spec,k)=>{
  const id=types.length;
