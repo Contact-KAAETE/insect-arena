@@ -201,7 +201,7 @@ function newWorld(name){
 }
 function beginOnlineRound(){
  if(state.role!=='host'||!state.connected||!state.remoteReady||state.active)return;
- const info={t:'start',hostFighter:+fighterSel.value,guestFighter:state.remoteFighter,world:state.world};
+ const info={t:'start',hostFighter:+fighterSel.value,guestFighter:state.remoteFighter,world:state.world,startAt:Date.now()+3200};
  send(info);
  enterBattle(info);
 }
@@ -229,6 +229,7 @@ function enterBattle(info){
  }
  statusEl.textContent='ONLINE DUEL · '+(state.role==='host'?'Jij bent host':'Jij bent uitgenodigd')+' · '+window.iaWorldName();
  $('pause').textContent='● LIVE';
+ window.iaStartCountdown?.(info.startAt);
 }
 const savedKeys=['id','name','x','y','hp','maxHp','face','walk','cool','special','flash','attackAnim','attackMax','attackSpecial','hitAnim','burn','poison','root','slow','cloak','sporeSlow','ambush'];
 function serialize(unit){
