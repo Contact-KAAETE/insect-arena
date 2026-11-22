@@ -1,0 +1,20 @@
+/* INSECT ARENA 1.8A — update status in existing settings only.
+   No popups over games, no extra shortcuts, no new screen or user account. */
+#settings-view .ia18UpdateRow{
+ display:flex;justify-content:space-between;align-items:center;gap:12px;
+ margin:5px 0 12px;padding:10px 8px;border:1px solid #d0bd7755;
+ border-radius:12px;background:#0b241bba;
+}
+#settings-view #ia-update-status{
+ display:block;color:#dbedcf;font:650 12px/1.35 system-ui,-apple-system,sans-serif;
+ min-width:0;max-width:68%;overflow-wrap:anywhere;
+}
+#settings-view #ia-check-updates{
+ flex:none;white-space:nowrap;min-height:38px;
+ font-size:11px;letter-spacing:.02em;padding:8px 10px;
+}
+@media(max-width:520px){
+ #settings-view .ia18UpdateRow{flex-wrap:wrap}
+ #settings-view #ia-update-status{max-width:100%}
+ #settings-view #ia-check-updates{width:100%}
+}
