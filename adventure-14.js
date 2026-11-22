@@ -23,7 +23,7 @@ const presets={
 let tutorial=null,blocked=0,combatFrames=0,lastFX=0;
 const world=()=>window.iaWorldSelected?.()||'forest';
 const nodes=()=>tutorial?.stage===2&&tutorial.cover?
- [tutorial.cover]:presets[world()]||presets.forest;
+ [tutorial.cover]:(window.ia15CoverNodes?.(world()) || presets[world()] || presets.forest);
 const status=text=>{if(statusEl)statusEl.textContent=text};
 function toast(text){
  const el=$('tactical-toast');if(!el)return;
@@ -41,7 +41,7 @@ function syncUnlocks(){
  const rootButton=$('world-roots');
  if(rootButton)rootButton.disabled=lock;
  const footer=document.querySelector('.menuFooter span:last-child');
- if(footer)footer.textContent='1.4A · 8 ROOFDIEREN + 1 BELONING · 3 WERELDEN';
+ if(footer)footer.textContent='1.5A · 13 VECHTERS · 6 WERELDEN';
 }
 function guide(){
  if(!tutorial){tutorialGuide.hidden=true;return}
@@ -281,6 +281,7 @@ drawArena=function(ts){
  previousArena(ts);
  if(!solo())return; // Online stays visually identical to the networked 1.3A arenas.
  const current=world();
+ window.ia15PaintBiomeBackground?.(g,c,ts);
  // The pulsing rings are under both animals (not covering the sprites).
  if(tutorial&&enemy&&player){
   for(const [u,color] of [[player,'#c3f6a4'],[enemy,'#ffe18c']]){
@@ -291,6 +292,7 @@ drawArena=function(ts){
   }
  }
  for(const node of nodes()){
+  if(window.ia15PaintObstacle?.(node,g))continue;
   if(node.kind==='mushroom')mushroom(node);
   else if(node.kind==='root'||node.kind==='log')root(node);
   else leaf(node,Boolean(tutorial&&node===tutorial.cover));
