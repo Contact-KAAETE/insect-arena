@@ -28,7 +28,7 @@ function setMenuBackground(){
 }
 forestPhoto.addEventListener('load',setMenuBackground);
 setMenuBackground();
-const lines=['Snel, fel en wendbaar.','Meester van de sikkelklauw.','Zwaar pantser met een vernietigende ramstoot.','Gevaarlijk gif en een krachtige staart.','Metalen pantser en vurige verdedigingsstraal.','Roze roofdier met onzichtbare hinderlaag.','Fluweelachtige wesp met verrassend krachtig gif.','Grote waterrover die zijn prooi vastgrijpt.'];
+const lines=['Snel, fel en wendbaar.','Meester van de sikkelklauw.','Zwaar pantser met een vernietigende ramstoot.','Gevaarlijk gif en een krachtige staart.','Metalen pantser en vurige verdedigingsstraal.','Roze roofdier met onzichtbare hinderlaag.','Fluweelachtige wesp met verrassend krachtig gif.','Grote waterrover die zijn prooi vastgrijpt.','Snelle duizendpoot met een giftige klemgreep: alleen in solo vrij te spelen.'];
 function roster(){
  const root=el('fighter-roster');root.textContent='';
  types.forEach((t,i)=>{

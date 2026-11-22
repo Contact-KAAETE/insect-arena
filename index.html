@@ -7,10 +7,10 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="INSECT ARENA">
-<link rel="manifest" href="manifest.webmanifest?v=1.3A">
+<link rel="manifest" href="manifest.webmanifest?v=1.4A">
 <link rel="icon" type="image/svg+xml" href="assets/icon-insect-arena.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png?v=1.1A">
-<title>INSECT ARENA 1.3A — Slimme Roofdieren</title>
+<title>INSECT ARENA 1.4A — Het Levende Roofdierenrijk</title>
 <link rel="stylesheet" href="ui-06.css?v=0.6A">
 <link rel="stylesheet" href="ui-07.css?v=0.7B">
 <link rel="stylesheet" href="duel-08.css?v=0.8A">
@@ -20,6 +20,7 @@
 <link rel="stylesheet" href="premium-11.css?v=1.1A">
 <link rel="stylesheet" href="tactical-12.css?v=1.2A">
 <link rel="stylesheet" href="balance-13.css?v=1.3A">
+<link rel="stylesheet" href="adventure-14.css?v=1.4A">
 </head>
 <body>
 <main id="app">
@@ -43,12 +44,12 @@
   </div>
   <button id="menu-settings" class="menuSecondary">⚙ INSTELLINGEN</button>
  </div>
- <footer class="menuFooter"><span id="menu-wins">0 OVERWINNINGEN</span><span>1.3A · SLIMME AI · 8 VECHTERS · DUELS</span></footer>
+ <footer class="menuFooter"><span id="menu-wins">0 OVERWINNINGEN</span><span>1.4A · 8 ROOFDIEREN + 1 BELONING · DUELS</span></footer>
 </section>
 <section id="select-view" class="view" hidden>
- <div class="sceneTop"><button class="iconBtn" data-back="menu">‹ TERUG</button><span class="smallBrand">INSECT ARENA</span><span class="eyebrow">1.3A</span></div>
+ <div class="sceneTop"><button class="iconBtn" data-back="menu">‹ TERUG</button><span class="smallBrand">INSECT ARENA</span><span class="eyebrow">1.4A</span></div>
  <div class="panel">
-  <h2 class="sceneTitle">KIES JE VECHTER</h2><p class="sceneSub">Acht spectaculaire roofdieren met hun eigen speciale vaardigheid.</p>
+  <h2 class="sceneTitle">KIES JE VECHTER</h2><p class="sceneSub">Acht roofdieren en een negende vrijspeelbare jager, allemaal met unieke vaardigheden.</p>
   <small id="tactical-help-note">✦ Vul je special-meter met rake aanvallen · extra energie wanneer je geraakt wordt · langere, slimmere duels</small>
   <div id="fighter-roster" class="roster"></div>
   <div class="selectFoot">
@@ -57,6 +58,7 @@
    <div class="worldPicker" aria-label="Kies je wereld">
      <button class="worldChoice" data-choose-world="forest">🌿 BOSBODEM</button>
      <button class="worldChoice" data-choose-world="fungus">🍄 SCHIMMELVALLEI</button>
+     <button class="worldChoice" data-choose-world="roots" disabled>🌳 WORTELDOOLHOF</button>
    </div>
    <button id="launch-battle" class="goldButton">⚔ START GEVECHT</button>
   </div>
@@ -64,9 +66,9 @@
 </section>
 <section id="world-view" class="view" hidden>
  <div class="sceneTop"><button class="iconBtn" data-back="menu">‹ TERUG</button><span class="smallBrand">WERELDEN</span><span></span></div>
- <div class="panel"><h2 class="sceneTitle">HET OERWOUD</h2><p class="sceneSub">Twee speelbare werelden. In Schimmelvallei vertragen magische sporenwolken beide vechters.</p>
+ <div class="panel"><h2 class="sceneTitle">HET OERWOUD</h2><p class="sceneSub">Drie unieke arena’s, waarvan het Worteldoolhof vrij te spelen is. Beschutting, sporenwolken en wortelhindernissen vragen om een eigen strategie.</p>
   <div id="world-card-forest" data-world="forest" class="worldCard worldTile"><strong>01 · GROENE BOSBODEM</strong><p>Regenwoud · natuurlijk duelterrein</p><button id="world-play" class="goldButton">KIES BOSBODEM</button></div>
-  <div class="worldCard locked"><strong>02 · WORTELDOOLHOF</strong><p>Nog niet beschikbaar</p></div>
+  <div id="world-card-roots" data-world="roots" class="worldCard worldTile ia14-locked"><strong>02 · WORTELDOOLHOF · VRIJ TE SPELEN</strong><p>Wortels als hindernis · verschuil je en plan je aanval. Ontgrendel via de training.</p><button id="world-roots" class="goldButton" disabled>KIES WORTELDOOLHOF</button></div>
   <div id="world-card-fungus" data-world="fungus" class="worldCard worldTile"><strong>03 · SCHIMMELVALLEI ✦ NIEUW</strong><p>Bioluminescent oerwoud · sporenwolken en vertraging</p><button id="world-spores" class="goldButton">KIES SCHIMMELVALLEI</button></div>
   <div class="worldCard locked"><strong>04 · DAUWMOERAS</strong><p>Nog niet beschikbaar</p></div>
   <div class="worldCard locked"><strong>05 · ROTSHOLTE</strong><p>Nog niet beschikbaar</p></div>
@@ -89,7 +91,7 @@
  <button id="settings-done" class="goldButton">OPSLAAN EN TERUG</button></div>
 </section>
 <section id="duel-view" class="view" hidden>
- <div class="sceneTop"><button id="duel-back" class="iconBtn">‹ TERUG</button><span class="smallBrand">DUEL ARENA</span><span class="eyebrow">1.3A</span></div>
+ <div class="sceneTop"><button id="duel-back" class="iconBtn">‹ TERUG</button><span class="smallBrand">DUEL ARENA</span><span class="eyebrow">1.4A</span></div>
  <div class="panel duelPanel">
   <h2 class="duelHeadline">⚔ PRIVÉ DUEL ARENA</h2>
   <p class="duelIntro">Speel een kampioenschap op twee telefoons: drie rondes van 90 seconden. Eerste tot twee zeges wint een mysteriefragment. Bij tijdsverloop beslist de volgende rake aanval!</p>
@@ -887,6 +889,7 @@ addEventListener('keyup',e=>{const k=({ArrowLeft:'left',ArrowRight:'right',Arrow
 requestAnimationFrame(frame);
 </script>
 <script src="expansion-07.js?v=0.8B"></script>
+<script src="adventure-14-pre.js?v=1.4A"></script>
 <script src="ui-07.js?v=0.9A"></script>
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -897,5 +900,6 @@ requestAnimationFrame(frame);
 <script src="premium-11.js?v=1.1A"></script>
 <script src="tactical-12.js?v=1.2A"></script>
 <script src="balance-13.js?v=1.3A"></script>
+<script src="adventure-14.js?v=1.4A"></script>
 </body>
 </html>

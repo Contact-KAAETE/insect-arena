@@ -1,0 +1,18 @@
+name: INSECT ARENA 1.4A checks
+on:
+  push:
+    branches:
+      - main
+      - feature/adventure-tutorial-centipede-14a
+  pull_request:
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check JavaScript and gameplay training
+        run: node --test tests/arena-14.test.cjs

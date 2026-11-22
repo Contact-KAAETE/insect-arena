@@ -35,6 +35,12 @@ function syncButtons(){
  $('duel-join').classList.toggle('chosen',state.role==='guest');
 }
 function openDuel(){
+ if(window.ia14Unlocked?.()===false){
+  setTimeout(()=>window.iaAdventure14?.restartTutorial?.(),0);
+  return;
+ }
+ // Solo-unlocked centipede is not used by the eight-fighter WebRTC protocol.
+ if((+fighterSel.value)>7)fighterSel.value='0';
  ui().open('duel');
  let count=0;try{count=Math.max(0,Math.min(8,Number(localStorage.getItem('iaMysteryFragments')||0)))}catch(_){}
  $('duel-fragment-count').textContent='MYSTERIEFRAGMENTEN '+count+' / 8';
@@ -85,7 +91,7 @@ function copyURL(){
 }
 function drawInvite(){
  if(!state.room)return;
- const url=location.origin+location.pathname+'?v=1.3A#duel='+state.room;
+ const url=location.origin+location.pathname+'?v=1.4A#duel='+state.room;
  $('duel-share-link').value=url;
  $('duel-room-label').textContent='KAMER: '+state.room.slice(-8).toUpperCase();
  const qr=$('duel-qr');qr.replaceChildren();
@@ -184,6 +190,7 @@ function join(code){
  syncButtons();
 }
 function updateChoice(fighter){
+ if(!Number.isInteger(fighter)||fighter<0||fighter>=8)return;
  fighterSel.value=String(fighter);
  syncButtons();
  if(state.role==='guest')send({t:'ready',fighter:+fighterSel.value});
@@ -192,6 +199,7 @@ function updateChoice(fighter){
 function makeRoster(){
  const roster=$('duel-roster');roster.replaceChildren();
  types.forEach((t,i)=>{
+  if(i>=8)return; // Older clients only know the original eight fighters.
   const b=document.createElement('button');b.type='button';b.className='duelFighter';b.dataset.fighter=String(i);
   const img=document.createElement('img');img.alt='';img.src=spriteSources[i];img.draggable=false;
   const title=document.createElement('span');title.textContent=t.name;
@@ -274,7 +282,7 @@ function receive(d){
   case 'leave':onDisconnect('De andere speler heeft het duel verlaten.');break;
   case 'ready':
    if(state.role==='host'&&!state.active){
-    if(!Number.isInteger(d.fighter)||d.fighter<0||d.fighter>=types.length)return;
+    if(!Number.isInteger(d.fighter)||d.fighter<0||d.fighter>=8)return;
     state.remoteFighter=d.fighter;state.remoteReady=true;
     displayStatus('Beide spelers zijn verbonden. Start het duel!');
     syncButtons();
@@ -282,7 +290,7 @@ function receive(d){
    break;
   case 'lobby':
    if(state.role==='guest'&&!state.active){
-    if(Number.isInteger(d.fighter)&&d.fighter>=0&&d.fighter<types.length)state.remoteFighter=d.fighter;
+    if(Number.isInteger(d.fighter)&&d.fighter>=0&&d.fighter<8)state.remoteFighter=d.fighter;
     if(d.world==='forest'||d.world==='fungus'){
      state.world=d.world;window.iaSetWorld?.(d.world);
     }
@@ -291,8 +299,8 @@ function receive(d){
    }break;
   case 'start':
    if(state.role==='guest'&&state.connected&&
-      Number.isInteger(d.hostFighter)&&d.hostFighter>=0&&d.hostFighter<types.length&&
-      Number.isInteger(d.guestFighter)&&d.guestFighter>=0&&d.guestFighter<types.length)enterBattle(d);
+      Number.isInteger(d.hostFighter)&&d.hostFighter>=0&&d.hostFighter<8&&
+      Number.isInteger(d.guestFighter)&&d.guestFighter>=0&&d.guestFighter<8)enterBattle(d);
    break;
   case 'input':
    if(state.role==='host'&&state.active){
@@ -515,6 +523,11 @@ makeRoster();syncButtons();
 const fragment=decodeURIComponent((location.hash||'').slice(1));
 if(fragment.startsWith('duel=')){
  const code=fragment.slice(5).split('&')[0].toLowerCase();
- if(/^ia8-[a-f0-9]{32}$/.test(code))join(code);
+ if(/^ia8-[a-f0-9]{32}$/.test(code)){
+  if(window.ia14Unlocked?.()===false){
+   displayStatus('Voltooi eerst de verplichte training. Daarna kun je je dueluitnodiging openen.');
+   setTimeout(()=>window.iaAdventure14?.restartTutorial?.(),0);
+  }else join(code);
+ }
 }
 })();
