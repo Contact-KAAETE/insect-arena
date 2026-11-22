@@ -14,7 +14,7 @@ types.push(ninth);
 const i=types.length-1;
 const src='assets/fighters/centipede-19.svg';
 spriteSources.push(src);
-spriteWidths.push(220);
+spriteWidths.push(240);
 fighterSel.add(new Option(ninth.name+' · '+ninth.move,i));
 const portrait=new Image();portrait.decoding='async';
 portrait.onload=()=>{fighterSprites[i]=portrait};
