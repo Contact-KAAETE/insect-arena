@@ -16,9 +16,11 @@ let lastUpdate=0,prevPlayer=-1,prevEnemy=-1,wasVisible=false;
 function background(){
  let world='forest';
  try{world=window.iaWorldSelected?.()||'forest'}catch(_){}
- const url=world==='fungus'?'assets/worlds/schimmelvallei.webp':(forestPhoto?.src||'');
+ const newArt=window.ia15WorldArt?.[world]||null;
+ const url=newArt||(world==='fungus'?'assets/worlds/schimmelvallei.webp':(forestPhoto?.src||''));
  if(!url)return;
- const img='linear-gradient(90deg,rgba(4,17,8,.55),rgba(4,16,10,.03) 22%,rgba(3,15,10,.03) 77%,rgba(3,17,8,.58)),url("'+url+'")';
+ const img='linear-gradient(90deg,rgba(4,17,8,.55),rgba(4,16,10,.03) 22%,rgba(3,15,10,.03) 77%,rgba(3,17,8,.58)),url("'+url+'")'+
+   (newArt&&forestPhoto?.src?',url("'+forestPhoto.src+'")':'');
  if(stage.dataset.premiumWorld===world)return;
  stage.dataset.premiumWorld=world;
  stage.style.backgroundImage=img;
