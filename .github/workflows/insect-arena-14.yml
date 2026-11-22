@@ -1,9 +1,10 @@
-name: INSECT ARENA 1.4A checks
+name: INSECT ARENA 1.5A checks
 on:
   push:
     branches:
       - main
       - feature/adventure-tutorial-centipede-14a
+      - feature/biomes-creatures-15a
   pull_request:
 jobs:
   smoke:
@@ -14,5 +15,5 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Check JavaScript and gameplay training
-        run: node --test tests/arena-14.test.cjs
+      - name: Check tutorial, six biomes and thirteen predators
+        run: node --test tests/arena-14.test.cjs tests/arena-15.test.cjs
