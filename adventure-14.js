@@ -9,7 +9,7 @@ const arena=$('arena-view'),stage=arena.querySelector('.canvasBox');
 const tutorialGuide=document.createElement('div');
 tutorialGuide.id='ia14-guide';tutorialGuide.hidden=true;
 tutorialGuide.setAttribute('role','status');tutorialGuide.setAttribute('aria-live','polite');
-stage.appendChild(tutorialGuide);
+arena.appendChild(tutorialGuide); // Show guide in the empty HUD row, never over the combatants.
 const read=(key)=>{try{return localStorage.getItem(key)}catch(_){return null}};
 const write=(key,value)=>{try{localStorage.setItem(key,value)}catch(_){}};
 const unlocked=()=>read('ia14TutorialComplete')==='yes';
@@ -46,24 +46,25 @@ function syncUnlocks(){
 function guide(){
  if(!tutorial){tutorialGuide.hidden=true;return}
  const t=tutorial,steps=[
-  ['BEWEGEN','Gebruik links de joystick om minstens een stukje te lopen.','Verken de arena'],
-  ['AANVALLEN','Ga dichtbij de kever staan en raak hem twee keer met AANVAL.','Raak de tegenstander'],
-  ['DEKKING ZOEKEN','Loop onder het oplichtende blad. Achter obstakels kun je aanvallen blokkeren.','Vind de veilige plek'],
-  ['SPECIALE KRACHT','Je meter is gevuld! Gebruik rechts SPECIAL op de kever.','Gebruik de zuuraanval']
+  ['BEWEGEN','Beweeg een stukje met de joystick links.','Loop door de arena'],
+  ['AANVALLEN','Zoek de gemarkeerde kever en raak hem 2× met AANVAL.','Raak: '+t.hits+' / 2'],
+  ['DEKKING ZOEKEN','Loop naar het oplichtende blad: daar kun je schuilen.','Schuil onder het blad'],
+  ['SPECIALE KRACHT','Loop naar de kever en tik op SPECIAL rechts.','Gebruik de zuuraanval']
  ];
  const [title,desc,goal]=steps[t.stage];
- tutorialGuide.innerHTML='<span class="ia14-step">VERPLICHTE TRAINING · '+(t.stage+1)+' VAN 4</span>'+
+ tutorialGuide.innerHTML='<span class="ia14-step">TRAINING '+(t.stage+1)+'/4</span>'+
   '<strong>'+title+'</strong><p>'+desc+'</p><div class="ia14-current">'+goal+
-  (t.stage===1?' · '+t.hits+' / 2':'')+'</div><div class="ia14-progress">'+
+  '</div><div class="ia14-progress">'+
   steps.map((_,i)=>'<i class="'+(i<=t.stage?'done':'')+'"></i>').join('')+'</div>';
  tutorialGuide.hidden=false;
  status('TRAINING · '+title+' · '+(t.stage+1)+'/4');
 }
 function placeEnemy(){
  if(!tutorial||!player||!enemy)return;
- const shift=player.x>555?-90:90;
- enemy.x=clamp(player.x+shift,118,790);
- enemy.y=clamp(player.y,205,475);
+ // Larger space prevents overlap between the ant and the big beetle sprite.
+ const shift=player.x>500?-175:175;
+ enemy.x=clamp(player.x+shift,160,740);
+ enemy.y=clamp(player.y,285,425);
  enemy.hp=enemy.maxHp;
  enemy.cool=0;
  enemy.charge=0;
@@ -280,6 +281,15 @@ drawArena=function(ts){
  previousArena(ts);
  if(!solo())return; // Online stays visually identical to the networked 1.3A arenas.
  const current=world();
+ // The pulsing rings are under both animals (not covering the sprites).
+ if(tutorial&&enemy&&player){
+  for(const [u,color] of [[player,'#c3f6a4'],[enemy,'#ffe18c']]){
+   g.save();g.strokeStyle=color;g.lineWidth=4;g.setLineDash([9,7]);
+   g.shadowColor=color;g.shadowBlur=13;
+   g.beginPath();g.ellipse(u.x,u.y+27,72,22,0,0,Math.PI*2);g.stroke();
+   g.restore();
+  }
+ }
  for(const node of nodes()){
   if(node.kind==='mushroom')mushroom(node);
   else if(node.kind==='root'||node.kind==='log')root(node);
@@ -295,6 +305,19 @@ drawArena=function(ts){
 const previousDrawInsect=drawInsect;
 drawInsect=function(u){
  previousDrawInsect(u);
+ // Permanent identification for the tutorial opponent.
+ if(tutorial&&u===enemy&&!arena.hidden){
+  g.save();
+  const x=clamp(u.x,135,765),y=clamp(u.y-125,93,360);
+  g.shadowColor='#000b';g.shadowBlur=8;
+  g.fillStyle='rgba(8,34,23,.90)';
+  g.strokeStyle='#ffd66f';g.lineWidth=2;
+  g.beginPath();g.roundRect(x-85,y-16,170,32,10);g.fill();g.stroke();
+  g.shadowBlur=0;g.textAlign='center';g.fillStyle='#ffe6a9';
+  g.font='900 15px system-ui';
+  g.fillText('▼ TEGENSTANDER ▼',x,y+6);
+  g.restore();
+ }
  if(!u||u.id!==8||!u.attackAnim||window.iaReducedEffects)return;
  const t=performance.now()*.009,progress=1-(u.attackAnim||0)/Math.max(1,u.attackMax||26);
  g.save();g.globalAlpha=Math.max(0,Math.sin(progress*Math.PI));
