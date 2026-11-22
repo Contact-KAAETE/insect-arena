@@ -43,6 +43,15 @@ const glows=[0,1].map(i=>{
  el.className='ia17-hitglow';el.setAttribute('aria-hidden','true');
  el.dataset.actor=i?'enemy':'player';stage.appendChild(el);return el;
 });
+const atmosphere=document.createElement('div');
+atmosphere.className='ia17-atmosphere';
+atmosphere.setAttribute('aria-hidden','true');
+atmosphere.dataset.world='forest';stage.appendChild(atmosphere);
+function syncBiome(){
+ const w=window.iaWorldSelected?.()||'forest';
+ if(atmosphere.dataset.world!==w)atmosphere.dataset.world=w;
+ atmosphere.style.opacity=window.iaReducedEffects?'.20':'';
+}
 function positionGlow(el,u){
  if(!camera.active||!u||window.iaReducedEffects||arena.hidden||!playing||paused){
   if(el.style.opacity!=='0')el.style.opacity='0';
@@ -63,7 +72,7 @@ function positionGlow(el,u){
 }
 function illuminate(){
  if(!camera.active||arena.hidden)return;
- if(!frames++%25)size(); // Re-measure infrequently; camera is normally static.
+ if(!frames++%25){size();syncBiome()} // Re-measure and update ambience infrequently.
  positionGlow(glows[0],typeof player!=='undefined'?player:null);
  positionGlow(glows[1],typeof enemy!=='undefined'?enemy:null);
 }
@@ -81,7 +90,7 @@ window.addEventListener('orientationchange',()=>setTimeout(size,100),{passive:tr
 window.visualViewport?.addEventListener('resize',size,{passive:true});
 const show=new MutationObserver(()=>size());
 show.observe(arena,{attributes:true,attributeFilter:['hidden']});
-size();
+size();syncBiome();
 window.iaImmersive17={
  version:'1.7A',camera:()=>({...camera}),
  refresh:size,renderCount:()=>frames,
