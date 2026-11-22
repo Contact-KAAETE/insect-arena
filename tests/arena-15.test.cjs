@@ -32,7 +32,7 @@ test('all 13 fighters and 6 worlds are wired to the app',()=>{
  const scripts=['expansion-15-pre.js','expansion-15.js','adventure-14.js',
   'ui-07.js','duel-08.js','premium-11.js','balance-13.js'];
  for(const p of scripts)assert.doesNotThrow(()=>new Function(read(p)),p);
- assert.equal(JSON.parse(read('manifest.webmanifest')).start_url,'/insect-arena/?v=1.5A');
+ assert.equal(JSON.parse(read('manifest.webmanifest')).start_url,'/insect-arena/?v=1.6A');
  assert.ok(html.indexOf('adventure-14-pre.js')<html.indexOf('expansion-15-pre.js'));
  assert.ok(html.indexOf('expansion-15-pre.js')<html.indexOf('ui-07.js'));
  assert.ok(html.indexOf('adventure-14.js')<html.indexOf('expansion-15.js'));

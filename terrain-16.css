@@ -1,0 +1,20 @@
+/* INSECT ARENA 1.6A — restrained in-menu world-object guide.
+ * The in-fight battlefield is deliberately left clear. No extra buttons, popups,
+ * overlays, or larger touch areas are introduced.
+ */
+#ia16-terrain-key{
+ display:flex;flex-wrap:wrap;justify-content:center;gap:5px 12px;
+ margin:4px auto 8px;max-width:740px;padding:5px 10px;
+ color:#d1d9bc;font:750 10px/1.3 system-ui,-apple-system,sans-serif;
+}
+#ia16-terrain-key span{display:inline-flex;align-items:center;gap:5px}
+#ia16-terrain-key span::before{
+ content:'';width:8px;height:8px;border-radius:50%;flex:0 0 auto;
+ background:#c7ab7a;border:1px solid #f8e0ae88;
+}
+#ia16-terrain-key span:nth-child(2)::before{background:#7b9d6a}
+#ia16-terrain-key span:nth-child(3)::before{background:#766c59}
+@media(max-width:650px){#ia16-terrain-key{font-size:9px;gap:4px 7px;padding:4px}}
+@media(orientation:landscape) and (max-height:420px){
+ #ia16-terrain-key{font-size:9px;margin:1px auto 4px;gap:2px 8px}
+}

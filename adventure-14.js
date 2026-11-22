@@ -154,6 +154,7 @@ const rosterObserver=new MutationObserver(()=>syncUnlocks());
 rosterObserver.observe($('fighter-roster'),{childList:true});
 syncUnlocks();
 function covered(a,t){
+ if(window.iaTerrain16BlocksAttack)return window.iaTerrain16BlocksAttack(a,t,false);
  if(!a||!t)return false;
  const vx=t.x-a.x,vy=t.y-a.y,denom=vx*vx+vy*vy||1;
  for(const o of nodes()){
@@ -213,7 +214,7 @@ const previousConfine=confine;
 confine=function(u){
  previousConfine(u);
  if(!u||!playing||paused||window.iaCountdownActive||!solo())return;
- if(world()==='roots'&&!tutorial){
+ if(world()==='roots'&&!tutorial&&!window.iaTerrain16){
   for(const o of presets.roots){
    if(Math.hypot(u.x-o.x,u.y-o.y)<o.r+12){
     u.slow=Math.max(u.slow||0,12); // Roots cost speed; never trap AI pathfinding.
