@@ -80,6 +80,9 @@
   color:#fff2ce;font-size:10px!important;letter-spacing:.025em!important;
   line-height:1!important;white-space:nowrap;
  }
+ #arena-view #battle-menu{grid-column:1}
+ #arena-view #pause{grid-column:3}
+ #arena-view #battle-fullscreen{grid-column:4}
  #arena-view .battleHeader .iconBtn:active{
   background:#3b6245ed!important;filter:brightness(1.1);
  }
@@ -251,4 +254,19 @@
 @media(prefers-reduced-motion:reduce){
  #arena-view .canvasBox::after{animation:none!important}
  #arena-view .battleHeader .iconBtn,#arena-view .actionBtn{transition:none!important}
+}
+/* Attack impact lighting is anchored to the camera-projected animal positions. */
+#arena-view .ia17-hitglow{
+ position:absolute;left:0;top:0;z-index:4;pointer-events:none;
+ width:clamp(100px,21vw,235px);height:clamp(90px,17vw,190px);
+ border-radius:50%;opacity:0;transform:translate(-50%,-50%) scale(.75);
+ background:radial-gradient(ellipse at center,#e7c0787d 0%,#f0bb4850 24%,#f7a24a00 70%);
+ mix-blend-mode:screen;filter:blur(5px);
+ will-change:transform,opacity;
+}
+#arena-view .ia17-hitglow.special{
+ background:radial-gradient(ellipse at center,#f4e5a3a6 0%,#a6e88186 32%,#effe8900 70%);
+}
+@media(prefers-reduced-motion:reduce){
+ #arena-view .ia17-hitglow{transition:none;will-change:auto}
 }
