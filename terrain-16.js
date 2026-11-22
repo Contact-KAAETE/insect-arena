@@ -94,10 +94,11 @@ function collisionResolve(from,u){
    if(!o.points){
     const x0=x-o.x,y0=y-o.y,old=hypot(x0,y0);
     if(o.rx){
-     if(old<.001){x=o.x+o.rx+r+1;y=o.y}
+     const outside=1+(r+1)/Math.min(o.rx,o.ry);
+     if(old<.001){x=o.x+o.rx*outside;y=o.y}
      else{
-      const ratio=Math.sqrt((x0/(o.rx+r))**2+(y0/(o.ry+r))**2)||.0001;
-      x=o.x+x0/ratio;y=o.y+y0/ratio;
+      const ratio=Math.sqrt((x0/o.rx)**2+(y0/o.ry)**2)||.0001;
+      x=o.x+x0*outside/ratio;y=o.y+y0*outside/ratio;
      }
     }else{
      const rad=o.solid&&o.kind==='mushroom'?o.r*.40:o.r*.66;
