@@ -3,7 +3,7 @@
   "name": "INSECT ARENA — Duel Arena",
   "short_name": "INSECT ARENA",
   "description": "Fotorealistische gevechten met acht roofdieren, twee werelden en privéduels.",
-  "start_url": "/insect-arena/?v=1.1A",
+  "start_url": "/insect-arena/?v=1.2A",
   "scope": "/insect-arena/",
   "display": "standalone",
   "orientation": "landscape",
