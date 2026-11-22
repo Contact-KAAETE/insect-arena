@@ -187,7 +187,7 @@ attack=function(a,t,special=false){
     cue('PERFECTE COUNTER!');
    }else if(ai.phase!=='stagger'&&ai.phase!=='evade'){
     ai.combo++;
-    if(ai.combo>=cfg.dodgeHits&&ai.phase!=='windup'&&ai.cooldown>0){
+    if(ai.combo>=cfg.dodgeHits&&ai.phase!=='windup'){
      ai.combo=0;
      ai.side*=-1;
      setPhase(ai,'evade',cfg.dodgeTime);
