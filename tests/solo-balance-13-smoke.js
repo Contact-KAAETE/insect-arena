@@ -61,7 +61,7 @@ function testSoloBalance(balanceJs,tacticalJs){
   }
   return{strategy,id,level,winner:enemy.hp<=0?'player':player.hp<=0?'enemy':'timeout',
     seconds:Math.round(frameNo/60*10)/10,playerHP:Math.round(player.hp),enemyHP:Math.round(enemy.hp),
-    enemyMax:enemy.maxHp,enemyAttacks:enemy.ai?.attacks,enemyEvades:enemy.ai?.evades,
+    enemyMax:enemy.maxHp,enemyAttacks:enemy.ai?.attacks,enemyEvades:enemy.ai?.evades,enemyRage:enemy.ai?.rage,
     firstEnemyHit,firstHit};
  }
  return{sim};
@@ -72,5 +72,36 @@ function testSoloBalance(balanceJs,tacticalJs){
  const results=[];
  for(const strategy of ['spam','skill','idle'])for(const id of [1,2,3,5,7])
    results.push(runtime.sim(strategy,id));
+ for(const difficulty of ['training','alpha'])for(const id of [1,2,7])
+   results.push(runtime.sim('spam',id,difficulty));
  return results;
+}
+
+function assertSoloBalance(balanceJs,tacticalJs){
+ const results=testSoloBalance(balanceJs,tacticalJs);
+ const only=(mode,strategy)=>results.filter(x=>x.level===mode&&x.strategy===strategy);
+ const spam=only('tactical','spam'),skill=only('tactical','skill'),idle=only('tactical','idle');
+ if(spam.length!==5||skill.length!==5||idle.length!==5)throw Error('Missing tactical opponent cases');
+ if(idle.some(x=>x.winner!=='enemy'||x.enemyAttacks<4||x.seconds>75))
+  throw Error('AI cannot punish a standing-still player');
+ if(spam.filter(x=>x.winner==='enemy').length<1||spam.filter(x=>x.enemyEvades>=2).length<3)
+  throw Error('Button-mashing remains too effective; AI is not evading');
+ if(skill.filter(x=>x.winner==='player').length<3||
+    skill.filter(x=>x.seconds>=18&&x.seconds<=75).length<3)
+  throw Error('Skillful dodging does not offer a fair win path');
+ for(const id of [1,2,7]){
+  const training=only('training','spam').find(x=>x.id===id);
+  const tactical=spam.find(x=>x.id===id);
+  const alpha=only('alpha','spam').find(x=>x.id===id);
+  if(!training||!alpha||!(training.enemyMax<tactical.enemyMax&&tactical.enemyMax<alpha.enemyMax))
+   throw Error('Difficulty progression wrong for fighter '+id);
+ }
+ if(!spam.some(x=>x.enemyRage))throw Error('Second-phase enraged AI was not exercised');
+ return{tactical:{spamWins:spam.filter(x=>x.winner==='player').length,
+                    spamLosses:spam.filter(x=>x.winner==='enemy').length,
+                    smartWins:skill.filter(x=>x.winner==='player').length,
+                    enemyDodges:spam.map(x=>x.enemyEvades),
+                    smartFightSeconds:skill.map(x=>x.seconds)},
+          modesValidated:['training','tactical','alpha'],
+          idlePunished:true,enrageTriggered:true,totalSimulations:results.length};
 }
