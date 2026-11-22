@@ -1,6 +1,6 @@
 # INSECT ARENA — automatische updates via één beginschermicoon
 
-Versie: 1.8A (22 november 2026)
+Versie: 1.9A (22 november 2026)
 
 ## Werking
 
@@ -15,11 +15,11 @@ Versie: 1.8A (22 november 2026)
 
 ## Verplicht bij elke volgende release
 
-1. Zet de nieuwe versie (bijv. `1.9A`) in **`version.json`** en in de appversie in `index.html` en `pwa-update-18.js` als daar het versie-constante nog staat. Zorg dat alle drie overeenkomen.
-2. Veranderde CSS- en JS-bestanden moeten een nieuwe queryversie (`?v=1.9A`) krijgen in `index.html`, anders kan Safari een oude versie blijven gebruiken.
+1. Zet de nieuwe versie (bijv. `2.0A`) in **`version.json`** en in de appversie in `index.html` en `pwa-update-18.js` als daar het versie-constante nog staat. Zorg dat alle drie overeenkomen.
+2. Veranderde CSS- en JS-bestanden moeten een nieuwe queryversie (`?v=2.0A`) krijgen in `index.html`, anders kan Safari een oude versie blijven gebruiken.
 3. Pas het manifest `start_url`, `scope` en `id` **nooit** meer aan op een releaseversie. Deze blijven `/insect-arena/`.
 4. Wijzig `SW_BUILD` in `sw.js` bij wijzigingen in de serviceworker of wanneer cache-opruiming nodig is. De cache is alleen voor INSECT ARENA, niet voor andere apps.
-5. Controleer de tests: `node --test tests/arena-14.test.cjs tests/arena-15.test.cjs tests/arena-16.test.cjs tests/arena-17.test.cjs tests/arena-18.test.cjs`.
+5. Controleer de tests: `node --test tests/arena-14.test.cjs tests/arena-15.test.cjs tests/arena-16.test.cjs tests/arena-17.test.cjs tests/arena-18.test.cjs tests/arena-19.test.cjs`.
 6. Publiceer de nieuwe bestanden via GitHub Pages vanaf de bestaande `main`-branch. Start het bestaande iPhone-icoon één keer online om de nieuwe versie op te halen.
 
 ## Herstel bij oude iPhone-cache
@@ -31,3 +31,7 @@ Verwijder het oude icoon of de websitegegevens niet als eerste stap: dat kan opg
 ## Privacy en beperkingen
 
 Geen advertenties, tracking, accounts of cloudopslag toegevoegd. Offline geldt voor eerder opgeslagen spelbestanden; multiplayer vereist een netwerkverbinding. Safari kan browserbalken tonen; spelen vanaf het beginscherm geeft de standalone-weergave.
+
+## Update 1.9A — iPhone landscape + verbeterde dieren
+
+De vechterkeuze, werelden, instellingen en duelpagina krijgen natuurlijke verticale scroll via de klasse ia19-menu-scroll. De fullscreen-arena blijft gefixeerd, zodat de joystick/aanvalknoppen niet veranderen. De vijf verbeterde SVG-assets staan in assets/fighters, hun vorige bestanden zijn als rollback behouden. Het bestaande beginschermicoon en alle offline-opslag blijven behouden. Iedere volgende upgrade moet eveneens de versie in version.json, pwa-update-18.js en SW_BUILD in sw.js consistent verhogen.

@@ -2,7 +2,7 @@
   "id": "/insect-arena/",
   "name": "INSECT ARENA — Duel Arena",
   "short_name": "INSECT ARENA",
-  "description": "INSECT ARENA is één steeds bijgewerkte iPhone-app met 13 roofdieren, 6 levende werelden en offline spelondersteuning.",
+  "description": "INSECT ARENA: één iPhone-app met automatische updates, 13 roofdieren, 6 werelden en scrollbare menu’s.",
   "start_url": "/insect-arena/",
   "scope": "/insect-arena/",
   "display": "standalone",

@@ -12,9 +12,9 @@ const ninth={name:'Reuzenduizendpoot',move:'gifgreep · tijdelijk verlammen',
   description:'Een snelle bosbodemjager die zijn prooi met gif en grijppoten vasthoudt.'};
 types.push(ninth);
 const i=types.length-1;
-const src='assets/fighters/centipede-14.svg';
+const src='assets/fighters/centipede-19.svg';
 spriteSources.push(src);
-spriteWidths.push(220);
+spriteWidths.push(240);
 fighterSel.add(new Option(ninth.name+' · '+ninth.move,i));
 const portrait=new Image();portrait.decoding='async';
 portrait.onload=()=>{fighterSprites[i]=portrait};

@@ -16,7 +16,7 @@ test('all 13 fighters and 6 worlds are wired to the app',()=>{
  const html=read('index.html');
  for(const p of ['expansion-15-pre.js','expansion-15.js','expansion-15.css']){
   assert.ok(fs.existsSync(path.join(root,p)),p);
-  assert.ok(html.includes(p+'?v=1.5A'),p+' not connected');
+  assert.ok(html.includes(p+'?v='+(p==='expansion-15-pre.js'?'1.9A':'1.5A')),p+' not connected');
  }
  for(const [name,p] of fighters){
   assert.ok(read('expansion-15-pre.js').includes(name));
