@@ -270,3 +270,46 @@
 @media(prefers-reduced-motion:reduce){
  #arena-view .ia17-hitglow{transition:none;will-change:auto}
 }
+
+/* Restrained biome-specific cinematic grading. Nothing sits over controls. */
+#arena-view .ia17-atmosphere{
+ position:absolute;inset:-5%;z-index:3;pointer-events:none;overflow:hidden;
+ opacity:.8;
+ background:
+  radial-gradient(ellipse 38% 60% at 47% 8%,#fce09d1b,transparent 87%),
+  linear-gradient(103deg,#05150b21 7%,transparent 38%,#091b0c1b 93%);
+ animation:ia17Atmosphere 11s ease-in-out infinite alternate;
+ will-change:transform,opacity;
+}
+#arena-view .ia17-atmosphere[data-world="roots"]{
+ background:
+  radial-gradient(ellipse 30% 65% at 53% 7%,#fae4b121,transparent 95%),
+  radial-gradient(ellipse 24% 23% at 18% 90%,#538f4e22,transparent 96%);
+}
+#arena-view .ia17-atmosphere[data-world="fungus"]{
+ background:
+  radial-gradient(ellipse 35% 49% at 42% 78%,#ab7dfb1c,transparent 89%),
+  radial-gradient(ellipse 25% 62% at 82% 17%,#b7f4e411,transparent 90%);
+}
+#arena-view .ia17-atmosphere[data-world="dew"]{
+ background:
+  radial-gradient(ellipse 50% 35% at 52% 79%,#a7e8e51c,transparent 91%),
+  linear-gradient(90deg,#50bdb010,transparent 38%,#51a49a12 86%);
+}
+#arena-view .ia17-atmosphere[data-world="cave"]{
+ background:
+  radial-gradient(ellipse 38% 45% at 53% 23%,#93bbed17,transparent 90%),
+  radial-gradient(ellipse 25% 50% at 90% 81%,#6b9ee01c,transparent 91%);
+}
+#arena-view .ia17-atmosphere[data-world="red"]{
+ background:
+  radial-gradient(ellipse 52% 37% at 50% 97%,#ff9c4126,transparent 92%),
+  radial-gradient(ellipse 23% 65% at 84% 22%,#eb6f3420,transparent 93%);
+}
+@keyframes ia17Atmosphere{
+ from{transform:translate3d(-.7%,.4%,0);opacity:.65}
+ to{transform:translate3d(.7%,-.4%,0);opacity:.90}
+}
+@media(prefers-reduced-motion:reduce){
+ #arena-view .ia17-atmosphere{animation:none;will-change:auto}
+}
