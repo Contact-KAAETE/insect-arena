@@ -27,6 +27,7 @@
   const given=Number(target);
   const startAt=Number.isFinite(given)&&given>now-500&&given<now+10000?given:now+3200;
   window.iaCountdownActive=true;
+  window.iaOnCountdownScheduled?.(startAt);
   root.hidden=false;
   label.textContent='HET GEVECHT BEGINT';
   mode.textContent=window.iaDuelRole?'PRIVÉDUEL · 2 SPELERS':'JUNGLE ARENA · SOLO';
