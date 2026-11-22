@@ -271,6 +271,7 @@ function mushroom(o){
 const previousArena=drawArena;
 drawArena=function(ts){
  previousArena(ts);
+ if(!solo())return; // Online stays visually identical to the networked 1.3A arenas.
  const current=world();
  for(const node of nodes()){
   if(node.kind==='mushroom')mushroom(node);
