@@ -10,15 +10,17 @@ const state={
  role:null,peer:null,conn:null,room:null,remoteFighter:0,remoteReady:false,
  active:false,resultShown:false,lastSeq:0,seq:0,world:'forest',
  remoteInput:{x:0,y:0,lastAt:0,hit:false,special:false},
- lastSent:0,snapshotTimer:null,joining:false,connected:false
+ lastSent:0,snapshotTimer:null,joining:false,connected:false,
+ round:1,scores:{host:0,guest:0},matchDone:false,sudden:false,
+ startAt:0,remaining:90000,overtimeHealth:null
 };
 const displayStatus=(text,isError=false)=>{
  const e=$('duel-status');
  e.textContent=text;e.style.borderColor=isError?'#d66b68':'#b39d667c';
 };
 function syncButtons(){
- $('duel-start').disabled=!(state.role==='host'&&state.connected&&state.remoteReady&&!state.active);
- $('duel-start').textContent=state.role==='host'?'⚔ START ONLINE DUEL':'WACHT OP DE HOST';
+ $('duel-start').disabled=!(state.role==='host'&&state.connected&&state.remoteReady&&!state.active&&!state.matchDone);
+ $('duel-start').textContent=state.role==='host'?(state.round>1?'⚔ START RONDE '+state.round:'⚔ START ONLINE DUEL'):'WACHT OP DE HOST';
  $('duel-start').hidden=!state.role;
  $('duel-invite-section').hidden=state.role!=='host'||!state.room;
  $('duel-join-section').hidden=state.role!=='guest'||state.connected;
@@ -41,6 +43,8 @@ function openDuel(){
 function clearSession(notify=true){
  $('pause').textContent='Ⅱ PAUZE';
  state.active=false;
+ window.iaMatchHUD?.stop();
+ window.iaStopCountdown?.();
  if(notify)try{state.conn?.send({t:'leave'})}catch(_){}
  if(state.snapshotTimer)clearInterval(state.snapshotTimer);
  state.snapshotTimer=null;
@@ -48,6 +52,8 @@ function clearSession(notify=true){
  try{state.peer?.destroy()}catch(_){}
  state.conn=null;state.peer=null;state.room=null;state.role=null;state.connected=false;
  state.remoteReady=false;state.joining=false;state.resultShown=false;
+ state.round=1;state.scores={host:0,guest:0};state.matchDone=false;
+ state.sudden=false;state.startAt=0;state.remaining=90000;state.overtimeHealth=null;
  state.remoteInput={x:0,y:0,lastAt:0,hit:false,special:false};
  window.iaDuelRole=null;
  try{if(location.hash.startsWith('#duel='))history.replaceState(null,'',location.pathname+location.search)}catch(_){}
@@ -79,7 +85,7 @@ function copyURL(){
 }
 function drawInvite(){
  if(!state.room)return;
- const url=location.origin+location.pathname+'?v=0.8A#duel='+state.room;
+ const url=location.origin+location.pathname+'?v=0.9A#duel='+state.room;
  $('duel-share-link').value=url;
  $('duel-room-label').textContent='KAMER: '+state.room.slice(-8).toUpperCase();
  const qr=$('duel-qr');qr.replaceChildren();
@@ -201,12 +207,18 @@ function newWorld(name){
 }
 function beginOnlineRound(){
  if(state.role!=='host'||!state.connected||!state.remoteReady||state.active)return;
- const info={t:'start',hostFighter:+fighterSel.value,guestFighter:state.remoteFighter,world:state.world,startAt:Date.now()+3200};
+ const info={t:'start',hostFighter:+fighterSel.value,guestFighter:state.remoteFighter,
+  world:state.world,startAt:Date.now()+3200,round:state.round,
+  scores:{host:state.scores.host,guest:state.scores.guest}};
  send(info);
  enterBattle(info);
 }
 function enterBattle(info){
- state.active=true;state.resultShown=false;state.lastSeq=0;
+ state.active=true;state.resultShown=false;state.lastSeq=0;state.seq=0;
+ state.round=Math.max(1,Math.min(3,Number(info.round)||1));
+ state.scores={host:Number(info.scores?.host)||0,guest:Number(info.scores?.guest)||0};
+ state.startAt=Number(info.startAt)||Date.now()+3200;state.remaining=90000;
+ state.sudden=false;state.overtimeHealth=null;state.matchDone=false;
  state.remoteInput={x:0,y:0,lastAt:0,hit:false,special:false};
  state.world=info.world==='fungus'?'fungus':'forest';
  window.iaSetWorld?.(state.world);
@@ -218,9 +230,13 @@ function enterBattle(info){
   player=unit(info.hostFighter,210,330);enemy=unit(info.guestFighter,700,320);
   enemy.face=-1;
   state.remoteFighter=info.guestFighter;
+  if(state.snapshotTimer){clearInterval(state.snapshotTimer);state.snapshotTimer=null;}
   state.snapshotTimer=setInterval(()=>{
    if(!state.connected||!state.active||state.role!=='host')return;
-   send({t:'state',seq:++state.seq,h:serialize(player),g:serialize(enemy),playing:!!playing});
+   hostTick();
+   send({t:'state',seq:++state.seq,h:serialize(player),g:serialize(enemy),
+     playing:!!playing,remaining:state.remaining,sudden:state.sudden,
+     round:state.round,scores:state.scores});
    if(!playing&&!state.resultShown)result();
   },75);
  }else{
@@ -229,7 +245,8 @@ function enterBattle(info){
  }
  statusEl.textContent='ONLINE DUEL · '+(state.role==='host'?'Jij bent host':'Jij bent uitgenodigd')+' · '+window.iaWorldName();
  $('pause').textContent='● LIVE';
- window.iaStartCountdown?.(info.startAt);
+ window.iaMatchHUD?.beginDuel({startAt:state.startAt,round:state.round,scores:state.scores});
+ window.iaStartCountdown?.(state.startAt);
 }
 const savedKeys=['id','name','x','y','hp','maxHp','face','walk','cool','special','flash','attackAnim','attackMax','attackSpecial','hitAnim','burn','poison','root','slow','cloak','sporeSlow','ambush'];
 function serialize(unit){
@@ -244,14 +261,12 @@ function applySnapshot(d){
  // Host's guest is this phone's player; host's player is this phone's opponent.
  Object.assign(player,d.g);
  Object.assign(enemy,d.h);
- if(!d.playing&&playing){
-  playing=false;
-  if(enemy.hp<=0){
-   wins++;try{localStorage.setItem('iaWins',wins)}catch(_){}
-  }
-  statusEl.textContent=enemy.hp<=0?'GEWONNEN!':'VERLOREN!';
-  result();
- }
+ state.remaining=Math.max(0,Number(d.remaining)||0);
+ state.sudden=!!d.sudden;
+ window.iaMatchHUD?.updateDuel({remaining:state.remaining,sudden:state.sudden,
+   round:d.round||state.round,scores:d.scores||state.scores});
+ // Round victories are handled only by the host's reliable 'round_end' packet.
+ // Never infer a match winner from an out-of-order position snapshot.
 }
 function receive(d){
  switch(d.t){
@@ -292,6 +307,7 @@ function receive(d){
    if(state.role==='host'&&state.active)state.remoteInput.special=true;
    break;
   case 'state':if(state.role==='guest')applySnapshot(d);break;
+  case 'round_end':if(state.role==='guest'&&state.active)acceptRoundEnd(d);break;
   case 'back':
    state.active=false;state.resultShown=false;playing=false;
    $('battle-overlay').hidden=true;ui().open('duel');syncButtons();
@@ -302,6 +318,7 @@ function receive(d){
 function restoreLobby(){
  state.active=false;state.resultShown=false;
  playing=false;paused=false;$('battle-overlay').hidden=true;
+ window.iaMatchHUD?.stop();window.iaStopCountdown?.();
  if(state.snapshotTimer){clearInterval(state.snapshotTimer);state.snapshotTimer=null}
  send({t:'back'});
  window.iaDuelRole=null;
