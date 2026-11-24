@@ -91,7 +91,8 @@ function copyURL(){
 }
 function drawInvite(){
  if(!state.room)return;
- const url=location.origin+location.pathname+'?v=1.5A#duel='+state.room;
+ const release=window.iaPwaUpdates?.version||'latest';
+ const url=location.origin+location.pathname+'?v='+encodeURIComponent(release)+'#duel='+state.room;
  $('duel-share-link').value=url;
  $('duel-room-label').textContent='KAMER: '+state.room.slice(-8).toUpperCase();
  const qr=$('duel-qr');qr.replaceChildren();

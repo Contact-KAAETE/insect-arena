@@ -1,4 +1,4 @@
-name: INSECT ARENA 1.9A Landscape Scroll and Premium Fauna
+name: INSECT ARENA 2.0A Readable HUD and Release Checks
 on:
   push:
     branches:
@@ -9,6 +9,7 @@ on:
       - feature/immersive-fullscreen-17a
       - feature/seamless-pwa-updates-18a
       - feature/landscape-scroll-premium-fauna-19a
+      - 'claude/**'
   pull_request:
 jobs:
   smoke:
@@ -19,8 +20,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Check tutorial, six biomes and thirteen predators
-        run: node --test tests/arena-14.test.cjs tests/arena-15.test.cjs tests/arena-16.test.cjs tests/arena-17.test.cjs tests/arena-18.test.cjs tests/arena-19.test.cjs
+      - name: Check tutorial, biomes, predators, PWA updates and legacy duel/AI smoke tests
+        run: node --test tests/*.test.cjs
 
       - name: Validate five SVG fauna assets
         run: |

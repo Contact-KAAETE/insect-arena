@@ -61,16 +61,17 @@ test('five biologically richer animal sprites load without changing fighter IDs 
 test('new visuals leave the single-icon PWA versioning and saved data untouched',()=>{
  const html=read('index.html'),manifest=JSON.parse(read('manifest.webmanifest'));
  const version=JSON.parse(read('version.json'));
- assert.equal(version.version,'1.9A');
+ assert.ok(/^\d+\.\d+[A-Z]$/.test(version.version));
  assert.equal(manifest.id,'/insect-arena/');
  assert.equal(manifest.start_url,'/insect-arena/');
  assert.ok(html.includes('polish-19.css?v=1.9A'));
- assert.ok(html.includes('ui-07.js?v=1.9A'));
+ assert.ok(html.includes('ui-07.js?v=2.0A'));
  assert.ok(html.includes('adventure-14-pre.js?v=1.9A'));
  assert.ok(html.includes('expansion-15-pre.js?v=1.9A'));
- assert.ok(html.includes('pwa-update-18.js?v=1.9A'));
- assert.match(read('pwa-update-18.js'),/const CURRENT_VERSION='1\.9A'/);
- assert.match(read('sw.js'),/const SW_BUILD='1\.9A'/);
+ assert.ok(html.includes('pwa-update-18.js?v=2.0A'));
+ // Release constants must agree with version.json (checked in detail by arena-20).
+ assert.ok(read('pwa-update-18.js').includes("const CURRENT_VERSION='"+version.version+"'"));
+ assert.ok(read('sw.js').includes("const SW_BUILD='"+version.version+"'"));
  assert.ok(read('FAUNA_19_ROADMAP.md').includes('13'));
  assert.ok(!read('ui-07.js').includes('localStorage.clear()'));
  assert.ok(!read('polish-19.css').includes('#arena-view .touchPanel{display:none'));

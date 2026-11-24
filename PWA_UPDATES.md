@@ -1,6 +1,6 @@
 # INSECT ARENA — automatische updates via één beginschermicoon
 
-Versie: 1.9A (22 november 2026)
+Versie: 2.0A (24 november 2026)
 
 ## Werking
 
@@ -19,7 +19,7 @@ Versie: 1.9A (22 november 2026)
 2. Veranderde CSS- en JS-bestanden moeten een nieuwe queryversie (`?v=2.0A`) krijgen in `index.html`, anders kan Safari een oude versie blijven gebruiken.
 3. Pas het manifest `start_url`, `scope` en `id` **nooit** meer aan op een releaseversie. Deze blijven `/insect-arena/`.
 4. Wijzig `SW_BUILD` in `sw.js` bij wijzigingen in de serviceworker of wanneer cache-opruiming nodig is. De cache is alleen voor INSECT ARENA, niet voor andere apps.
-5. Controleer de tests: `node --test tests/arena-14.test.cjs tests/arena-15.test.cjs tests/arena-16.test.cjs tests/arena-17.test.cjs tests/arena-18.test.cjs tests/arena-19.test.cjs`.
+5. Controleer de tests: `node --test tests/*.test.cjs`. `tests/arena-20.test.cjs` controleert dat `version.json`, `CURRENT_VERSION`, `SW_BUILD` en de manifest-query gelijk zijn. Het versielabel in het menu en de duel-uitnodigingslink volgen automatisch `CURRENT_VERSION`; schrijf daar nergens anders een versienummer in.
 6. Publiceer de nieuwe bestanden via GitHub Pages vanaf de bestaande `main`-branch. Start het bestaande iPhone-icoon één keer online om de nieuwe versie op te halen.
 
 ## Herstel bij oude iPhone-cache
@@ -35,3 +35,11 @@ Geen advertenties, tracking, accounts of cloudopslag toegevoegd. Offline geldt v
 ## Update 1.9A — iPhone landscape + verbeterde dieren
 
 De vechterkeuze, werelden, instellingen en duelpagina krijgen natuurlijke verticale scroll via de klasse ia19-menu-scroll. De fullscreen-arena blijft gefixeerd, zodat de joystick/aanvalknoppen niet veranderen. De vijf verbeterde SVG-assets staan in assets/fighters, hun vorige bestanden zijn als rollback behouden. Het bestaande beginschermicoon en alle offline-opslag blijven behouden. Iedere volgende upgrade moet eveneens de versie in version.json, pwa-update-18.js en SW_BUILD in sw.js consistent verhogen.
+
+## Update 2.0A — leesbare gevechts-HUD en één versienummer
+
+- De waarschuwingen *ONTWIJK DE AANVAL!* / *NU TERUGSLAAN!* en tactische meldingen staan nu altijd onder de levensbalken (`polish-20.js`/`polish-20.css`) in plaats van eroverheen.
+- Het hoofdmenu toonde nog `1.5A`; het label volgt nu automatisch de app-versie.
+- Online-duel-uitnodigingen bevatten de actuele versie in plaats van een vaste `?v=1.5A`.
+- "1 overwinning" in plaats van "1 overwinningen".
+- De oude duel-, tactiek- en AI-balanssimulaties (`tests/*-smoke.js`) draaien weer mee in CI via `tests/arena-20.test.cjs`.

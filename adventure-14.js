@@ -41,7 +41,8 @@ function syncUnlocks(){
  const rootButton=$('world-roots');
  if(rootButton)rootButton.disabled=lock;
  const footer=document.querySelector('.menuFooter span:last-child');
- if(footer)footer.textContent='1.5A · 13 VECHTERS · 6 WERELDEN';
+ const release=window.iaPwaUpdates?.version;
+ if(footer&&release)footer.textContent=release+' · 13 VECHTERS · 6 WERELDEN';
 }
 function guide(){
  if(!tutorial){tutorialGuide.hidden=true;return}

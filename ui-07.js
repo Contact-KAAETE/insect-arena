@@ -22,7 +22,7 @@ function switchPage(page){
  state.page=page;
  syncPageScroll(page);
  ids.forEach(id=>views[id].hidden=id!==page);
- if(page==='menu')el('menu-wins').textContent=wins+' OVERWINNINGEN';
+ if(page==='menu')el('menu-wins').textContent=wins+(wins===1?' OVERWINNING':' OVERWINNINGEN');
  if(typeof window.scrollTo==='function')window.scrollTo(0,0);
 }
 const hero=el('menu-hero-unit');
@@ -116,7 +116,7 @@ function outcome(){
  state.shownResult=true;resetJoystick();
  const won=enemy.hp<=0;
  overlay(won?'OVERWINNING!':'VERSLAGEN',
- won?'Je hebt '+types[enemy.id].name+' verslagen. Totaal: '+wins+' overwinningen.':'De '+types[enemy.id].name+' won dit duel. Probeer opnieuw!',
+ won?'Je hebt '+types[enemy.id].name+' verslagen. Totaal: '+wins+(wins===1?' overwinning.':' overwinningen.'):'De '+types[enemy.id].name+' won dit duel. Probeer opnieuw!',
  [
  {text:won?'VOLGENDE DUEL':'HERKANSING',primary:true,action:beginBattle},
  {text:'ANDERE VECHTER',action:()=>{el('battle-overlay').hidden=true;switchPage('select')}},

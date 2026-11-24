@@ -43,7 +43,7 @@ function testBestOfThree(source) {
  }
  const h=client(),g=client();
  h.get('duel-host').click();flush();const invite=h.get('duel-share-link').value;
- if(!invite.includes('?v=1.3A#duel='))throw Error('Wrong invitation URL version');
+ if(!/\?v=[^#]+#duel=/.test(invite))throw Error('Wrong invitation URL version');
  g.get('duel-join').click();g.get('duel-room-input').value=invite;g.get('duel-join-go').click();flush();
  if(!h.probe().ready||!g.probe().connected)throw Error('Connection failed');
  function start(){h.get('duel-start').click();flush();if(!h.probe().active||!g.probe().active)throw Error('Round did not start')}

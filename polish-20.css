@@ -1,0 +1,4 @@
+/* INSECT ARENA 2.0A — warnings sit centred beneath the health bars.
+ * polish-20.js sets the exact top offset from the live HUD position. */
+#arena-view #ai-danger-tag{left:20%!important;right:20%!important;transform-origin:50% 0}
+#arena-view #tactical-toast{left:22%!important;right:22%!important}
