@@ -43,3 +43,7 @@ De vechterkeuze, werelden, instellingen en duelpagina krijgen natuurlijke vertic
 - Online-duel-uitnodigingen bevatten de actuele versie in plaats van een vaste `?v=1.5A`.
 - "1 overwinning" in plaats van "1 overwinningen".
 - De oude duel-, tactiek- en AI-balanssimulaties (`tests/*-smoke.js`) draaien weer mee in CI via `tests/arena-20.test.cjs`.
+
+## Update 2.1A — duelbibliotheken in de app
+
+PeerJS en de QR-bibliotheek komen niet meer van jsDelivr/cdnjs maar uit `vendor/`. Ze worden door de serviceworker mee-gecachet, zodat de duelpagina ook zonder verbinding met die CDN's laadt. Zie `ARCHITECTURE.md` voor de laadvolgorde.

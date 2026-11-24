@@ -1,6 +1,6 @@
 {
-  "version": "2.0A",
+  "version": "2.1A",
   "channel": "stable",
   "published": "2026-11-24",
-  "notes": "Leesbare gevechtswaarschuwingen onder de levensbalken, juiste versie in het menu en actuele online-uitnodigingen. Het bestaande iPhone-icoon blijft behouden."
+  "notes": "Duelbibliotheken (PeerJS en QR) staan nu in de app zelf en werken offline na eerste bezoek. Het bestaande iPhone-icoon blijft behouden."
 }

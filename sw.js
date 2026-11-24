@@ -1,8 +1,8 @@
-/* INSECT ARENA PWA 2.0A — scoped offline and network-first updates.
+/* INSECT ARENA PWA 2.1A — scoped offline and network-first updates.
  * Scope: /insect-arena/ only. Never changes localStorage or user progress.
  */
 'use strict';
-const SW_BUILD='2.0A';
+const SW_BUILD='2.1A';
 const CACHE_PREFIX='insect-arena-owned-';
 const SHELL_CACHE=CACHE_PREFIX+'shell-'+SW_BUILD;
 const RESOURCE_CACHE=CACHE_PREFIX+'assets-'+SW_BUILD;

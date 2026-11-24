@@ -69,3 +69,13 @@ test('legacy smoke: solo AI balance over three difficulty modes',()=>{
  assert.deepEqual(r.modesValidated,['training','tactical','alpha']);
  assert.equal(r.idlePunished,true);
 });
+
+test('duel libraries are self-hosted, not loaded from a CDN',()=>{
+ const html=read('index.html');
+ assert.ok(!/<script[^>]+src=["']https?:/i.test(html),'no external scripts');
+ for(const f of ['vendor/peerjs-1.5.5.min.js','vendor/qrcode-1.0.0.min.js','vendor/LICENSE-peerjs','vendor/LICENSE-qrcodejs'])
+  assert.ok(fs.existsSync(path.join(root,f)),f+' missing');
+ assert.ok(html.includes('vendor/peerjs-1.5.5.min.js?v='+release));
+ assert.ok(html.indexOf('vendor/peerjs')<html.indexOf('duel-08.js'),'library loads before duel code');
+ assert.match(read('vendor/peerjs-1.5.5.min.js'),/Peer/);
+});
