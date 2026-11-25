@@ -9,7 +9,7 @@
   {name:'Reuzenwaterwants',move:'grijpgreep',body:'#655e35',accent:'#413c29',hp:154,speed:2.7,damage:20,range:96,description:'Pantserjager die zijn slachtoffer vastgrijpt en vertraagt.'}
  ];
  types.push(...newer);
- const files=['bombardier.webp','orchid-mantis.webp','velvet-ant.webp','giant-water-bug.webp'];
+ const files=['bombardier.webp','orchid-mantis.webp','velvet-ant-20.webp','giant-water-bug.webp'];
  const sizes=[195,201,192,218];
  for(let i=0;i<newer.length;i++){
    const ix=4+i,src='assets/fighters/'+files[i];

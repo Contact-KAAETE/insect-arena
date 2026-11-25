@@ -79,3 +79,14 @@ test('duel libraries are self-hosted, not loaded from a CDN',()=>{
  assert.ok(html.indexOf('vendor/peerjs')<html.indexOf('duel-08.js'),'library loads before duel code');
  assert.match(read('vendor/peerjs-1.5.5.min.js'),/Peer/);
 });
+
+test('photorealistic velvet ant sprite is wired to fighter 6 and old sprite is kept',()=>{
+ const sp=read('expansion-07.js');
+ assert.ok(sp.includes("'velvet-ant-20.webp'"));
+ assert.ok(fs.existsSync(path.join(root,'assets/fighters/velvet-ant.webp')),'rollback sprite kept');
+ const buf=fs.readFileSync(path.join(root,'assets/fighters/velvet-ant-20.webp'));
+ assert.equal(buf.slice(0,4).toString(),'RIFF');
+ assert.equal(buf.slice(8,12).toString(),'WEBP');
+ assert.ok(buf.length<200*1024,'sprite stays small');
+ assert.ok(read('expansion-07.js').includes("name:'Fluweelmier'"));
+});

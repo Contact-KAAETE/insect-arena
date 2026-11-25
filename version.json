@@ -1,6 +1,6 @@
 {
-  "version": "2.1A",
+  "version": "2.2A",
   "channel": "stable",
-  "published": "2026-11-24",
-  "notes": "Duelbibliotheken (PeerJS en QR) staan nu in de app zelf en werken offline na eerste bezoek. Het bestaande iPhone-icoon blijft behouden."
+  "published": "2026-11-25",
+  "notes": "Nieuwe fotorealistische Fluweelmier en duelbibliotheken in de app. Het bestaande iPhone-icoon blijft behouden."
 }
