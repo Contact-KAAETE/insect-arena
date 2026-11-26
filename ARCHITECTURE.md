@@ -13,6 +13,7 @@ functies of stijlen. Dit overzicht voorkomt dat je de volgorde moet raden.
 | 1.7–1.9 | `immersive-17.*`, `pwa-update-18.*`, `polish-19.css` | Fullscreen, PWA-updates, scrollbare menu's |
 | 2.0–2.1 | `polish-20.*`, `vendor/` | Leesbare gevechts-HUD, lokale duelbibliotheken |
 | 2.3 | `fauna-23-pre.js`, `fauna-23.js` | Drie geanimeerde solo-vechters (bloemenmantis, springstaart, bosmijt) met eigen specials |
+| 2.4 | `terrain-23.js`, `assets/world/props-23/` | Fotorealistische bosprops over de bestaande terreinlaag (alleen uitzicht) |
 
 Regels:
 
@@ -35,3 +36,10 @@ Regels:
 - Alleen solo: het duelprotocol blijft op id 0–7 (`duel-08.js`).
 - Bronmateriaal: video (bloemenmantis, uitgeknipt met `knip2`-methode: randdetectie + vlakvulling) en twee aangeleverde
   8-frame-sheets (springstaart, mijt). Randkleuren zijn gezuiverd.
+
+## Fotoprops in de arena (2.4A)
+
+- `terrain-23.js` laadt na `terrain-16.js` en vervangt alleen `iaTerrain16Art.cache`. Per object in `terrain-16-data.js`
+  (op `id`) staat een foto, breedte en anker; objecten zonder foto of met een mislukte download vallen terug op de oude tekening.
+- Botsing, dekking en vertraging blijven uit `terrain-16-data.js` komen en worden niet aangepast.
+- Foto's: `assets/world/props-23/*.webp`, uitgeknipt uit één aangeleverde sheet met gezuiverde randen.
