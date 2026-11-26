@@ -1,11 +1,11 @@
-/* INSECT ARENA 2.4A — hands-free updates for the SAME pinned iPhone icon.
+/* INSECT ARENA 2.4B — hands-free updates for the SAME pinned iPhone icon.
  * Checks upon opening, returning online/foreground, and every 15 minutes.
  * Never reloads during a fight, multiplayer invite, or any settings/edit flow.
  * No personal data, localStorage, IndexedDB, or saved game keys are modified.
  */
 (()=>{
 'use strict';
-const CURRENT_VERSION='2.4A';
+const CURRENT_VERSION='2.4B';
 const root=new URL('./',window.location.href);
 const $=id=>document.getElementById(id);
 const menu=$('menu-view'),status=$('ia-update-status'),manual=$('ia-check-updates');

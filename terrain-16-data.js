@@ -16,7 +16,7 @@ const plant=(id,kind,x,y,r,opts={})=>P(id,kind,x,y,{r,...opts});
 
 const zones={
  forest:{name:'Groene Bosbodem',tip:'Bladeren verzwakken slagen; takken bieden beschutting.',props:[
-  log('bos-gevallen-tak',439,299,[[-85,-30],[-42,-12],[7,-8],[67,19]],13),
+  log('bos-gevallen-tak',439,299,[[-70,-10],[-35,4],[5,20],[56,40]],24),
   plant('bos-bladstrooisel-a','leaves',364,395,38,{cover:'light',slow:6}),
   plant('bos-bladstrooisel-b','leaves',590,365,31,{cover:'light',slow:6}),
   plant('bos-varens-a','shrub',349,251,27,{cover:'light'}),
@@ -37,10 +37,10 @@ const zones={
   plant('wortel-mos','moss',554,309,32,{slow:3})
  ]},
  fungus:{name:'Schimmelvallei',tip:'Paddenstoelen geven dekking; schimmelmat vertraagt.',props:[
-  plant('zwam-reus','mushroom',397,350,45,{cover:'hard',solid:true}),
-  plant('zwam-tweede','mushroom',594,410,46,{cover:'hard',solid:true}),
+  plant('zwam-reus','mushroom',397,350,52,{cover:'hard',solid:true}),
+  plant('zwam-tweede','mushroom',594,410,74,{cover:'hard',solid:true}),
   plant('zwam-klein','mushroom',525,259,25,{cover:'light'}),
-  log('zwam-dood-hout',499,473,[[-55,11],[-17,4],[20,-3],[73,-6]],14),
+  log('zwam-dood-hout',499,473,[[-62,38],[-20,20],[22,2],[66,-14]],24),
   plant('zwam-sporenmat-a','mycelium',357,427,41,{slow:11}),
   plant('zwam-sporenmat-b','mycelium',635,309,36,{slow:11}),
   plant('zwam-blad','leaves',485,311,33,{cover:'light'}),
@@ -50,7 +50,7 @@ const zones={
   plant('moeras-riet-a','reeds',396,350,37,{cover:'light'}),
   plant('moeras-riet-b','reeds',653,391,41,{cover:'light'}),
   plant('moeras-riet-c','reeds',512,258,27,{cover:'light'}),
-  log('moeras-hout',521,463,[[-55,16],[-15,6],[51,-12]],13),
+  log('moeras-hout',521,463,[[-52,34],[-8,15],[58,-9]],21),
   plant('moeras-bladeren','leaves',358,469,36,{cover:'light'}),
   plant('moeras-modder-a','mud',403,420,44,{slow:13}),
   plant('moeras-modder-b','mud',594,306,31,{slow:13}),

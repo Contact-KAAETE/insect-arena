@@ -1,4 +1,4 @@
-/* INSECT ARENA 2.4A — fotorealistische bosprops in de arena (hout, mos, varens, paddenstoelen, schimmel).
+/* INSECT ARENA 2.4B — fotorealistische bosprops in de arena (hout, mos, varens, paddenstoelen, schimmel).
  * Alleen het UITZICHT verandert: botsing, dekking en vertraging komen nog steeds uit terrain-16-data.js.
  * Elk object krijgt zijn foto op dezelfde plek en schaal als de oude, getekende vorm; wat geen foto heeft
  * (wortels, riet, rotsen, kristal, as) blijft zoals het was. De hele laag wordt één keer per wereld gecacht.
@@ -13,14 +13,14 @@ const DIR='assets/world/props-23/';
 const L=(img,w,anchor,flip)=>({img,w,anchor,flip:!!flip});
 const SPEC={
  // Groene Bosbodem
- 'bos-gevallen-tak':L('log',172,0),
+ 'bos-gevallen-tak':L('log',172,0,true),
  'bos-bladstrooisel-a':L('leaf',112,0),'bos-bladstrooisel-b':L('leaf',94,0,true),
  'bos-varens-a':L('fern',104,.7),'bos-varens-b':L('fern',118,.7,true),
  'bos-twijg':L('debris',96,0),'bos-mos':L('moss',128,0),
  // Worteldoolhof (de wortelbogen zelf blijft de bestaande getekende wortel)
  'wortel-varen':L('fern',108,.7),'wortel-bladeren':L('leaf',104,0),'wortel-twijg':L('debris',84,0),'wortel-mos':L('moss',112,0),
  // Schimmelvallei
- 'zwam-reus':L('shroom',170,.78),'zwam-tweede':L('shrooms',172,.78),'zwam-klein':L('spore',84,.7),
+ 'zwam-reus':L('shroom',170,.93),'zwam-tweede':L('shrooms',172,.93),'zwam-klein':L('spore',84,.7),
  'zwam-dood-hout':L('logrot',176,0),'zwam-sporenmat-a':L('web',132,0),'zwam-sporenmat-b':L('web',112,0,true),
  'zwam-blad':L('leaf',108,0),'zwam-varens':L('fern',100,.7),
  // Dauwmoeras

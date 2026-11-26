@@ -73,3 +73,16 @@ test('laadvolgorde en versie',()=>{
  assert.ok(html.includes('terrain-23.js?v='+JSON.parse(read('version.json')).version));
  for(const f of ['bloemenmantis','springstaart','mijt'])assert.ok(fs.existsSync(path.join(root,'assets/fighters',f+'-23.webp')));
 });
+
+test('botsvorm van stammen en paddenstoelen volgt de foto (dik genoeg, niet een dunne lijn)',()=>{
+ const Z=zones();
+ const vind=id=>Object.values(Z).flatMap(z=>z.props).find(p=>p.id===id);
+ for(const id of ['bos-gevallen-tak','zwam-dood-hout','moeras-hout']){
+  const p=vind(id);
+  assert.ok(p.solid&&p.cover==='hard',id+' blijft massief');
+  assert.ok(p.width>=20,id+' botsbreedte past bij de foto');
+ }
+ for(const id of ['zwam-reus','zwam-tweede']){
+  const p=vind(id);assert.ok(p.solid&&p.r>=50,id+' blijft massief met voldoende voetafdruk');
+ }
+});
