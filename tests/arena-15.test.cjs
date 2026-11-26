@@ -146,9 +146,9 @@ test('new worlds are solo-only, environment affects both animals fairly',()=>{
  r.setBiome('dew');r.api.confine(clean);
  assert.equal(clean.slow,0,'PvP movement unchanged');
 });
-test('old duel protocol still restricts both phones to 8 original fighters',()=>{
+test('duel protocol only accepts fighters from the duel roster, on both phones',()=>{
  const s=read('duel-08.js');
- assert.ok(s.includes('if(i>=8)return'));
- assert.ok(s.includes('d.hostFighter<8')&&s.includes('d.guestFighter<8'));
+ assert.ok(s.includes('if(!duelOk(i))return'));
+ assert.ok(s.includes('duelOk(d.hostFighter)')&&s.includes('duelOk(d.guestFighter)'));
  assert.ok(s.includes('ia8-'));
 });

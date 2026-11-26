@@ -33,7 +33,7 @@ Regels:
 - `fauna-23.js` laadt na `expansion-15.js`: knipt elke spritesheet (`assets/fighters/*-23.webp`) één keer in canvas-frames
   en zet vlak vóór het tekenen `fighterSprites[id]` op het juiste frame. Daardoor werken HUD, schade-flits en
   statuseffecten van eerdere lagen ongewijzigd. Een canvas met `complete/naturalWidth/naturalHeight` volstaat voor de kern.
-- Alleen solo: het duelprotocol blijft op id 0–7 (`duel-08.js`).
+- Online (sinds 2.5A): de duel-lijst is id 0–7 plus 13–15 (`window.ia23DuelOk`, gebruikt door `duel-08.js`). De andere solo-dieren (8–12) blijven solo.
 - Bronmateriaal: video (bloemenmantis, uitgeknipt met `knip2`-methode: randdetectie + vlakvulling) en twee aangeleverde
   8-frame-sheets (springstaart, mijt). Randkleuren zijn gezuiverd.
 
@@ -43,3 +43,11 @@ Regels:
   (op `id`) staat een foto, breedte en anker; objecten zonder foto of met een mislukte download vallen terug op de oude tekening.
 - Botsing, dekking en vertraging blijven uit `terrain-16-data.js` komen en worden niet aangepast.
 - Foto's: `assets/world/props-23/*.webp`, uitgeknipt uit één aangeleverde sheet met gezuiverde randen.
+
+## Duelprotocol 2 (2.5A)
+
+- `ready`, `lobby` en `start` dragen `v:2`. Een pakket zonder `v` komt van een oudere versie (telt als 1).
+- De host rekent alles; nieuwe dieren (id ≥ 8) worden alleen gestart als de ander protocol 2 spreekt. Anders blijft de startknop uit en
+  verschijnt een melding. Een gast met een nieuw dier bij een oude host valt automatisch terug op de mier.
+- Terreinobjecten blijven in duels decor (geen botsing), zoals voorheen; botsing en dekking gelden alleen in solo.
+- Getest met twee schermen en een nagemaakte PeerJS (zie tests/arena-25 en de duel-simulatie in de ontwikkelnotities): host en gast tonen dezelfde stand.

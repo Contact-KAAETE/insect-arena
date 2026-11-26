@@ -6,7 +6,14 @@
 'use strict';
 const $=id=>document.getElementById(id);
 const ui=()=>window.iaUI;
+// Protocol 2 (release 2.5A): besides the original eight, the three animated fighters of fauna-23 may duel.
+// A peer on an older release only knows the first eight, so versions are exchanged and mixed pairs are refused politely.
+const PROTO=2;
+const duelOk=id=>Number.isInteger(id)&&(window.ia23DuelOk?window.ia23DuelOk(id):(id>=0&&id<8));
+const needsNew=id=>Number.isInteger(id)&&id>=8;
+const OUDE_VERSIE='De andere speler heeft een oudere versie van het spel. Update allebei het spel (Instellingen → Controleer update) om met de nieuwe dieren te duelleren.';
 const state={
+ peerV:0,
  role:null,peer:null,conn:null,room:null,remoteFighter:0,remoteReady:false,
  active:false,resultShown:false,lastSeq:0,seq:0,world:'forest',
  remoteInput:{x:0,y:0,lastAt:0,hit:false,special:false},
@@ -18,8 +25,10 @@ const displayStatus=(text,isError=false)=>{
  const e=$('duel-status');
  e.textContent=text;e.style.borderColor=isError?'#d66b68':'#b39d667c';
 };
+function blocked(){return state.role==='host'&&state.connected&&state.remoteReady&&state.peerV<PROTO&&needsNew(+fighterSel.value);}
 function syncButtons(){
- $('duel-start').disabled=!(state.role==='host'&&state.connected&&state.remoteReady&&!state.active&&!state.matchDone);
+ $('duel-start').disabled=!(state.role==='host'&&state.connected&&state.remoteReady&&!state.active&&!state.matchDone)||blocked();
+ if(blocked())displayStatus(OUDE_VERSIE,true);
  $('duel-start').textContent=state.role==='host'?(state.round>1?'⚔ START RONDE '+state.round:'⚔ START ONLINE DUEL'):'WACHT OP DE HOST';
  $('duel-start').hidden=!state.role;
  $('duel-invite-section').hidden=state.role!=='host'||!state.room;
@@ -39,8 +48,8 @@ function openDuel(){
   setTimeout(()=>window.iaAdventure14?.restartTutorial?.(),0);
   return;
  }
- // Solo-unlocked centipede is not used by the eight-fighter WebRTC protocol.
- if((+fighterSel.value)>7)fighterSel.value='0';
+ // Fighters outside the duel roster (solo-only animals) fall back to the ant.
+ if(!duelOk(+fighterSel.value))fighterSel.value='0';
  ui().open('duel');
  let count=0;try{count=Math.max(0,Math.min(8,Number(localStorage.getItem('iaMysteryFragments')||0)))}catch(_){}
  $('duel-fragment-count').textContent='MYSTERIEFRAGMENTEN '+count+' / 8';
@@ -56,7 +65,7 @@ function clearSession(notify=true){
  state.snapshotTimer=null;
  try{state.conn?.close()}catch(_){}
  try{state.peer?.destroy()}catch(_){}
- state.conn=null;state.peer=null;state.room=null;state.role=null;state.connected=false;
+ state.conn=null;state.peer=null;state.room=null;state.role=null;state.connected=false;state.peerV=0;
  state.remoteReady=false;state.joining=false;state.resultShown=false;
  state.round=1;state.scores={host:0,guest:0};state.matchDone=false;
  state.sudden=false;state.startAt=0;state.remaining=90000;state.overtimeHealth=null;
@@ -128,10 +137,10 @@ function attach(conn){
   state.connected=true;state.joining=false;
   if(state.role==='guest'){
    displayStatus('Verbonden! Kies je vechter. De host start het duel.');
-   send({t:'ready',fighter:+fighterSel.value});
+   send({t:'ready',fighter:+fighterSel.value,v:PROTO});
   }else{
    displayStatus('Tegenstander verbonden! Kies je vechter en start zodra de ander klaar is.');
-   send({t:'lobby',fighter:+fighterSel.value,world:state.world});
+   send({t:'lobby',fighter:+fighterSel.value,world:state.world,v:PROTO});
   }
   syncButtons();
  });
@@ -191,16 +200,17 @@ function join(code){
  syncButtons();
 }
 function updateChoice(fighter){
- if(!Number.isInteger(fighter)||fighter<0||fighter>=8)return;
+ if(!duelOk(fighter))return;
+ if(state.role==='guest'&&state.connected&&needsNew(fighter)&&state.peerV<PROTO){displayStatus(OUDE_VERSIE,true);return;}
  fighterSel.value=String(fighter);
  syncButtons();
- if(state.role==='guest')send({t:'ready',fighter:+fighterSel.value});
- if(state.role==='host')send({t:'lobby',fighter:+fighterSel.value,world:state.world});
+ if(state.role==='guest')send({t:'ready',fighter:+fighterSel.value,v:PROTO});
+ if(state.role==='host')send({t:'lobby',fighter:+fighterSel.value,world:state.world,v:PROTO});
 }
 function makeRoster(){
  const roster=$('duel-roster');roster.replaceChildren();
  types.forEach((t,i)=>{
-  if(i>=8)return; // Older clients only know the original eight fighters.
+  if(!duelOk(i))return; // Solo-only animals are not part of the duel roster.
   const b=document.createElement('button');b.type='button';b.className='duelFighter';b.dataset.fighter=String(i);
   const img=document.createElement('img');img.alt='';img.src=spriteSources[i];img.draggable=false;
   const title=document.createElement('span');title.textContent=t.name;
@@ -212,11 +222,12 @@ function makeRoster(){
 function newWorld(name){
  if(state.role==='guest')return;
  state.world=name;window.iaSetWorld?.(name);
- send({t:'lobby',fighter:+fighterSel.value,world:name});syncButtons();
+ send({t:'lobby',fighter:+fighterSel.value,world:name,v:PROTO});syncButtons();
 }
 function beginOnlineRound(){
  if(state.role!=='host'||!state.connected||!state.remoteReady||state.active)return;
- const info={t:'start',hostFighter:+fighterSel.value,guestFighter:state.remoteFighter,
+ if(blocked()){displayStatus(OUDE_VERSIE,true);return;}
+ const info={t:'start',v:PROTO,hostFighter:+fighterSel.value,guestFighter:state.remoteFighter,
   world:state.world,startAt:Date.now()+3200,round:state.round,
   scores:{host:state.scores.host,guest:state.scores.guest}};
  send(info);
@@ -283,7 +294,8 @@ function receive(d){
   case 'leave':onDisconnect('De andere speler heeft het duel verlaten.');break;
   case 'ready':
    if(state.role==='host'&&!state.active){
-    if(!Number.isInteger(d.fighter)||d.fighter<0||d.fighter>=8)return;
+    if(!duelOk(d.fighter))return;
+    state.peerV=Number(d.v)||1;
     state.remoteFighter=d.fighter;state.remoteReady=true;
     displayStatus('Beide spelers zijn verbonden. Start het duel!');
     syncButtons();
@@ -291,17 +303,22 @@ function receive(d){
    break;
   case 'lobby':
    if(state.role==='guest'&&!state.active){
-    if(Number.isInteger(d.fighter)&&d.fighter>=0&&d.fighter<8)state.remoteFighter=d.fighter;
+    state.peerV=Number(d.v)||1;
+    if(duelOk(d.fighter))state.remoteFighter=d.fighter;
     if(d.world==='forest'||d.world==='fungus'){
      state.world=d.world;window.iaSetWorld?.(d.world);
+    }
+    if(state.peerV<PROTO&&needsNew(+fighterSel.value)){
+     // Host runs an older release: continue as the ant and explain why.
+     fighterSel.value='0';send({t:'ready',fighter:0,v:PROTO});
+     displayStatus(OUDE_VERSIE+' Voor nu speel je als mier.',true);syncButtons();break;
     }
     displayStatus('Verbonden! Je vecht tegen '+types[state.remoteFighter].name+'. Wacht tot host start.');
     syncButtons();
    }break;
   case 'start':
    if(state.role==='guest'&&state.connected&&
-      Number.isInteger(d.hostFighter)&&d.hostFighter>=0&&d.hostFighter<8&&
-      Number.isInteger(d.guestFighter)&&d.guestFighter>=0&&d.guestFighter<8)enterBattle(d);
+      duelOk(d.hostFighter)&&duelOk(d.guestFighter))enterBattle(d);
    break;
   case 'input':
    if(state.role==='host'&&state.active){

@@ -161,5 +161,5 @@ test('app loads new assets in correct order and stays PWA-compatible',()=>{
  assert.equal(JSON.parse(source('manifest.webmanifest')).start_url,'/insect-arena/');
  for(const f of ['terrain-16-data.js','terrain-16-art.js','terrain-16.js'])
   assert.doesNotThrow(()=>new Function(source(f)),f);
- assert.ok(source('duel-08.js').includes('d.hostFighter<8'),'Keep PvP eight fighters');
+ assert.ok(source('duel-08.js').includes('duelOk(d.hostFighter)'),'PvP only accepts duel-roster fighters');
 });

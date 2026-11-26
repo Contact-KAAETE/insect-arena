@@ -13,7 +13,7 @@ test('1.4A boot references and JavaScript syntax',()=>{
   'assets/fighters/centipede-14.svg'
  ])assert.ok(fs.existsSync(path.join(base,file)),'Missing '+file);
  assert.ok(html.includes('adventure-14-pre.js?v=1.9A'));
- assert.ok(html.includes('adventure-14.js?v=2.4B'));
+ assert.ok(html.includes('adventure-14.js?v=2.5A'));
  assert.ok(html.includes('adventure-14.css?v=1.4B'));
  assert.ok(html.includes('data-choose-world="roots"'));
  const order=html.indexOf('adventure-14-pre.js')<html.indexOf('ui-07.js')&&
@@ -133,10 +133,10 @@ test('mandatory training progresses only through real actions and unlocks the re
  assert.match(el('overlay-desc').textContent,/REUZENDUIZENDPOOT/);
 });
 
-test('PvP remains original eight fighters and its timer stays 90 seconds',()=>{
+test('PvP uses the duel roster (original eight plus the animated three) and its timer stays 90 seconds',()=>{
  const duel=get('duel-08.js'),timer=get('match-09.js');
- assert.match(duel,/if\(i>=8\)return/);
- assert.match(duel,/if\(\(\+fighterSel.value\)>7\)fighterSel.value='0'/);
+ assert.match(duel,/if\(!duelOk\(i\)\)return/);
+ assert.match(duel,/if\(!duelOk\(\+fighterSel.value\)\)fighterSel.value='0'/);
  assert.match(timer,/const SOLO_MS=150000/);
  assert.match(timer,/state\.remaining=90000/);
 });

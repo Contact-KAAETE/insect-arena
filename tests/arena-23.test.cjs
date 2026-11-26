@@ -55,9 +55,9 @@ test('laadvolgorde: registratie vóór het rooster, animatie na de basislaag; ni
  assert.ok(i('fauna-23-pre.js')>i('expansion-15-pre.js')&&i('fauna-23-pre.js')<i('ui-07.js'),'pre-bestand vóór ui-07');
  assert.ok(i('fauna-23.js?')>i('expansion-15.js')&&i('fauna-23.js?')>i('tactical-12.js'),'animatielaag na de laag die drawInsect/attack uitbreidt');
  const duel=read('duel-08.js');
- assert.ok(duel.includes('fighter<8'),'het duelprotocol blijft op de eerste 8 beperkt');
- assert.ok(duel.includes("fighterSel.value)>7)fighterSel.value='0'"));
- assert.ok(read('ui-07.js').includes('alleen in solo'));
+ assert.ok(duel.includes('duelOk')&&!/fighter<8|fighter>=8|Fighter<8/.test(duel),'duel gebruikt de duel-lijst, geen vaste grens van 8');
+ assert.ok(read('fauna-23-pre.js').includes('ia23DuelOk'));
+ assert.ok(read('ui-07.js').includes('Ook online te spelen'));
  for(const f of ['adventure-14.js','polish-20.js'])assert.ok(read(f).includes('16 VECHTERS'),f);
  assert.ok(html.includes('16 VECHTERS'));
 });
