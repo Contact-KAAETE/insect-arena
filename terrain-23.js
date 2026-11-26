@@ -1,4 +1,4 @@
-/* INSECT ARENA 2.5A — fotorealistische bosprops in de arena (hout, mos, varens, paddenstoelen, schimmel).
+/* INSECT ARENA 2.6A — fotorealistische bosprops in de arena (hout, mos, varens, paddenstoelen, schimmel).
  * Alleen het UITZICHT verandert: botsing, dekking en vertraging komen nog steeds uit terrain-16-data.js.
  * Elk object krijgt zijn foto op dezelfde plek en schaal als de oude, getekende vorm; wat geen foto heeft
  * (wortels, riet, rotsen, kristal, as) blijft zoals het was. De hele laag wordt één keer per wereld gecacht.

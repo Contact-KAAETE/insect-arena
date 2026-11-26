@@ -281,7 +281,7 @@ function mushroom(o){
 const previousArena=drawArena;
 drawArena=function(ts){
  previousArena(ts);
- if(!solo())return; // Online stays visually identical to the networked 1.3A arenas.
+ if(!solo()&&!window.iaDuelObstacles)return; // Online shows the arena props only when both phones support obstacles (2.6A).
  const current=world();
  // The pulsing rings are under both animals (not covering the sprites).
  if(tutorial&&enemy&&player){

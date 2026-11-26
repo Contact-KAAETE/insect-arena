@@ -9,7 +9,8 @@ if(!Z||!art)throw new Error('INSECT ARENA: terrain data or art missing');
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),hypot=Math.hypot;
 const world=()=>window.iaWorldSelected?.()||'forest';
 const solo=()=>!window.iaDuelRole;
-const active=()=>solo()&&playing&&!paused&&!window.iaCountdownActive&&
+const duelTerrain=()=>!!window.iaDuelRole&&!!window.iaDuelObstacles;   // 2.6A: obstacles also in online duels, when both phones support them
+const active=()=>(solo()||duelTerrain())&&playing&&!paused&&!window.iaCountdownActive&&
  !window.iaAdventure14?.isTutorialActive?.(); // Existing four-step tutorial must stay unchanged.
 const props=()=>Z[world()]?.props||[];
 let blockedHits=0,lightHits=0,collisions=0,detours=0;
@@ -133,7 +134,7 @@ function lineCoverage(a,t,obj){
  return false;
 }
 function coverType(a,t){
- if(!a||!t||!solo())return null;
+ if(!a||!t||(!solo()&&!duelTerrain()))return null;
  let light=false;
  for(const o of props()){
   if(!o.cover)continue;
@@ -210,6 +211,11 @@ function chooseDetour(u,target,dt){
 const oldEnemy=controlEnemy;
 controlEnemy=function(dt){
  if(!active()||!enemy||!player)return oldEnemy(dt);
+ if(!solo()){   // human opponent in a duel: obstacles block, but never re-route or steer a person
+  const f0={x:enemy.x,y:enemy.y},r0=oldEnemy(dt);
+  if(window.iaDuelRole==='host')collisionResolve(f0,enemy);
+  return r0;
+ }
  const from={x:enemy.x,y:enemy.y},ret=oldEnemy(dt);
  const wanted={x:enemy.x,y:enemy.y};
  const moved=hypot(wanted.x-from.x,wanted.y-from.y);

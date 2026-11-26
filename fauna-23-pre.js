@@ -17,8 +17,8 @@ const newcomers=[
 const portraits=['bloemenmantis-23-portret.webp','springstaart-23-portret.webp','mijt-23-portret.webp'];
 const widths=[238,176,200];
 window.ia23Fauna={firstId:types.length,count:newcomers.length};
-// Online duels: the original eight (0..7) and the three animated fighters. The other solo animals stay solo-only.
-window.ia23DuelOk=id=>Number.isInteger(id)&&((id>=0&&id<8)||(id>=window.ia23Fauna.firstId&&id<window.ia23Fauna.firstId+window.ia23Fauna.count));
+// Online duels (2.6A): every fighter may duel; duel-08 checks that the other phone's release understands the chosen animal.
+window.ia23DuelOk=id=>Number.isInteger(id)&&id>=0&&id<types.length;
 newcomers.forEach((spec,k)=>{
  const id=types.length;
  types.push(spec);

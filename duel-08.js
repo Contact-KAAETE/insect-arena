@@ -6,11 +6,12 @@
 'use strict';
 const $=id=>document.getElementById(id);
 const ui=()=>window.iaUI;
-// Protocol 2 (release 2.5A): besides the original eight, the three animated fighters of fauna-23 may duel.
+// Protocol 2 (release 2.6A): besides the original eight, the three animated fighters of fauna-23 may duel.
 // A peer on an older release only knows the first eight, so versions are exchanged and mixed pairs are refused politely.
-const PROTO=2;
+const PROTO=3;
 const duelOk=id=>Number.isInteger(id)&&(window.ia23DuelOk?window.ia23DuelOk(id):(id>=0&&id<8));
-const needsNew=id=>Number.isInteger(id)&&id>=8;
+// Minimum protocol that understands a fighter: 0..7 always, 13..15 from release 2.6A (v2), 8..12 from 2.6A (v3).
+const minV=id=>!Number.isInteger(id)||id<8?1:(id>=13?2:3);
 const OUDE_VERSIE='De andere speler heeft een oudere versie van het spel. Update allebei het spel (Instellingen → Controleer update) om met de nieuwe dieren te duelleren.';
 const state={
  peerV:0,
@@ -25,7 +26,7 @@ const displayStatus=(text,isError=false)=>{
  const e=$('duel-status');
  e.textContent=text;e.style.borderColor=isError?'#d66b68':'#b39d667c';
 };
-function blocked(){return state.role==='host'&&state.connected&&state.remoteReady&&state.peerV<PROTO&&needsNew(+fighterSel.value);}
+function blocked(){return state.role==='host'&&state.connected&&state.remoteReady&&state.peerV<minV(+fighterSel.value);}
 function syncButtons(){
  $('duel-start').disabled=!(state.role==='host'&&state.connected&&state.remoteReady&&!state.active&&!state.matchDone)||blocked();
  if(blocked())displayStatus(OUDE_VERSIE,true);
@@ -70,7 +71,7 @@ function clearSession(notify=true){
  state.round=1;state.scores={host:0,guest:0};state.matchDone=false;
  state.sudden=false;state.startAt=0;state.remaining=90000;state.overtimeHealth=null;
  state.remoteInput={x:0,y:0,lastAt:0,hit:false,special:false};
- window.iaDuelRole=null;
+ window.iaDuelRole=null;window.iaDuelObstacles=false;
  try{if(location.hash.startsWith('#duel='))history.replaceState(null,'',location.pathname+location.search)}catch(_){}
 }
 function endToMenu(){
@@ -201,7 +202,7 @@ function join(code){
 }
 function updateChoice(fighter){
  if(!duelOk(fighter))return;
- if(state.role==='guest'&&state.connected&&needsNew(fighter)&&state.peerV<PROTO){displayStatus(OUDE_VERSIE,true);return;}
+ if(state.role==='guest'&&state.connected&&state.peerV<minV(fighter)){displayStatus(OUDE_VERSIE,true);return;}
  fighterSel.value=String(fighter);
  syncButtons();
  if(state.role==='guest')send({t:'ready',fighter:+fighterSel.value,v:PROTO});
@@ -227,7 +228,7 @@ function newWorld(name){
 function beginOnlineRound(){
  if(state.role!=='host'||!state.connected||!state.remoteReady||state.active)return;
  if(blocked()){displayStatus(OUDE_VERSIE,true);return;}
- const info={t:'start',v:PROTO,hostFighter:+fighterSel.value,guestFighter:state.remoteFighter,
+ const info={t:'start',v:PROTO,obst:state.peerV>=PROTO,hostFighter:+fighterSel.value,guestFighter:state.remoteFighter,
   world:state.world,startAt:Date.now()+3200,round:state.round,
   scores:{host:state.scores.host,guest:state.scores.guest}};
  send(info);
@@ -240,6 +241,8 @@ function enterBattle(info){
  state.startAt=Number(info.startAt)||Date.now()+3200;state.remaining=90000;
  state.sudden=false;state.overtimeHealth=null;state.matchDone=false;
  state.remoteInput={x:0,y:0,lastAt:0,hit:false,special:false};
+ // Obstacles (2.6A) are only used when BOTH phones know them; otherwise the arena stays open like before.
+ window.iaDuelObstacles=!!info.obst;
  state.world=info.world==='fungus'?'fungus':'forest';
  window.iaSetWorld?.(state.world);
  fighterSel.value=String(state.role==='host'?info.hostFighter:info.guestFighter);
@@ -308,7 +311,7 @@ function receive(d){
     if(d.world==='forest'||d.world==='fungus'){
      state.world=d.world;window.iaSetWorld?.(d.world);
     }
-    if(state.peerV<PROTO&&needsNew(+fighterSel.value)){
+    if(state.peerV<minV(+fighterSel.value)){
      // Host runs an older release: continue as the ant and explain why.
      fighterSel.value='0';send({t:'ready',fighter:0,v:PROTO});
      displayStatus(OUDE_VERSIE+' Voor nu speel je als mier.',true);syncButtons();break;

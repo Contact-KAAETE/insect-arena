@@ -44,10 +44,10 @@ Regels:
 - Botsing, dekking en vertraging blijven uit `terrain-16-data.js` komen en worden niet aangepast.
 - Foto's: `assets/world/props-23/*.webp`, uitgeknipt uit één aangeleverde sheet met gezuiverde randen.
 
-## Duelprotocol 2 (2.5A)
+## Duelprotocol 3 (2.6A; protocol 2 = 2.5A)
 
-- `ready`, `lobby` en `start` dragen `v:2`. Een pakket zonder `v` komt van een oudere versie (telt als 1).
-- De host rekent alles; nieuwe dieren (id ≥ 8) worden alleen gestart als de ander protocol 2 spreekt. Anders blijft de startknop uit en
+- `ready`, `lobby` en `start` dragen `v:3`. Een pakket zonder `v` komt van een oudere versie (telt als 1).
+- De host rekent alles. Vechter 0–7 werkt met elke versie, 13–15 vanaf protocol 2, 8–12 vanaf protocol 3 (`minV`); een oudere ander blokkeert de start. Anders blijft de startknop uit en
   verschijnt een melding. Een gast met een nieuw dier bij een oude host valt automatisch terug op de mier.
-- Terreinobjecten blijven in duels decor (geen botsing), zoals voorheen; botsing en dekking gelden alleen in solo.
+- Hindernissen online (2.6A): de host zet in `start` de vlag `obst` alleen als beide telefoons protocol 3 hebben (`window.iaDuelObstacles`). Dan tekent `adventure-14` de props en doet `terrain-16` botsing en dekking mee: de host losst botsing op voor beide dieren, de gast voor zijn eigen voorspelde beweging. Een tegenstander wordt in een duel nooit omgeleid. Biome-gevaren (water, hitte) blijven solo.
 - Getest met twee schermen en een nagemaakte PeerJS (zie tests/arena-25 en de duel-simulatie in de ontwikkelnotities): host en gast tonen dezelfde stand.

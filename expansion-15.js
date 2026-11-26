@@ -27,7 +27,7 @@ const hotVents=[
  {x:302,y:374,r:56},{x:550,y:419,r:61},{x:511,y:274,r:41}
 ];
 let combatFX=[],blocked=0,lastFeedback=0,heatHits=0,slowHits=0;
-const active=()=>solo()&&playing&&!paused&&!window.iaCountdownActive;
+const active=()=>(solo()||!!window.iaDuelRole)&&playing&&!paused&&!window.iaCountdownActive;   // 2.6A: specials of the five solo animals also work online (host decides)
 const tag=(message)=>{const t=$('tactical-toast');if(!t)return;
  t.textContent=message;t.hidden=false;t.classList.add('visible');
  clearTimeout(tag.timeout);
@@ -174,7 +174,7 @@ attack=function(a,t,special=false){
 const oldConfine=confine;
 confine=function(u){
  oldConfine(u);
- if(!u||!active())return;
+ if(!u||!active()||!solo())return;   // biome hazards (water, heat) stay solo-only; online arenas are forest and fungus
  const w=selected();
  if(w==='dew'&&waterPools.some(p=>inside(u,p))){
   u.slow=Math.max(u.slow||0,7);u.ia15Water=true;
@@ -207,7 +207,7 @@ reset=function(...args){
 const oldDamage=drawDamageNumbers;
 drawDamageNumbers=function(){
  oldDamage();
- if(!combatFX.length||!solo())return;
+ if(!combatFX.length)return;
  const smooth=!window.iaReducedEffects;
  for(let i=combatFX.length-1;i>=0;i--){
   const e=combatFX[i];const t=1-e.life/e.total;
