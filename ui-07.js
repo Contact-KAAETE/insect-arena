@@ -36,7 +36,7 @@ function setMenuBackground(){
 }
 forestPhoto.addEventListener('load',setMenuBackground);
 setMenuBackground();
-const lines=['Snel, fel en wendbaar.','Meester van de sikkelklauw.','Zwaar pantser met een vernietigende ramstoot.','Gevaarlijk gif en een krachtige staart.','Metalen pantser en vurige verdedigingsstraal.','Roze roofdier met onzichtbare hinderlaag.','Fluweelachtige wesp met verrassend krachtig gif.','Grote waterrover die zijn prooi vastgrijpt.','Snelle duizendpoot met een giftige klemgreep: alleen in solo vrij te spelen.','Een kruisspin die haar tegenstander vastzet met een vangweb.','De roofwants injecteert gif met een scherpe steeksnuit.','De libellenlarve stoot krachtige waterstralen uit.','De veenmol creëert aardbevingen en verlamt andere dieren.'];
+const lines=['Snel, fel en wendbaar.','Meester van de sikkelklauw.','Zwaar pantser met een vernietigende ramstoot.','Gevaarlijk gif en een krachtige staart.','Metalen pantser en vurige verdedigingsstraal.','Roze roofdier met onzichtbare hinderlaag.','Fluweelachtige wesp met verrassend krachtig gif.','Grote waterrover die zijn prooi vastgrijpt.','Snelle duizendpoot met een giftige klemgreep: alleen in solo vrij te spelen.','Een kruisspin die haar tegenstander vastzet met een vangweb.','De roofwants injecteert gif met een scherpe steeksnuit.','De libellenlarve stoot krachtige waterstralen uit.','De veenmol creëert aardbevingen en verlamt andere dieren.','Bliksemsnelle hinderlaagjager met doornige vangarmen: alleen in solo.','Piepklein en razendsnel, met een springstoot: alleen in solo.','Taaie mijt met sluipend gif: alleen in solo.'];
 function roster(){
  const root=el('fighter-roster');root.textContent='';
  types.forEach((t,i)=>{

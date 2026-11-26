@@ -42,7 +42,7 @@ function syncUnlocks(){
  if(rootButton)rootButton.disabled=lock;
  const footer=document.querySelector('.menuFooter span:last-child');
  const release=window.iaPwaUpdates?.version;
- if(footer&&release)footer.textContent=release+' · 13 VECHTERS · 6 WERELDEN';
+ if(footer&&release)footer.textContent=release+' · 16 VECHTERS · 6 WERELDEN';
 }
 function guide(){
  if(!tutorial){tutorialGuide.hidden=true;return}

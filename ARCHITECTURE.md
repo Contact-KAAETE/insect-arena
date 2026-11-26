@@ -12,6 +12,7 @@ functies of stijlen. Dit overzicht voorkomt dat je de volgorde moet raden.
 | 1.4–1.6 | `adventure-14*`, `expansion-15*`, `terrain-16*` | Tutorial, 13 dieren, 6 biomen, terrein |
 | 1.7–1.9 | `immersive-17.*`, `pwa-update-18.*`, `polish-19.css` | Fullscreen, PWA-updates, scrollbare menu's |
 | 2.0–2.1 | `polish-20.*`, `vendor/` | Leesbare gevechts-HUD, lokale duelbibliotheken |
+| 2.3 | `fauna-23-pre.js`, `fauna-23.js` | Drie geanimeerde solo-vechters (bloemenmantis, springstaart, bosmijt) met eigen specials |
 
 Regels:
 
@@ -24,3 +25,13 @@ Regels:
 - Verwijderd in 2.1A: `ui-06.js` (werd nergens meer geladen of getest).
 - Bewust niet samengevoegd: de CSS/JS-lagen zelf. Elke laag heeft eigen tests en draait op de
   volgorde van overschrijven; samenvoegen vraagt een aparte, visueel geteste ronde.
+
+## Geanimeerde vechters (2.3A)
+
+- `fauna-23-pre.js` laadt **vóór** `ui-07.js` en registreert id 13–15 (rooster, keuzelijst, stilstaand portret).
+- `fauna-23.js` laadt na `expansion-15.js`: knipt elke spritesheet (`assets/fighters/*-23.webp`) één keer in canvas-frames
+  en zet vlak vóór het tekenen `fighterSprites[id]` op het juiste frame. Daardoor werken HUD, schade-flits en
+  statuseffecten van eerdere lagen ongewijzigd. Een canvas met `complete/naturalWidth/naturalHeight` volstaat voor de kern.
+- Alleen solo: het duelprotocol blijft op id 0–7 (`duel-08.js`).
+- Bronmateriaal: video (bloemenmantis, uitgeknipt met `knip2`-methode: randdetectie + vlakvulling) en twee aangeleverde
+  8-frame-sheets (springstaart, mijt). Randkleuren zijn gezuiverd.

@@ -1,4 +1,4 @@
-/* INSECT ARENA 2.2A — readable battle HUD and one release label.
+/* INSECT ARENA 2.3A — readable battle HUD and one release label.
  * Keeps the "ONTWIJK DE AANVAL!" warning and tactical toasts BELOW the two
  * health bars instead of on top of them, on every screen size.
  * No gameplay, stored progress or multiplayer protocol changes.
@@ -30,7 +30,7 @@ if(typeof ResizeObserver!=='undefined'&&hud)new ResizeObserver(placeAll).observe
 // The release label in the main menu always follows the PWA version constant.
 const release=window.iaPwaUpdates?.version;
 const footer=document.querySelector('.menuFooter span:last-child');
-if(footer&&release)footer.textContent=release+' · 13 VECHTERS · 6 WERELDEN';
+if(footer&&release)footer.textContent=release+' · 16 VECHTERS · 6 WERELDEN';
 
 window.ia20Hud={place:placeAll};
 })();

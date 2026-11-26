@@ -13,7 +13,7 @@ test('1.4A boot references and JavaScript syntax',()=>{
   'assets/fighters/centipede-14.svg'
  ])assert.ok(fs.existsSync(path.join(base,file)),'Missing '+file);
  assert.ok(html.includes('adventure-14-pre.js?v=1.9A'));
- assert.ok(html.includes('adventure-14.js?v=2.2A'));
+ assert.ok(html.includes('adventure-14.js?v=2.3A'));
  assert.ok(html.includes('adventure-14.css?v=1.4B'));
  assert.ok(html.includes('data-choose-world="roots"'));
  const order=html.indexOf('adventure-14-pre.js')<html.indexOf('ui-07.js')&&
